@@ -9,6 +9,12 @@ const request = axios.create({
 export const BASE_API = process.env.BRJ_REACT_BASE;
 export const REVIEW_API = `${BASE_API}/api/review`;
 
+// Get Trending Reviews
+export const findTrendingReviews = async () => {
+    const response = await request.get(`${REVIEW_API}/trending`);
+    return response.data;
+}
+
 // Get Review by Review ID
 export const findReviewById = async (id) => {
     const response = await request.get(`${REVIEW_API}/${id}`);
