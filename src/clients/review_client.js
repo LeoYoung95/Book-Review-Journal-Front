@@ -7,7 +7,7 @@ const request = axios.create({
 });
 
 export const BASE_API = process.env.BRJ_REACT_BASE;
-export const REVIEW_API = `${BASE_API}/api/review`;
+export const REVIEW_API = `${BASE_API}/api/reviews`;
 
 // Get Trending Reviews
 export const findTrendingReviews = async () => {

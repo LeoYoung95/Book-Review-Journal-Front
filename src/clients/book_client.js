@@ -7,7 +7,7 @@ const request = axios.create({
 });
 
 export const BASE_API = process.env.BRJ_REACT_BASE;
-export const BOOK_API = `${BASE_API}/api/book`;
+export const BOOK_API = `${BASE_API}/api/books`;
 
 // Get Book by Mongo Book ID
 export const findBookByMongoId = async (mongo_id) => {

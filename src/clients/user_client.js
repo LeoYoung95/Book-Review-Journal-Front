@@ -7,7 +7,7 @@ const request = axios.create({
 });
 
 export const BASE_API = process.env.BRJ_REACT_BASE;
-export const USERS_API = `${BASE_API}/api/user`;
+export const USERS_API = `${BASE_API}/api/users`;
 
 // User Authentication
 export const signin = async (credentials) => {
