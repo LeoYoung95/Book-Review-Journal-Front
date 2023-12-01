@@ -6,8 +6,8 @@ const request = axios.create({
     withCredentials: true,
 });
 
-export const BASE_API = process.env.BRJ_REACT_BASE;
-export const BOOK_API = `${BASE_API}/api/books`;
+export const BASE_URL = process.env.BRJ_REACT_BASE;
+export const BOOK_API = `${BASE_URL}/api/books`;
 
 // Get Book by Mongo Book ID
 export const findBookByMongoId = async (mongo_id) => {

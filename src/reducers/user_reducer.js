@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // Initial state of the users slice
 const initialState = {
     users: [],
+
     user: { name: '', email: '', role: '', id: '' },
 };
 
