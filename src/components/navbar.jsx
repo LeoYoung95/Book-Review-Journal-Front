@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../images/logo.svg';
 import { useNavigate, Link } from 'react-router-dom';
-import Searchbar from './searchbar.jsx';
+import Searchbar from './search/searchbar.jsx';
 
 export default function Navar() {
   const navigate = useNavigate();

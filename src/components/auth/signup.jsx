@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import * as user_client from '../clients/user_client';
+import * as user_client from '../../clients/user_client.js';
 
 export default function Signup() {
   const [error, setError] = useState("");
