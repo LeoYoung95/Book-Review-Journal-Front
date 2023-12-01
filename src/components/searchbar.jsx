@@ -22,7 +22,8 @@ export default function Searchbar() {
           type='text'
           value={searchInput}
           onChange={handleInputChange}
-          className='rounded w-[450px] h-[30px]'
+          placeholder='Search...'
+          className='rounded w-[450px] h-[30px] placeholder:italic placeholder:text-slate-400 border border-slate-300 '
         />
         <button 
           type='submit' 

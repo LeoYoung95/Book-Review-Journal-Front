@@ -14,7 +14,7 @@ export const signin = async (credentials) => {
     const response = await request.post(`${USERS_API}/signin`, credentials);
     return response.data; };
 
-export const singup = async (credentials) => {
+export const signup = async (credentials) => {
     const response = await request.post(`${USERS_API}/signup`, credentials);
     return response.data; };
 
