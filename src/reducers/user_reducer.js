@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 // Initial state of the users slice
 const initialState = {
     users: [],
-    user: { name: '', email: '', role: '' },
+    user: { name: '', email: '', role: '', id: '' },
 };
 
 // Creating the users slice
@@ -15,7 +15,7 @@ const usersReducer = createSlice({
         setUsers: (state, action) => {
             state.users = action.payload;
         },
-
+        
         // Action to add a new user
         addUser: (state, action) => {
             state.users = [action.payload, ...state.users];
