@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as user_client from '../clients/user_client';
 
 export default function Signup() {
@@ -60,7 +60,7 @@ export default function Signup() {
           <div class="md:flex md:items-center">
             <div class="md:w-1/3"></div>
             <div class="md:w-2/3">
-              <button className="bg-sky-500 hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"> Register and sign in </button>
+              <button className="bg-sky-500 hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={signup}> Register and sign in </button>
             </div>
           </div>
         </form>
