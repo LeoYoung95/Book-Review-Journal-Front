@@ -18,7 +18,7 @@ export default function Signup() {
   return (
     <div className='w-full'>
       <h1>Signup//</h1>
-      <div className='flex flex-row max-w-xs content-center'>
+      <div className='flex flex-row max-w-xs content-center-signin'>
         <form className="w-full max-w-sm">
           <h1 className='flex text-3xl font-bold dark:text-white mb-4 mt-2'>Sign up</h1>
           {error && <div>{error}</div>}

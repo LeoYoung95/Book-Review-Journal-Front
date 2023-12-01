@@ -1,22 +1,40 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate }from "react-router";
+import { useSelector } from 'react-redux';
+import PersonalInfo from './personal_info';
+import LikedReviews from './liked_reviews';
+import store from '../../reducers/store';
+import { Provider } from 'react-redux';
+import NavBarProfile from './nav_bar_profile';
 
 export default function Profile() {
-  const {pathname} = useLocation();
+  
+  const myReduxState = useSelector(state => state);
+  console.log(myReduxState);
+  const currentUser = {
+    name: 'test user',
+    email: 'test@test.com',
+    role: 'writer',
+  }
+
   return (
+    <Provider store={store}>
     <div className='w-full ms-2'>
       <h1>Profile</h1>
-      {pathname}
-      <nav className="nav nav-pills mt-2">
-        
-        <Link className={`nav-link ${pathname.includes("a3") ? "active" : ""}`} 
-              to="/profile/personal_info">A3</Link>
-        <Link className={`nav-link ${pathname.includes("a4") ? "active" : ""}`} 
-              to="/Labs/a4">A4</Link>
+      <NavBarProfile/>
 
-      </nav>
-      
+      <Routes>
+        <Route path="/"
+          element={<Navigate
+            to="personal-info"/>} />
+        <Route path="personal-info"
+          element={<PersonalInfo/>} />
+        <Route path="liked-reviews"
+          element={<LikedReviews/>} />
+      </Routes>
+
 
     </div>
-  )
-}
+    </Provider>
+  );
+};

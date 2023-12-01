@@ -40,8 +40,14 @@ html {
   scroll-behavior: smooth; /* Optional: Enables smooth scrolling in supported browsers */
 }
 
-.content-center{
+.content-center-signin{
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+
+.content-center-profile-tab{
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
 }
