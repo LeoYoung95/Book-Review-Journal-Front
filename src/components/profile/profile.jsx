@@ -1,40 +1,39 @@
 import React from 'react';
-import { Routes, Route, Navigate }from "react-router";
 import { useSelector } from 'react-redux';
-import PersonalInfo from './personal_info';
-import LikedReviews from './liked_reviews';
 import store from '../../reducers/store';
 import { Provider } from 'react-redux';
-import NavBarProfile from './nav_bar_profile';
+import PersonalInfo from './personalInfo';
+import MyOrLikedReviews from './myOrLikedReviews';
 
 export default function Profile() {
   
   const myReduxState = useSelector(state => state);
   console.log(myReduxState);
   const currentUser = {
-    name: 'test user',
+    firstName: 'test',
+    lastName: 'user',
     email: 'test@test.com',
-    role: 'writer',
+    role: 'admin',
+    bio: 'I am a test user. What is up',
   }
-
+  const profileUser = {
+    firstName: 'test',
+    lastName: 'user',
+    email: 'test@test.com',
+    role: 'admin',
+    bio: 'I am a test user. What is up',
+  }
+  
   return (
     <Provider store={store}>
-    <div className='w-full ms-2'>
-      <h1>Profile</h1>
-      <NavBarProfile/>
-
-      <Routes>
-        <Route path="/"
-          element={<Navigate
-            to="personal-info"/>} />
-        <Route path="personal-info"
-          element={<PersonalInfo/>} />
-        <Route path="liked-reviews"
-          element={<LikedReviews/>} />
-      </Routes>
-
-
-    </div>
+      <div className='md:flex h-full'>
+        <div className='md:w-1/2 bg-pink-300 flex justify-center'>
+          <PersonalInfo currentUser={currentUser} profileUser={profileUser}/>
+        </div>
+        <div className='md:w-1/2 h-full bg-purple-300 flex justify-center'>
+          <MyOrLikedReviews currentUser={currentUser} profileUser={profileUser}/>
+        </div>
+      </div>
     </Provider>
   );
 };

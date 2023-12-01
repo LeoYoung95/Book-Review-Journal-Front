@@ -14,9 +14,9 @@ import Breadcrumb from './components/breadcrumb.jsx';
 function App() {
     return (
         <Provider store={store}>
-            <div className="w-full items-center font-serif">
+            <div className="w-full h-[100vh] items-center font-serif">
                 <BrowserRouter>
-                    <div className='mt-[60px]'>
+                    <div className='mt-[60px] h-full'>
                         <Navbar/>
                         {/* <Breadcrumb/> */}
                         <Routes>
