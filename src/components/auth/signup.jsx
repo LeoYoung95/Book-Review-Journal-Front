@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD:src/components/auth/signup.jsx
 import { useNavigate, Link } from "react-router-dom";
 import * as user_client from '../../clients/user_client.js';
+=======
+import { useNavigate } from "react-router-dom";
+import * as user_client from '../clients/user_client';
+>>>>>>> b494ce96040a838f4ddfb186a0f509af7626025d:src/components/signup.jsx
 
 export default function Signup() {
   const [error, setError] = useState("");
@@ -60,7 +65,7 @@ export default function Signup() {
           <div class="md:flex md:items-center">
             <div class="md:w-1/3"></div>
             <div class="md:w-2/3">
-              <button className="bg-sky-500 hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"> Register and sign in </button>
+              <button className="bg-sky-500 hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded" onClick={signup}> Register and sign in </button>
             </div>
           </div>
         </form>
