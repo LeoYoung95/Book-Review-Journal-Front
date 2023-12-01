@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD:src/components/auth/signup.jsx
+import { useNavigate, Link } from "react-router-dom";
+import * as user_client from '../../clients/user_client.js';
+=======
 import { useNavigate } from "react-router-dom";
 import * as user_client from '../clients/user_client';
+>>>>>>> b494ce96040a838f4ddfb186a0f509af7626025d:src/components/signup.jsx
 
 export default function Signup() {
   const [error, setError] = useState("");

@@ -4,10 +4,11 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import store from "./reducers/store.js";
 import {Provider} from "react-redux";
 import Navbar from './components/navbar.jsx';
-import Homepage from './components/homepage.jsx';
+import Homepage from './page/homepage.jsx';
 import Profile from './components/profile/profile.jsx';
-import Signup from './components/signup.jsx';
-import Signin from './components/signin.jsx';
+import Signup from './components/auth/signup.jsx';
+import Signin from './components/auth/signin.jsx';
+
 import Breadcrumb from './components/breadcrumb.jsx';
 
 function App() {
