@@ -6,10 +6,16 @@ const request = axios.create({
     withCredentials: true,
 });
 
-export const BASE_URL = process.env.BRJ_REACT_BASE;
+export const BASE_URL = process.env.REACT_APP_BRJ_REACT_BASE;
 export const REVIEW_API = `${BASE_URL}/api/reviews`;
 
-// Get Trending Reviews
+// Get All Reviews
+export const findAllReviews = async () => {
+    const response = await request.get(`${REVIEW_API}`);
+    return response.data;
+}
+
+// Get Trending Top 10 Reviews
 export const findTrendingReviews = async () => {
     const response = await request.get(`${REVIEW_API}/trending`);
     return response.data;
@@ -51,9 +57,14 @@ export const updateReview = async (id, review) => {
     return response.data;
 }
 
-// Author & Admin Only: Delete Review [Soft Delete]
-export const deleteReview = async (user, review) => {
-    const response = await request.put(`${REVIEW_API}/delete/${user._id}`,review);
+// Author & Admin Only: Soft Delete Review
+export const deleteReview = async (id, userId) => {
+    const response = await request.put(`${REVIEW_API}/delete/${id}`, { deletedBy: userId });
     return response.data;
 }
 
+// Admin Only: Recover Review
+export const recoverReview = async (id) => {
+    const response = await request.put(`${REVIEW_API}/recover/${id}`);
+    return response.data;
+}
