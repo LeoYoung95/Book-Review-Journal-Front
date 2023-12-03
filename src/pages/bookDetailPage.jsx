@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchBookInfo } from "../clients/openlib_client.js";
-import { findBookReviewsByOpenLibraryId } from "../clients/book_client.js";
 import BookCardLarger from "../components/book/bookCardLarger.jsx";
-import ReviewListing from "../components/review/reviewList.jsx";
+import ReviewList from "../components/review/reviewList.jsx";
 
 const BookDetail = () => {
     const { olid } = useParams();
     const [bookDetails, setBookDetails] = useState(null);
-    const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -22,9 +20,6 @@ const BookDetail = () => {
 
                 console.log("olid: ", olid);
 
-                // Fetch the reviews for this book using its OLID
-                const relatedReviews = await findBookReviewsByOpenLibraryId(olid);
-                setReviews(relatedReviews);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -53,7 +48,7 @@ const BookDetail = () => {
                 <h1>Related Reviews</h1>
                 {/* Pass the book's OLID to the ReviewListing component */}
                 {/* ReviewListing will handle displaying the reviews or a message if there are none */}
-                <ReviewListing bookId={olid} />
+                <ReviewList olid={olid} />
             </div>
         </div>
     );
