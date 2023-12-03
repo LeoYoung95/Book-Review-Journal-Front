@@ -9,6 +9,7 @@ const BookCardLarger = ({ book }) => {
         }
         return 'No genres available'; // Default message if genres is not a string or is empty
     };
+
     return (
         <div className="book-card-large">
             <div className="book-cover-large">
