@@ -15,6 +15,7 @@ export const findAllReviews = async () => {
     return response.data;
 }
 
+
 // Get Trending Top 10 Reviews
 export const findTrendingReviews = async () => {
     const response = await request.get(`${REVIEW_API}/trending`);

@@ -1,0 +1,82 @@
+.book-card {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.book-cover {
+    flex-shrink: 0; /* Prevents the image from shrinking */
+    width: 100px; /* Adjust this value as needed */
+    margin-right: 20px;
+}
+
+.book-cover img {
+    width: 100%; /* Makes the image fill the container */
+    height: auto; /* Keeps the aspect ratio of the image */
+}
+
+.book-info {
+    flex-grow: 1; /* Allows the text content to take the remaining space */
+}
+
+.book-info h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.book-info h2 a {
+    text-decoration: none;
+    color: #333;
+}
+
+.book-info h2 a:hover {
+    text-decoration: underline;
+}
+
+.book-info p {
+    margin: 4px 0;
+    color: #666;
+}
+
+/* Styles for BookCardLarger */
+.book-card-large {
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.book-cover-large {
+    flex-shrink: 0;
+    width: 200px; /* Adjust size as needed */
+    margin-right: 20px;
+}
+
+.book-cover-large img {
+    width: 100%;
+    height: auto;
+}
+
+.book-details-large {
+    flex-grow: 1;
+    margin-right: 20px; /* Space between details and description */
+}
+
+.book-details-large h1, .book-details-large p {
+    margin: 0 0 10px 0;
+}
+
+.book-description-large {
+    flex-basis: 30%; /* Adjust the width of the description column */
+    flex-grow: 1;
+}
+
+.book-description-large p {
+    line-height: 1.5;
+    color: #333;
+}
