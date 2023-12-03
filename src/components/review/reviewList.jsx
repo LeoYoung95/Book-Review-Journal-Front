@@ -27,7 +27,7 @@ export default function ReviewListing() {
                 console.error("Error fetching reviews:", err);
             }
         }
-
+        
         fetchReviews();
     }, [dispatch]);
 

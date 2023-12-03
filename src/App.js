@@ -4,6 +4,7 @@ import './index.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import store from "./reducers/store.js";
 import { Provider } from "react-redux";
+import Breadcrumb from './components/breadcrumb.jsx';
 import Navbar from './components/universal/navbar.jsx';
 import Homepage from './pages/homepage.jsx';
 import Profile from './components/profile/profile.jsx';
@@ -18,6 +19,7 @@ function App() {
             <div className="w-full h-[100vh] items-center font-serif">
                 <BrowserRouter>
                     <Navbar /> {/* Navbar is outside the Routes */}
+                    <Breadcrumb />
                     <div className='mt-[60px] h-full'>
                         <Routes>
                             <Route path='/' element={<Homepage />} />
