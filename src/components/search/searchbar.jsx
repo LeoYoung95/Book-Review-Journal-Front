@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Searchbar() {
-  
   const [searchInput, setSearchInput] = useState('');
-  
+  const navigate = useNavigate();
+
   const handleInputChange = e => {
     setSearchInput(e.target.value);
   }
 
   const handleSearch = e => {
     e.preventDefault();
-    if (searchInput.length > 0) {
-      console.log('search clicked');
+    const trimmedInput = searchInput.trim();
+    if (trimmedInput.length > 0) {
+      navigate(`/search?criteria=${encodeURIComponent(trimmedInput)}`);
+    } else {
+      navigate('/search');
     }
   }
   

@@ -1,14 +1,11 @@
 import axios from "axios";
 
-// Set default configurations for axios
-axios.defaults.withCredentials = true;
-
 const request = axios.create({
-    withCredentials: true,
+    withCredentials: false,
 });
 
 // Function to fetch book info by book name
-const fetchBookInfo = async (bookName) => {
+ export const fetchBookInfo = async (bookName) => {
     try {
         // Replace spaces with '+' for the API query
         const formattedBookName = bookName.split(' ').join('+');
@@ -43,7 +40,7 @@ const fetchBookInfo = async (bookName) => {
 };
 
 // Function to fetch books by author name
-const fetchBooksByAuthor = async (authorName) => {
+export const fetchBooksByAuthor = async (authorName) => {
     try {
         // Replace spaces with '+' for the API query
         const formattedAuthorName = authorName.split(' ').join('+');
@@ -79,4 +76,3 @@ const fetchBooksByAuthor = async (authorName) => {
     }
 };
 
-export default fetchBookInfo;

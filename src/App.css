@@ -1,0 +1,13 @@
+.main-content {
+    padding-top: 60px; /* Same as the height of your navbar */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff; /* Or any other solid color you prefer */
+    z-index: 1000; /* High enough to stay above all other content */
+    /* ... other styling properties ... */
+}

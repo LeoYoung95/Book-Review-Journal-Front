@@ -1,14 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 // Initial state of the reviews slice
 const initialState = {
     reviews: [],
-    review: { title: "", content: "", author: "" },
+    review: {
+        title: '',
+        body: '',
+        book_id: null,
+        author_id: null,
+        likedUsers: [],
+        is_deleted: false,
+        deleted_by: null
+    },
 };
 
 // Creating the reviews slice
 const reviewsReducer = createSlice({
-    name: "reviews",
+    name: 'reviews',
     initialState,
     reducers: {
         // Action to set the array of reviews
@@ -21,16 +29,31 @@ const reviewsReducer = createSlice({
             state.reviews = [action.payload, ...state.reviews];
         },
 
-        // Action to delete a review
+        // Action to delete a review (soft delete)
         deleteReview: (state, action) => {
-            state.reviews = state.reviews.filter((review) => review.id !== action.payload);
+            state.reviews = state.reviews.map(review => {
+                if (review.id === action.payload.id) {
+                    return { ...review, is_deleted: true, deleted_by: action.payload.deletedBy };
+                }
+                return review;
+            });
+        },
+
+        // Action to recover a deleted review
+        recoverReview: (state, action) => {
+            state.reviews = state.reviews.map(review => {
+                if (review.id === action.payload) {
+                    return { ...review, is_deleted: false, deleted_by: null };
+                }
+                return review;
+            });
         },
 
         // Action to update a review's details
         updateReview: (state, action) => {
             state.reviews = state.reviews.map((review) => {
                 if (review.id === action.payload.id) {
-                    return action.payload;
+                    return { ...review, ...action.payload };
                 } else {
                     return review;
                 }
@@ -58,6 +81,9 @@ const reviewsReducer = createSlice({
 });
 
 // Exporting the actions and the reducer
-export const { addReview, deleteReview, updateReview, setReview, setReviews, likeReview } = reviewsReducer.actions;
+export const {
+    addReview, deleteReview, recoverReview,
+    updateReview, setReview, setReviews, likeReview
+} = reviewsReducer.actions;
 
 export default reviewsReducer.reducer;
