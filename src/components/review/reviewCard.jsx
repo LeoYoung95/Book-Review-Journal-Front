@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setReview, likeReview } from "../../reducers/reviewsReducer";
-import {
-    addLikedReviewToUser,
-    addLikedBookToUser,
-    removeLikedReviewFromUser,
-    removeLikedBookFromUser,
-    setUser,
-} from "../../reducers/usersReducer";
-import { likeBook } from "../../reducers/booksReducer";
+import { setReview} from "../../reducers/reviewsReducer";
+import { setUser } from "../../reducers/usersReducer";
 import axios from "axios";
 
 export default function ReviewCard({ reviewId }) {
@@ -39,47 +32,15 @@ export default function ReviewCard({ reviewId }) {
         }
     }, [dispatch, review, users]);
 
-
-    const handleLikeReview = async () => {
-        const alreadyLikedReview = review.likedUsers.includes(user.id);
-        try {
-            await axios.post(`/api/reviews/${reviewId}/toggleLike`, { userId: user.id });
-            dispatch(likeReview({ reviewId, userId: user.id }));
-            if (alreadyLikedReview) {
-                // If the review is already liked, this action will remove the like
-                dispatch(removeLikedReviewFromUser({ userId: user.id, reviewId }));
-            } else {
-                // If the review is not liked yet, this action will add the like
-                dispatch(addLikedReviewToUser({ userId: user.id, reviewId }));
-            }
-        } catch (error) {
-            console.error("Error toggling like on the review:", error);
-        }
+    // Truncate the review body to approximately two lines of text
+    const truncateReviewBody = (body) => {
+        const maxLength = 200;
+        return body.length > maxLength ? body.substring(0, maxLength) + "..." : body;
     };
 
-    const handleLikeBook = async () => {
-        const bookId = review.book_id;
-        const alreadyLikedBook = user.likedBooks.includes(bookId);
-        try {
-            await axios.post(`/api/books/${bookId}/toggleLike`, { userId: user.id });
-            dispatch(likeBook({ bookId, userId: user.id }));
-            if (alreadyLikedBook) {
-                // If the book is already liked, this action will remove the like
-                dispatch(removeLikedBookFromUser({ userId: user.id, bookId }));
-            } else {
-                // If the book is not liked yet, this action will add the like
-                dispatch(addLikedBookToUser({ userId: user.id, bookId }));
-            }
-        } catch (error) {
-            console.error("Error toggling like on the book:", error);
-        }
-    };
-
-     if (!review || !user) {
+    if (!review || !user) {
         return <div>Loading...</div>;
     }
-
-    const author = review.author; // Replace with actual logic to get author data
 
     return (
         <div className="card">
@@ -93,17 +54,9 @@ export default function ReviewCard({ reviewId }) {
                         <img src={user.profilePic} alt="Author" className="img-thumbnail" />
                     </div>
                     <div className="col-lg-8">
-                        <p className="card-text">{review.body}</p>
+                        <p className="card-text">{truncateReviewBody(review.body)}</p>
                     </div>
                 </div>
-            </div>
-            <div className="card-footer">
-                <button className="btn btn-primary" onClick={handleLikeReview}>
-                    Like Review
-                </button>
-                <button className="btn btn-secondary" onClick={() => handleLikeBook(review.book_id)}>
-                    Like Book
-                </button>
             </div>
         </div>
     );
