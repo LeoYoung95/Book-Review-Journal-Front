@@ -6,18 +6,23 @@ import {
     addLikedBookToUser,
     removeLikedReviewFromUser,
     removeLikedBookFromUser,
-    setUser,
 } from "../../reducers/usersReducer";
 import { likeBook } from "../../reducers/booksReducer";
 import axios from "axios";
 
-export default function ReviewCard({ reviewId }) {
+export default function ReviewDetail({ reviewId }) {
     const dispatch = useDispatch();
     const review = useSelector((state) => state.reviews.review);
-    const user = useSelector((state) => state.users.user);
+    const currentUser = useSelector((state) => state.users.user); // Renamed for clarity
     const users = useSelector((state) => state.users.users);
 
+    // Find the author of the review
+    const author = review && review.author_id
+        ? users.find((user) => user._id.$oid === review.author_id) // Updated to match your data structure
+        : null;
+
     useEffect(() => {
+        // Fetch review data
         async function fetchData() {
             try {
                 const reviewRes = await axios.get(`/api/reviews/${reviewId}`);
@@ -29,29 +34,15 @@ export default function ReviewCard({ reviewId }) {
         fetchData();
     }, [dispatch, reviewId]);
 
-    useEffect(() => {
-        // Fetch author data based on author_id from review
-        if (review && review.author_id) {
-            const authorInfo = users.find((user) => user.id === review.author_id);
-            if (authorInfo) {
-                dispatch(setUser(authorInfo));
-            }
-        }
-    }, [dispatch, review, users]);
-
-
     const handleLikeReview = async () => {
-        const alreadyLikedReview = review.likedUsers.includes(user.id);
+        const alreadyLikedReview = review.likedUsers.includes(currentUser._id.$oid); // Updated to match data structure
         try {
-            await axios.post(`/api/reviews/${reviewId}/toggleLike`, { userId: user.id });
-            dispatch(likeReview({ reviewId, userId: user.id }));
-            if (alreadyLikedReview) {
-                // If the review is already liked, this action will remove the like
-                dispatch(removeLikedReviewFromUser({ userId: user.id, reviewId }));
-            } else {
-                // If the review is not liked yet, this action will add the like
-                dispatch(addLikedReviewToUser({ userId: user.id, reviewId }));
-            }
+            await axios.post(`/api/reviews/${reviewId}/toggleLike`, { userId: currentUser._id.$oid });
+            dispatch(likeReview({ reviewId, userId: currentUser._id.$oid }));
+            // Dispatch actions based on whether the review is already liked
+            alreadyLikedReview
+                ? dispatch(removeLikedReviewFromUser({ userId: currentUser._id.$oid, reviewId }))
+                : dispatch(addLikedReviewToUser({ userId: currentUser._id.$oid, reviewId }));
         } catch (error) {
             console.error("Error toggling like on the review:", error);
         }
@@ -59,23 +50,20 @@ export default function ReviewCard({ reviewId }) {
 
     const handleLikeBook = async () => {
         const bookId = review.book_id;
-        const alreadyLikedBook = user.likedBooks.includes(bookId);
+        const alreadyLikedBook = currentUser.likedBooks.includes(bookId);
         try {
-            await axios.post(`/api/books/${bookId}/toggleLike`, { userId: user.id });
-            dispatch(likeBook({ bookId, userId: user.id }));
-            if (alreadyLikedBook) {
-                // If the book is already liked, this action will remove the like
-                dispatch(removeLikedBookFromUser({ userId: user.id, bookId }));
-            } else {
-                // If the book is not liked yet, this action will add the like
-                dispatch(addLikedBookToUser({ userId: user.id, bookId }));
-            }
+            await axios.post(`/api/books/${bookId}/toggleLike`, { userId: currentUser._id.$oid });
+            dispatch(likeBook({ bookId, userId: currentUser._id.$oid }));
+            // Dispatch actions based on whether the book is already liked
+            alreadyLikedBook
+                ? dispatch(removeLikedBookFromUser({ userId: currentUser._id.$oid, bookId }))
+                : dispatch(addLikedBookToUser({ userId: currentUser._id.$oid, bookId }));
         } catch (error) {
             console.error("Error toggling like on the book:", error);
         }
     };
 
-     if (!review || !user) {
+    if (!review || !author) {
         return <div>Loading...</div>;
     }
 
@@ -87,8 +75,8 @@ export default function ReviewCard({ reviewId }) {
             <div className="card-body">
                 <div className="row">
                     <div className="col-lg-4">
-                        <h5 className="card-title">{`${user.firstName} ${user.lastName}`}</h5>
-                        <img src={user.profilePic} alt="Author" className="img-thumbnail" />
+                        <h5 className="card-title">{`${author.firstName} ${author.lastName}`}</h5>
+                        <img src={author.profilePic} alt={`${author.firstName} ${author.lastName}`} className="img-thumbnail" />
                     </div>
                     <div className="col-lg-8">
                         <p className="card-text">{review.body}</p>
