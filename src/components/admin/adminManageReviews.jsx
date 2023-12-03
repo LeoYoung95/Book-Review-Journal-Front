@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { findCurrentUser } from '../clients/user_client.js';
+import { findCurrentUser } from '../../clients/user_client.js';
 
 const AdminReviewManagement = () => {
     const [reviews, setReviews] = useState([]);
