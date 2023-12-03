@@ -13,6 +13,7 @@ export default function Searchbar() {
     e.preventDefault();
     const trimmedInput = searchInput.trim();
     if (trimmedInput.length > 0) {
+      setSearchInput('');
       navigate(`/search?criteria=${encodeURIComponent(trimmedInput)}`);
     } else {
       navigate('/search');

@@ -7,7 +7,7 @@ export default function Searchbar() {
   const handleInputChange = e => {
     setSearchInput(e.target.value);
   }
-
+  
   const handleSearch = e => {
     e.preventDefault();
     if (searchInput.length > 0) {
