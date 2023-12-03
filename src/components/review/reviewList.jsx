@@ -30,7 +30,7 @@ export default function ReviewListing() {
         
         fetchReviews();
     }, [dispatch]);
-
+    
     // Conditional rendering to handle loading state
     if (fetchedReviews.length === 0) {
         return <div>Loading reviews...</div>;
