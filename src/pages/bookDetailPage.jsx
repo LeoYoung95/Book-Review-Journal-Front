@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom';
-import {fetchBookInfo} from '../clients/openlib_client.js';
-import {findBookReviewsByOpenLibraryId} from '../clients/book_client.js';
-import BookCardLarger from '../components/book/bookCardLarger.jsx';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { fetchBookInfo } from "../clients/openlib_client.js";
+import { findBookReviewsByOpenLibraryId } from "../clients/book_client.js";
+import BookCardLarger from "../components/book/bookCardLarger.jsx";
+import ReviewListing from "../components/review/reviewList.jsx";
 
 const BookDetail = () => {
-    const {olid} = useParams();
+    const { olid } = useParams();
     const [bookDetails, setBookDetails] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -44,29 +45,15 @@ const BookDetail = () => {
 
     return (
         <div>
-            <div>
-                {/* Book details section */}
-                {bookDetails && (
-                    <div>
-                        {bookDetails && <BookCardLarger book={bookDetails}/>}
+            {/* Book details section */}
+            {bookDetails && <BookCardLarger book={bookDetails} />}
 
-                    </div>
-                )}
-            </div>
+            {/* Reviews section */}
             <div>
-                {/* Reviews section (will be replaced with reviewList component */}
                 <h1>Related Reviews</h1>
-                {reviews.length > 0 ? (
-                    reviews.map(review => (
-                        <div key={review.id}>
-                            {/* Display review details */}
-                            <p>{review.title}</p>
-
-                        </div>
-                    ))
-                ) : (
-                    <p>No reviews found for this book.</p>
-                )}
+                {/* Pass the book's OLID to the ReviewListing component */}
+                {/* ReviewListing will handle displaying the reviews or a message if there are none */}
+                <ReviewListing bookId={olid} />
             </div>
         </div>
     );
