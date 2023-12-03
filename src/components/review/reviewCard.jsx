@@ -50,7 +50,7 @@ export default function ReviewCard({ reviewId }) {
             <div className="card-body">
                 <div className="row">
                     <div className="col-lg-4">
-                        <h5 className="card-title">{`${author.firstName} ${author.lastName}`}</h5>
+                        <h5 className="card-title">{`${user.firstName} ${user.lastName}`}</h5>
                         <img src={user.profilePic} alt="Author" className="img-thumbnail" />
                     </div>
                     <div className="col-lg-8">
