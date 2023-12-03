@@ -14,14 +14,9 @@ export default function ReviewList({ olid }) {
         async function fetchReviews() {
             try {
                 // Fetch reviews based on book's OLID
-                const response = await findBookReviewsByOpenLibraryId(olid);
-                console.log('API Response:', response);
-
-                // Dispatch action to store the fetched reviews in the global state
-                dispatch(setReviews(response.data));
-
+                const response = await findBookReviewsByOpenLibraryId(olid);              
                 // Filter and set the reviews for this specific book in local state
-                setFetchedReviews(response.data);
+                setFetchedReviews(response);
             } catch (err) {
                 // Log errors if fetching fails
                 console.error("Error fetching reviews:", err);
@@ -33,20 +28,16 @@ export default function ReviewList({ olid }) {
             console.log("olid valid: ", olid);
             fetchReviews();
         }
-    }, [dispatch, olid]);
-
-    useEffect(() => {
-        console.log("Fetched reviews:", fetchedReviews);
-    }, [fetchedReviews]);
+    }, []);
 
     // Function to truncate long text to a specified length
     const truncateText = (text, maxLength) => {
         return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     };
 
-    if (fetchedReviews === null) {
+    if ([null, undefined].includes(fetchedReviews)) {
         return <div>Loading...</div>;
-    } else if (fetchedReviews.length === 0) {
+    } else if (fetchedReviews && fetchedReviews.length === 0) {
         return <div>No reviews found for this book.</div>;
     } else {
 
@@ -57,11 +48,11 @@ export default function ReviewList({ olid }) {
                 <div>
                     {Array.isArray(fetchedReviews) ? (
                         fetchedReviews.map((review) => {
-                            const author = users.find((user) => user._id.$oid === review.author_id) || {};
+                            // const author = users.find((user) => user._id.$oid === review.author_id) || {};
                             const truncatedBody = truncateText(review.body, 200);
                             return (
                                 <div key={review._id.$oid} className="mb-3 p-3 border rounded">
-                                    <div className="fw-bold">{author.firstName} {author.lastName}</div>
+                                    {/* <div className="fw-bold">{author.firstName} {author.lastName}</div> */}
                                     <div>
                                         <h5 className="mt-2">{review.title}</h5>
                                         <p>{truncatedBody}</p>
