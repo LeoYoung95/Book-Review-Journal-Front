@@ -25,7 +25,6 @@ export default function Profile() {
   }
   
   
-  
   return (
     <Provider store={store}>
       <div className='md:flex h-full'>
