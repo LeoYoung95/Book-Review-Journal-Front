@@ -36,9 +36,11 @@ export default function ProfileReviewCard({ review }) {
       </div>
       
       <div className='flex flex-col items-center ml-2'>
-        <FaThumbsUp />
+        {/* <FaThumbsUp /> */}
         <p>{review.likes}</p>
       </div>
     </div>
+
+
   )
 }
