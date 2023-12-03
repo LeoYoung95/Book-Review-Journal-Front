@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import store from '../../reducers/store';
 import { Provider } from 'react-redux';
 import PersonalInfo from './personalInfo';
-import MyOrLikedReviews from './myOrLikedReviews';
+import ProfileReviews from './profileReviews';
 
 export default function Profile() {
   
@@ -20,9 +20,11 @@ export default function Profile() {
     firstName: 'test',
     lastName: 'user',
     email: 'test@test.com',
-    role: 'admin',
+    role: 'reader',
     bio: 'I am a test user. What is up',
   }
+  
+  
   
   return (
     <Provider store={store}>
@@ -31,7 +33,7 @@ export default function Profile() {
           <PersonalInfo currentUser={currentUser} profileUser={profileUser}/>
         </div>
         <div className='md:w-1/2 h-full bg-purple-300 flex justify-center'>
-          <MyOrLikedReviews currentUser={currentUser} profileUser={profileUser}/>
+          <ProfileReviews currentUser={currentUser} profileUser={profileUser}/>
         </div>
       </div>
     </Provider>
