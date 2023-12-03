@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchBookInfo } from '../clients/openlib_client.js';
-import { findBookReviewsByOpenLibraryId } from '../clients/book_client.js';
+import React, {useState, useEffect} from 'react';
+import {useParams} from 'react-router-dom';
+import {fetchBookInfo} from '../clients/openlib_client.js';
+import {findBookReviewsByOpenLibraryId} from '../clients/book_client.js';
 import BookCardLarger from '../components/book/bookCardLarger.jsx';
 
 const BookDetail = () => {
-    const { olid } = useParams();
+    const {olid} = useParams();
     const [bookDetails, setBookDetails] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -18,6 +18,8 @@ const BookDetail = () => {
                 const bookData = await fetchBookInfo(olid);
                 // Assuming that the function returns the first book in case of multiple results
                 setBookDetails(bookData[0]);
+
+                console.log("olid: ", olid);
 
                 // Fetch the reviews for this book using its OLID
                 const relatedReviews = await findBookReviewsByOpenLibraryId(olid);
@@ -46,7 +48,8 @@ const BookDetail = () => {
                 {/* Book details section */}
                 {bookDetails && (
                     <div>
-                        {bookDetails && <BookCardLarger book={bookDetails} />}
+                        {bookDetails && <BookCardLarger book={bookDetails}/>}
+
                     </div>
                 )}
             </div>
@@ -57,6 +60,8 @@ const BookDetail = () => {
                     reviews.map(review => (
                         <div key={review.id}>
                             {/* Display review details */}
+                            <p>{review.title}</p>
+
                         </div>
                     ))
                 ) : (
