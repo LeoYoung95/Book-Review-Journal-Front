@@ -1,14 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state of the reviews slice
 const initialState = {
     reviews: [],
-    review: { title: '', content: '', author: '' },
+    review: { title: "", content: "", author: "" },
 };
 
 // Creating the reviews slice
 const reviewsReducer = createSlice({
-    name: 'reviews',
+    name: "reviews",
     initialState,
     reducers: {
         // Action to set the array of reviews
@@ -23,9 +23,7 @@ const reviewsReducer = createSlice({
 
         // Action to delete a review
         deleteReview: (state, action) => {
-            state.reviews = state.reviews.filter(
-                (review) => review.id !== action.payload
-            );
+            state.reviews = state.reviews.filter((review) => review.id !== action.payload);
         },
 
         // Action to update a review's details
@@ -43,13 +41,23 @@ const reviewsReducer = createSlice({
         setReview: (state, action) => {
             state.review = action.payload;
         },
+
+        // Action to handle liking a review
+        likeReview: (state, action) => {
+            const { reviewId, userId } = action.payload;
+            const review = state.reviews.find((review) => review.id === reviewId);
+            if (review) {
+                // If the user hasn't already liked the review
+                if (!review.likedUsers.includes(userId)) {
+                    // Add the user to the likedUsers array
+                    review.likedUsers.push(userId);
+                }
+            }
+        },
     },
 });
 
 // Exporting the actions and the reducer
-export const {
-    addReview, deleteReview,
-    updateReview, setReview, setReviews
-} = reviewsReducer.actions;
+export const { addReview, deleteReview, updateReview, setReview, setReviews, likeReview } = reviewsReducer.actions;
 
 export default reviewsReducer.reducer;

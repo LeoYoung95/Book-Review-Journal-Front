@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import usersReducer from "./user_reducer.js";
-import reviewsReducer from "./reviews_reducer.js";
-import booksReducer from "./books_reducer.js";
+import usersReducer from "./usersReducer.js";
+import reviewsReducer from "./reviewsReducer.js";
+import booksReducer from "./booksReducer.js";
 
 
 const store = configureStore({
