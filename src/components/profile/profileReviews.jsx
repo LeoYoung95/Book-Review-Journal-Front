@@ -49,8 +49,8 @@ export default function ProfileReviews({ currentUser, profileUser }) {
       </h1>
     
       {
-        likedReviews.map((review => {
-          return <ProfileReviewCard review={review} />
+        likedReviews.map(((review, i) => {
+          return <ProfileReviewCard key={i} review={review} />
         }))
       }
     

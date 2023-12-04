@@ -1,8 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+let initialState = {
   userId: '',
   role: '',
+}
+
+const storedCurrentUser = localStorage.getItem('currentUser');
+if (storedCurrentUser) {
+  initialState = JSON.parse(storedCurrentUser);
 }
 
 const currentUserReducer = createSlice({
@@ -10,14 +15,16 @@ const currentUserReducer = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action) => {
-      state.currentUser = action.payload;
+      state.userId = action.payload.userId;
+      state.role = action.payload.role;
     },
     removeCurrentUser: (state) => {
-      state.currentUser = { userId: '', role: ''};
+      state.userId = '';
+      state.role = '';
     }
   }
 });
 
-export const { setCurentUser, removeCurrentUser } = currentUserReducer.actions;
+export const { setCurrentUser, removeCurrentUser } = currentUserReducer.actions;
 
 export default currentUserReducer.reducer;
