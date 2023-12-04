@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setReviews } from '../../reducers/reviewsReducer';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { setReviews } from '../../reducers/reviewsReducer';
 import {findBookReviewsByOpenLibraryId} from '../../clients/book_client';
 
 // ReviewListing component displays a list of reviews for a specific book
 export default function ReviewList({ olid }) {
-    const dispatch = useDispatch();
-    const users = useSelector((state) => state.users);
+    // const dispatch = useDispatch();
+    // const users = useSelector((state) => state.users);
     const [fetchedReviews, setFetchedReviews] = useState(null);
 
     // Fetches and sets the reviews for the specific book on component mount
@@ -28,7 +28,7 @@ export default function ReviewList({ olid }) {
             console.log("olid valid: ", olid);
             fetchReviews();
         }
-    }, []);
+    }, [olid]);
 
     // Function to truncate long text to a specified length
     const truncateText = (text, maxLength) => {

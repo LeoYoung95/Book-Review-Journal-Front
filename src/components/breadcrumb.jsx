@@ -13,12 +13,15 @@ const Breadcrumb = () => {
   return (
     <ul className="flex space-x-2 mt-[70px]">
       <li>
-        <Link to="/">Home</Link>
+        <Link className='hover:text-blue-500' to="/">Home</Link>
       </li>
       {pathSegments.map((segment, index) => (
         <li key={index}>
           <span className="mx-2">{'>'}</span>
-          <Link to={`/${pathSegments.slice(0, index + 1).join('/')}`}>
+          <Link 
+            className='hover:text-blue-500'
+            to={`/${pathSegments.slice(0, index + 1).join('/')}`}
+          >
             {capitalizeFirstLetter(segment)}
           </Link>
         </li>
