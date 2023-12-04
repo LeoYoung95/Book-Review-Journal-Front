@@ -2,14 +2,14 @@ import React from 'react';
 import logo from '../../images/logo.svg';
 import '../../App.css';
 import { useNavigate, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { removeCurrentUser} from '../../reducers/currentUserReducer.js';
+import { isLoggedIn } from '../../utils/loggedInUtil.js';
 import Searchbar from '../search/searchbar.jsx';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.currentUser);
   
   const handleSignoutClicked = () => {
     dispatch(removeCurrentUser());
@@ -36,7 +36,7 @@ export default function Navbar() {
           Profile
         </Link>
         {
-          currentUser.userId.length ?
+          isLoggedIn() ?
             <button 
               onClick={() => handleSignoutClicked()}
               className='hover:text-blue-500'

@@ -2,16 +2,14 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import store from '../../reducers/store';
 import { Provider } from 'react-redux';
-import { useNavigate } from "react-router-dom";
 import { redirectIfNotLoggedIn } from '../../utils/loggedInUtil';
 import PersonalInfo from './personalInfo';
 import ProfileReviews from './profileReviews';
 
 export default function Profile() {
-  const navigate = useNavigate();
   useEffect(() => {
-    redirectIfNotLoggedIn(navigate);
-  }, [navigate])
+    redirectIfNotLoggedIn();
+  }, [])
   const myReduxState = useSelector(state => state);
   console.log(myReduxState);
   const currentUser = {

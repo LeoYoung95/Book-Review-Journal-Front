@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setCurrentUser } from '../../reducers/currentUserReducer.js'
 import * as userClient from '../../clients/user_client.js';
 
@@ -29,7 +29,7 @@ export default function Signup() {
       setError(err.response.data.message);
     }
   };
-
+  
   console.log(credentials);
   return (
     <div className='w-full'>
