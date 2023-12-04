@@ -6,8 +6,8 @@ import axios from "axios";
 export default function ReviewCard({ reviewId }) {
     const dispatch = useDispatch();
     // Accessing the review and users state from the Redux store
-    const review = useSelector((state) => state.reviews.review);
-    const users = useSelector((state) => state.users.users);
+    const review = useSelector((state) => state.reviews);
+    const users = useSelector((state) => state.users);
 
     // Finding the author of the review in the users array based on author_id from the review
     const author = review && review.author_id
