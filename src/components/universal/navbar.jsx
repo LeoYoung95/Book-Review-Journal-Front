@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { removeCurrentUser } from '../../reducers/currentUserReducer.js';
 import { isLoggedIn } from '../../utils/loggedInUtil.js';
 import Searchbar from '../search/searchbar.jsx';
-import axios from 'axios';
 import {signout} from '../../clients/user_client.js';
 
 export default function Navbar() {

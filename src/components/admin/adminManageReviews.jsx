@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { findAllReviews } from '../../clients/review_client';
 import ReviewCard from '../review/reviewCard';
 import './adminReviewManagement.css';
@@ -8,7 +8,7 @@ const AdminReviewManagement = () => {
     const [reviews, setReviews] = useState([]);
 
     // Get the current user from the Redux store
-    const currentUser = useSelector(state => state.currentUser);
+    // const currentUser = useSelector(state => state.currentUser);
 
     useEffect(() => {
         fetchReviews();
