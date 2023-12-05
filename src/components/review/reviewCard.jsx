@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import { findReviewById, deleteReview, recoverReview } from "../../clients/review_client";
 import { findUserById } from "../../clients/user_client";
 import "./review.css";
@@ -8,6 +9,8 @@ export default function ReviewCard({ reviewId }) {
     const currentUser = useSelector((state) => state.currentUser);
     const [review, setReview] = useState(null);
     const [author, setAuthor] = useState(null);
+    const [deletedByUser, setDeletedByUser] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchReviewAndAuthor() {
@@ -18,6 +21,12 @@ export default function ReviewCard({ reviewId }) {
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
                     setAuthor(authorData);
+                }
+
+                // Fetch information of the user who deleted the review
+                if (reviewData && reviewData.is_deleted && reviewData.deleted_by) {
+                    const deletedByUserData = await findUserById(reviewData.deleted_by);
+                    setDeletedByUser(deletedByUserData);
                 }
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -34,8 +43,13 @@ export default function ReviewCard({ reviewId }) {
 
     const handleDelete = async () => {
         try {
-            await deleteReview(review._id, currentUser._id);
-            // Update UI or state as needed after deletion
+            const response = await deleteReview(review._id, currentUser.userId);
+            // Update the review state to reflect the deletion
+            setReview(response);
+
+            // Fetch and set the details of the user who performed the deletion
+            const deletedByUserData = await findUserById(currentUser.userId);
+            setDeletedByUser(deletedByUserData);
         } catch (err) {
             console.error("Error deleting review:", err);
         }
@@ -44,11 +58,16 @@ export default function ReviewCard({ reviewId }) {
     const handleRecover = async () => {
         try {
             await recoverReview(review._id);
-            // Update UI or state as needed after recovery
+            // Update the review state to reflect the recovery
+            setReview({ ...review, is_deleted: false, deleted_by: null });
         } catch (err) {
             console.error("Error recovering review:", err);
         }
     };
+    const handleEdit = () => {
+        navigate(`/review-editor/edit/${reviewId}`); // Navigate to ReviewEditor for editing
+    };
+
 
     if (!review || !author) {
         return <div>Loading...</div>;
@@ -71,11 +90,15 @@ export default function ReviewCard({ reviewId }) {
             <div className="review-card-body">
                 <p>Review Author: {`${author.firstName} ${author.lastName}`}</p>
                 <p>Review Preview: {truncateReviewBody(review.body)}</p>
+                <br/>
+                {review.is_deleted && deletedByUser && (
+                    <p>Deleted By: {`${deletedByUser.firstName} ${deletedByUser.lastName}`}</p>
+                )}
             </div>
             <div className="review-card-footer">
-                {currentUser.role === 'Author' && (
+                {currentUser.role === 'Author' &&  currentUser.userId === review.author_id &&(
                     <>
-                        <button className="button button-edit">Edit</button>
+                        <button className="button button-edit" onClick={handleEdit}>Edit</button>
                         <button className="button button-delete" onClick={handleDelete}>Delete</button>
                     </>
                 )}

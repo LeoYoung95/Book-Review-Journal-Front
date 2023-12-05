@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Import useHistory
+
 import { findBookReviewsByOpenLibraryId } from '../../clients/book_client';
+import ReviewCard from './reviewCard';
 import './review.css';
 
 export default function ReviewList({ olid }) {
-    // const dispatch = useDispatch();
+
     const currentUser = useSelector((state) => state.currentUser);
     const [fetchedReviews, setFetchedReviews] = useState(null);
+    const navigate = useNavigate(); // useHistory hook for navigation
 
     useEffect(() => {
         async function fetchReviews() {
@@ -23,13 +27,18 @@ export default function ReviewList({ olid }) {
         }
     }, [olid]);
 
-    const truncateText = (text, maxLength) => {
-        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    const handleWriteReviewClick = () => {
+        navigate(`/review-editor/new?book_olid=${olid}`); // Navigate to ReviewEditor using useNavigate
     };
 
     const renderWriteReviewButton = () => {
         if (currentUser && currentUser.role === 'Author') {
-            return <button className="write-review-button">Write a New Review</button>;
+            return (
+                <button
+                    className="write-review-button"
+                    onClick={handleWriteReviewClick}>Write a New Review
+                </button>
+            );
         }
         return null;
     };
@@ -48,21 +57,9 @@ export default function ReviewList({ olid }) {
                     </div>
                 </div>
                 <div>
-                    {Array.isArray(fetchedReviews) ? (
-                        fetchedReviews.map((review) => {
-                            const truncatedBody = truncateText(review.body, 200);
-                            return (
-                                <div key={review._id} className="mb-3 p-3 border rounded">
-                                    <div>
-                                        <h5 className="mt-2">{review.title}</h5>
-                                        <p>{truncatedBody}</p>
-                                    </div>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <div>Loading...</div>
-                    )}
+                    {Array.isArray(fetchedReviews) && fetchedReviews.map((review) => (
+                        <ReviewCard key={review._id} reviewId={review._id} />
+                    ))}
                 </div>
             </div>
         );
