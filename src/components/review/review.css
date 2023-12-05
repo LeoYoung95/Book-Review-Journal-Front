@@ -1,0 +1,18 @@
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.write-review-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.write-review-button:hover {
+    background-color: #0056b3;
+}

@@ -1,10 +1,16 @@
-.book-card {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
+/* Basic styles for the book card */
+.book-card, .book-card-highlighted {
     border: 1px solid #ddd;
-    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Highlighted book card style */
+.book-card-highlighted {
+    background-color: #f0f8ff; /* Light blue background */
 }
 
 .book-cover {
@@ -37,7 +43,7 @@
 }
 
 .book-info p {
-    margin: 4px 0;
+    margin: 5px 0;
     color: #666;
 }
 
@@ -79,4 +85,23 @@
 .book-description-large p {
     line-height: 1.5;
     color: #333;
+}
+
+/* Styling for review count section */
+.review-count {
+    margin-left: 20px;
+    align-self: center;
+    text-align: center;
+}
+
+.review-count p {
+    margin: 0;
+    color: #333;
+}
+
+/* Specific styling for the review number */
+.review-number {
+    font-weight: bold;
+    font-size: 1.5em;
+    line-height: 1.2em; /* Adjust line height for better readability */
 }

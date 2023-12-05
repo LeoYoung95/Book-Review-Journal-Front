@@ -1,38 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setReviews } from '../../reducers/reviewsReducer';
-import {findBookReviewsByOpenLibraryId} from '../../clients/book_client';
+import { findBookReviewsByOpenLibraryId } from '../../clients/book_client';
+import { findCurrentUser } from "../../clients/user_client.js";
+import './review.css';
 
-// ReviewListing component displays a list of reviews for a specific book
 export default function ReviewList({ olid }) {
     const dispatch = useDispatch();
     const users = useSelector((state) => state.users);
     const [fetchedReviews, setFetchedReviews] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
 
-    // Fetches and sets the reviews for the specific book on component mount
     useEffect(() => {
-        async function fetchReviews() {
+        async function fetchReviewsAndUser() {
             try {
                 // Fetch reviews based on book's OLID
-                const response = await findBookReviewsByOpenLibraryId(olid);              
-                // Filter and set the reviews for this specific book in local state
-                setFetchedReviews(response);
+                const reviewsResponse = await findBookReviewsByOpenLibraryId(olid);
+                setFetchedReviews(reviewsResponse);
+
+                // Fetch current user information
+                const userResponse = await findCurrentUser();
+                setCurrentUser(userResponse);
             } catch (err) {
-                // Log errors if fetching fails
-                console.error("Error fetching reviews:", err);
+                console.error("Error:", err);
             }
         }
 
-        // Only fetch reviews if an olid is provided
         if (olid) {
-            console.log("olid valid: ", olid);
-            fetchReviews();
+            fetchReviewsAndUser();
         }
-    }, []);
+    }, [olid]);
 
-    // Function to truncate long text to a specified length
     const truncateText = (text, maxLength) => {
         return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
+
+    // Conditional rendering for the write review button
+    const renderWriteReviewButton = () => {
+        if (currentUser && currentUser.role === 'Author') {
+            return <button className="write-review-button">Write a new review</button>;
+        }
+        return null;
     };
 
     if ([null, undefined].includes(fetchedReviews)) {
@@ -40,11 +47,10 @@ export default function ReviewList({ olid }) {
     } else if (fetchedReviews && fetchedReviews.length === 0) {
         return <div>No reviews found for this book.</div>;
     } else {
-
-        // Render the list of reviews
+        // Include the number of reviews in the header
         return (
             <div className="container mt-4">
-                <h2 className="mb-3">Reviews for the Book</h2>
+                <h1 className="mb-6 ml-2"><strong>Reviews for the Book ( {fetchedReviews.length} )</strong></h1>
                 <div>
                     {Array.isArray(fetchedReviews) ? (
                         fetchedReviews.map((review) => {
