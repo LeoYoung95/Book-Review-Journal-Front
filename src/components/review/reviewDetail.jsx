@@ -7,7 +7,7 @@ import {
     removeLikedReviewFromUser,
     removeLikedBookFromUser,
 } from "../../reducers/usersReducer";
-import { likeBook } from "../../reducers/booksReducer";
+import { likeBook } from "../../reducers/currentBooksReducer";
 import axios from "axios";
 
 export default function ReviewDetail({ reviewId }) {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Import useHistory
-
 import { findBookReviewsByOpenLibraryId } from '../../clients/book_client';
 import ReviewCard from './reviewCard';
 import './review.css';

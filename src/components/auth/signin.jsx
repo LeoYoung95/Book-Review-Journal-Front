@@ -41,7 +41,7 @@ export default function Signin() {
               Email
             </label>
             <input 
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-none focus:border-sky-200' 
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-sky-200'
               value={credentials.email}
               onChange={(e) => setCredentials({...credentials, email: e.target.value})}
             />
@@ -53,7 +53,7 @@ export default function Signin() {
             </label>
             <input
               type='password'
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:outline-none focus:border-sky-200'
+              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-sky-200'
               value={credentials.password} 
               onChange={(e) => setCredentials({...credentials, password: e.target.value})}
             />

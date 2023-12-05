@@ -2,7 +2,7 @@ import React from 'react';
 import './book.css';
 import { Link } from "react-router-dom";
 
-const BookCard = ({ book, reviewCount }) => {
+const BookCard = ({ book }) => {
     const getGenres = (genres) => {
         if (genres && typeof genres === 'string') {
             return genres.split(', ').slice(0, 5).join(', ');
@@ -10,7 +10,7 @@ const BookCard = ({ book, reviewCount }) => {
         return 'No genres available';
     };
 
-    const cardStyle = reviewCount > 0 ? 'book-card-highlighted' : 'book-card';
+    const cardStyle = book.reviewCount > 0 ? 'book-card-highlighted' : 'book-card';
 
     return (
         <div className={cardStyle}>
@@ -28,7 +28,7 @@ const BookCard = ({ book, reviewCount }) => {
             </div>
             <div className="review-count">
                 <p>Reviews:</p>
-                <p className="review-number">{reviewCount}</p>
+                <p className="review-number">{book.reviewCount}</p>
             </div>
         </div>
     );
