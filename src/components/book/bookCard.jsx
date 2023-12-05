@@ -1,19 +1,19 @@
 import React from 'react';
 import './book.css';
-import {Link} from "react-router-dom"; // Import CSS for styling
+import { Link } from "react-router-dom";
 
-const BookCard = ({ book }) => {
-    // Function to get a formatted string of genres
+const BookCard = ({ book, reviewCount }) => {
     const getGenres = (genres) => {
-        // Split the genres string and limit to first 5 genres
         if (genres && typeof genres === 'string') {
             return genres.split(', ').slice(0, 5).join(', ');
         }
-        return 'No genres available'; // Default message if genres is not a string or is empty
+        return 'No genres available';
     };
 
+    const cardStyle = reviewCount > 0 ? 'book-card-highlighted' : 'book-card';
+
     return (
-        <div className="book-card">
+        <div className={cardStyle}>
             <div className="book-cover">
                 <img src={book.cover || 'default-cover.jpg'} alt={book.title} />
             </div>
@@ -25,6 +25,10 @@ const BookCard = ({ book }) => {
                 <p>Published: {book.publishDate}</p>
                 <p>Genres: {getGenres(book.genres)}</p>
                 <p>{book.description}</p>
+            </div>
+            <div className="review-count">
+                <p>Reviews:</p>
+                <p className="review-number">{reviewCount}</p>
             </div>
         </div>
     );

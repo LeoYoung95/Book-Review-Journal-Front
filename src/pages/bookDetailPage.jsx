@@ -44,8 +44,7 @@ const BookDetail = () => {
             {bookDetails && <BookCardLarger book={bookDetails} />}
 
             {/* Reviews section */}
-            <div>
-                <h1>Related Reviews</h1>
+            <div className="ml-3">
                 {/* Pass the book's OLID to the ReviewListing component */}
                 {/* ReviewListing will handle displaying the reviews or a message if there are none */}
                 <ReviewList olid={olid} />
