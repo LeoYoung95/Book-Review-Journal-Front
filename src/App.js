@@ -13,8 +13,9 @@ import Signin from './components/auth/signin.jsx';
 import BookDetail from './pages/bookDetailPage.jsx';
 import SearchPage from './pages/searchPage.jsx';
 
-
 function App() {
+  
+
   return (
     <Provider store={store}>
       <div className="w-full h-[100vh] items-center font-serif">
@@ -32,6 +33,7 @@ function App() {
             </Routes>
           </div>
         </BrowserRouter>
+      
       </div>
     </Provider>
   );
