@@ -1,62 +1,90 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setReview } from "../../reducers/reviewsReducer";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { findReviewById, deleteReview, recoverReview } from "../../clients/review_client";
+import { findUserById } from "../../clients/user_client";
+import "./review.css";
 
 export default function ReviewCard({ reviewId }) {
-    const dispatch = useDispatch();
-    // Accessing the review and users state from the Redux store
-    const review = useSelector((state) => state.reviews);
-    const users = useSelector((state) => state.users);
-
-    // Finding the author of the review in the users array based on author_id from the review
-    const author = review && review.author_id
-        ? users.find((user) => user._id.$oid === review.author_id)
-        : null;
+    const currentUser = useSelector((state) => state.currentUser);
+    const [review, setReview] = useState(null);
+    const [author, setAuthor] = useState(null);
 
     useEffect(() => {
-        // Fetching the review data from the API
-        async function fetchData() {
+        async function fetchReviewAndAuthor() {
             try {
-                const reviewRes = await axios.get(`/api/reviews/${reviewId}`);
-                dispatch(setReview(reviewRes.data));
+                const reviewData = await findReviewById(reviewId);
+                setReview(reviewData);
+
+                if (reviewData && reviewData.author_id) {
+                    const authorData = await findUserById(reviewData.author_id);
+                    setAuthor(authorData);
+                }
             } catch (err) {
                 console.error("Error fetching data:", err);
             }
         }
-        fetchData();
-    }, [dispatch, reviewId]);
 
-    // Function to truncate the review body to a certain length
+        fetchReviewAndAuthor();
+    }, [reviewId]);
+
     const truncateReviewBody = (body) => {
-        const maxLength = 200;
+        const maxLength = 25;
         return body.length > maxLength ? body.substring(0, maxLength) + "..." : body;
     };
 
-    // Displaying a loading message if review or author data is not available yet
+    const handleDelete = async () => {
+        try {
+            await deleteReview(review._id, currentUser._id);
+            // Update UI or state as needed after deletion
+        } catch (err) {
+            console.error("Error deleting review:", err);
+        }
+    };
+
+    const handleRecover = async () => {
+        try {
+            await recoverReview(review._id);
+            // Update UI or state as needed after recovery
+        } catch (err) {
+            console.error("Error recovering review:", err);
+        }
+    };
+
     if (!review || !author) {
         return <div>Loading...</div>;
     }
 
-    return (
-        <div className="card">
-            <div className="card-header">
-                {/* Displaying the review title in a read-only input field */}
-                <input type="text" className="form-control" value={review.title} readOnly />
+    const cardClass = review.is_deleted ? "review-card review-card-deleted" : "review-card";
+    const statusIndicatorClass = review.is_deleted ? "status-indicator status-indicator-deleted" : "status-indicator status-indicator-alive";
+    const isReviewVisible = currentUser.role === 'Admin' || !review.is_deleted;
+
+    return isReviewVisible ? (
+        <div className={cardClass}>
+            <div className="review-card-header">
+                {review.title}
+                {currentUser.role === 'Admin' && (
+                    <span className={statusIndicatorClass}>
+                        {review.is_deleted ? 'Deleted' : 'Alive'}
+                    </span>
+                )}
             </div>
-            <div className="card-body">
-                <div className="row">
-                    <div className="col-lg-4">
-                        {/* Displaying the author's name and profile picture */}
-                        <h5 className="card-title">{`${author.firstName} ${author.lastName}`}</h5>
-                        <img src={author.profilePic} alt="Author" className="img-thumbnail" />
-                    </div>
-                    <div className="col-lg-8">
-                        {/* Displaying the truncated review body text */}
-                        <p className="card-text">{truncateReviewBody(review.body)}</p>
-                    </div>
-                </div>
+            <div className="review-card-body">
+                <p>Review Author: {`${author.firstName} ${author.lastName}`}</p>
+                <p>Review Preview: {truncateReviewBody(review.body)}</p>
+            </div>
+            <div className="review-card-footer">
+                {currentUser.role === 'Author' && (
+                    <>
+                        <button className="button button-edit">Edit</button>
+                        <button className="button button-delete" onClick={handleDelete}>Delete</button>
+                    </>
+                )}
+                {currentUser.role === 'Admin' && (
+                    review.is_deleted ?
+                        <button className="button button-recover" onClick={handleRecover}>Restore</button> :
+                        <button className="button button-delete" onClick={handleDelete}>Delete</button>
+                )}
             </div>
         </div>
-    );
+    ) : null;
 }

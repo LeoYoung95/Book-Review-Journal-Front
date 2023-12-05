@@ -1,77 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { findCurrentUser } from '../../clients/user_client.js';
+import { useSelector } from 'react-redux';
+import { findAllReviews } from '../../clients/review_client';
+import ReviewCard from '../review/reviewCard';
+import './adminReviewManagement.css';
 
 const AdminReviewManagement = () => {
     const [reviews, setReviews] = useState([]);
-    const [currentUser, setCurrentUser] = useState(null);
+
+    // Get the current user from the Redux store
+    const currentUser = useSelector(state => state.currentUser);
 
     useEffect(() => {
-        fetchCurrentUser();
         fetchReviews();
     }, []);
 
-    const fetchCurrentUser = async () => {
-        try {
-            const userInfo = await findCurrentUser();
-            setCurrentUser(userInfo);
-        } catch (error) {
-            console.error('Error fetching current user:', error);
-        }
-    };
-
     const fetchReviews = async () => {
         try {
-            const response = await axios.get('/api/reviews'); // Adjust the URL as per your API endpoint
-            setReviews(response.data);
+            const fetchedReviews = await findAllReviews();
+            setReviews(fetchedReviews);
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
     };
 
-    const deleteReview = async (reviewId) => {
-        if (!currentUser) return;
-
-        try {
-            await axios.put(`/api/reviews/delete/${reviewId}`, { deletedBy: currentUser._id });
-            // Update local state
-            setReviews(reviews.map(review => review.id === reviewId ? { ...review, is_deleted: true, deleted_by: currentUser._id } : review));
-        } catch (error) {
-            console.error('Error deleting review:', error);
-        }
-    };
-
-    const recoverReview = async (reviewId) => {
-        try {
-            await axios.put(`/api/reviews/recover/${reviewId}`);
-            // Update local state
-            setReviews(reviews.map(review => review.id === reviewId ? { ...review, is_deleted: false, deleted_by: null } : review));
-        } catch (error) {
-            console.error('Error recovering review:', error);
-        }
-    };
-
     return (
-        <div>
-            <h1>Review Management</h1>
-            <ul>
+        <div className="admin-review-management">
+            <h1 className="admin-review-title">Review Management</h1>
+            <div className="review-cards-container">
                 {reviews.map(review => (
-                    <li key={review.id}>
-                        <p>Title: {review.title}</p>
-                        <p>Status: {review.is_deleted ? 'Deleted' : 'Active'}</p>
-                        {review.is_deleted ? (
-                            <p>Deleted by User ID: {review.deleted_by}</p>
-                        ) : (
-                            <p>Author ID: {review.author_id}</p>
-                        )}
-                        {review.is_deleted ? (
-                            <button onClick={() => recoverReview(review.id)}>Recover</button>
-                        ) : (
-                            <button onClick={() => deleteReview(review.id)}>Delete</button>
-                        )}
-                    </li>
+                    <ReviewCard key={review._id} reviewId={review._id} />
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };
