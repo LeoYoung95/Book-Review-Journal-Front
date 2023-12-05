@@ -1,0 +1,20 @@
+.admin-review-management {
+    max-width: 800px; /* Adjust as necessary */
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px rgba(112, 106, 106, 0.5); /* Faded border using rgba */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adding a subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.admin-review-title {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.review-cards-container {
+    display: grid;
+    grid-gap: 20px;
+}
