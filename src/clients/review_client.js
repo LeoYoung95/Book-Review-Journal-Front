@@ -47,10 +47,11 @@ export const deleteReviewLikedUsersById = async (id, user) => {
 }
 
 // Author Only: Post Review
-export const createReview = async (user, review) => {
-    const response = await request.post(`${REVIEW_API}/post/${user._id}`, review);
+export const createReview = async (review) => {
+    const response = await request.post(`${REVIEW_API}/post`, review);
     return response.data;
 }
+
 
 // Author Only: Update Review
 export const updateReview = async (id, review) => {
