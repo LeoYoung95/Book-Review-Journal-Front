@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { findBookReviewsByOpenLibraryId } from '../../clients/book_client';
 import './review.css';
 
 export default function ReviewList({ olid }) {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const currentUser = useSelector((state) => state.currentUser);
     const [fetchedReviews, setFetchedReviews] = useState(null);
 
