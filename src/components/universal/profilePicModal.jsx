@@ -45,9 +45,9 @@ export default function ProfilePicModal({ onClose, handleProfilePicSubmission })
           </button>
 
           <button
-            className={`${selectedPfp === 0 ? 'bg-sky-300' : 'bg-sky-500 hover:bg-sky-400'}  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
+            className={`${selectedPfp === '0' ? 'bg-sky-300' : 'bg-sky-500 hover:bg-sky-400'}  focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded`}
             onClick={(e) => submitSelection(e)}
-            disabled={selectedPfp === 0}
+            disabled={selectedPfp === '0'}
           >  
             Submit selection
           </button>

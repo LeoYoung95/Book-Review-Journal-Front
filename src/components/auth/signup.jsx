@@ -20,7 +20,7 @@ export default function Signup() {
   
   const [showProfilePicModal, setShowProfilePicModal] = useState(false);
   const openProfilePicModal = () => {
-    setShowProfilePicModal(true);
+    setShowProfilePicModal(true)
   }
   const closeProfilePicModal = () => {
     setShowProfilePicModal(false);
@@ -198,7 +198,7 @@ export default function Signup() {
               </button>
               <p className='italic ml-2'>
                 {
-                  credentials.profilePicId === 0 ?
+                  credentials.profilePicId === '0' ?
                     'Default' :
                     `chose: ${credentials.profilePicId}`
                 }
