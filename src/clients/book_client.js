@@ -35,3 +35,11 @@ export const findBookLikedUsersByOpenLibraryId = async (olid) => {
     const response = await request.get(`${BOOK_API}/olid/${olid}/liked_users`);
     return response.data;
 }
+
+// Function to post a new review for a book by its Open Library ID
+export const createReviewByOpenLibraryId = async (olid, reviewID) => {
+    const response = await request.post(`${BOOK_API}/olid/${olid}/reviews`, {reviewID});
+    return response.data;
+}
+
+

@@ -1,31 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import BookCard from './bookCard.jsx';
 import { fetchBookInfo } from '../../clients/openlib_client.js';
-import { findBookReviewsByOpenLibraryId } from "../../clients/book_client.js";
+import { findBookByOpenLibraryId } from "../../clients/book_client";
+import { setCurrentBooks } from '../../reducers/currentBooksReducer.js';
+import {useLocation} from "react-router-dom";
 
 const BookList = ({ searchQuery }) => {
-    const [books, setBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const books = useSelector(state => state.currentBooks.books);
+    const location = useLocation();
 
     useEffect(() => {
+        dispatch(setCurrentBooks([]));
         if (searchQuery) {
             const fetchData = async () => {
                 setIsLoading(true);
                 try {
                     const fetchedBooks = await fetchBookInfo(searchQuery);
 
-                    // Fetch review IDs for each book and add the count to the book object
-                    const booksWithReviewCounts = await Promise.all(fetchedBooks.map(async (book) => {
-                        const reviewIds = await findBookReviewsByOpenLibraryId(book.olid);
-                        return { ...book, reviewCount: reviewIds.length };
+                    // Fetch additional details for each book
+                    const booksWithAdditionalDetails = await Promise.all(fetchedBooks.map(async book => {
+                        const additionalDetails = await findBookByOpenLibraryId(book.olid);
+
+                        // Check if additionalDetails is not null, then calculate reviewCount
+                        const reviewCount = additionalDetails && additionalDetails.reviews ? additionalDetails.reviews.length : 0;
+
+                        return {
+                            ...book,
+                            ...additionalDetails,
+                            reviewCount: reviewCount
+                        };
                     }));
 
-                    // Sort books by the number of reviews in descending order
-                    booksWithReviewCounts.sort((a, b) => b.reviewCount - a.reviewCount);
+                    const books = (booksWithAdditionalDetails.sort((a, b) => b.reviewCount - a.reviewCount)).slice(0,15);
+                    dispatch(setCurrentBooks(books));
 
-                    // Limit the number of books to 15
-                    setBooks(booksWithReviewCounts.slice(0, 15));
+
                 } catch (error) {
                     setError(error.message);
                 }
@@ -34,9 +47,9 @@ const BookList = ({ searchQuery }) => {
 
             fetchData();
         } else {
-            setBooks([]);
+            dispatch(setCurrentBooks([]));
         }
-    }, [searchQuery]);
+    }, [searchQuery, dispatch, location.pathname]);
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -46,11 +59,14 @@ const BookList = ({ searchQuery }) => {
         return <p>Error: {error}</p>;
     }
 
+
+
     return (
         <div>
-            {books.length > 0 ? (
+            {books && books.length > 0 ? (
+                console.log("Books:", books),
                 books.map(book => (
-                    <BookCard key={book.olid} book={book} reviewCount={book.reviewCount} />
+                    <BookCard key={book.olid} book={book} />
                 ))
             ) : (
                 searchQuery ? <p>No books found for "{searchQuery}".</p> : <p>Enter search criteria to find books.</p>

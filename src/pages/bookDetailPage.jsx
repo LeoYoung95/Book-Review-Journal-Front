@@ -1,52 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchBookInfo } from "../clients/openlib_client.js";
-import BookCardLarger from "../components/book/bookCardLarger.jsx";
-import ReviewList from "../components/review/reviewList.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentBook } from '../reducers/currentBooksReducer.js';
+import BookCardLarger from "../components/book/bookCardLarger";
+import ReviewList from "../components/review/reviewList";
 
 const BookDetail = () => {
     const { olid } = useParams();
-    const [bookDetails, setBookDetails] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+    const currentBooks = useSelector(state => state.currentBooks.books);
+    console.log("Current books:", currentBooks)
+    const book = currentBooks.find(b => b.olid === olid);
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                // Fetch the book details
-                const bookData = await fetchBookInfo(olid);
-                // Assuming that the function returns the first book in case of multiple results
-                setBookDetails(bookData[0]);
+        if (book) {
+            dispatch(setCurrentBook(book)); // Dispatch action to set current book in Redux
+        }
+    }, [book, dispatch]);
 
-                console.log("olid: ", olid);
-
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchDetails();
-    }, [olid]);
-
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
+    // Check if the book is found or not
+    if (!book) {
+        return <p>Book not found.</p>;
     }
 
     return (
         <div>
             {/* Book details section */}
-            {bookDetails && <BookCardLarger book={bookDetails} />}
+            {book && <BookCardLarger book={book} />}
 
             {/* Reviews section */}
             <div className="ml-3">
-                {/* Pass the book's OLID to the ReviewListing component */}
-                {/* ReviewListing will handle displaying the reviews or a message if there are none */}
                 <ReviewList olid={olid} />
             </div>
         </div>

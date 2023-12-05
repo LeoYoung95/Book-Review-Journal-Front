@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import * as client from '../../clients/review_client';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {findBookByOpenLibraryId} from "../../clients/book_client";
-
+import {setCurrentBook, setCurrentBooks} from "../../reducers/currentBooksReducer";
+import {useDispatch} from "react-redux";
+import {createReviewByOpenLibraryId} from "../../clients/book_client";
 
 const ReviewEditor = () => {
     const { reviewId } = useParams();
@@ -11,39 +12,44 @@ const ReviewEditor = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const book_olid = queryParams.get('book_olid');
+    const currentBook = useSelector((state) => state.currentBooks.book);
+    const currentBooks = useSelector((state) => state.currentBooks.books);
     const currentUser = useSelector((state) => state.currentUser);
+    const dispatch = useDispatch();
+
 
     const initialReviewState = {
         title: '',
         body: '',
         book_olid: book_olid,
-        book_id: '', // Initialize as empty string
-        author_id: currentUser ? currentUser.userId : null
+        book_id: currentBook?._id, // Using _id from the Redux state
+        author_id: currentUser ? currentUser.userId : null,
+        likedUsers: [],
+        is_deleted: false,
+        deleted_by: null,
     };
     const [review, setReview] = useState(initialReviewState);
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchBookAndReview = async () => {
+        const fetchReview = async () => {
             setLoading(true);
             try {
-                // Fetch book data to get book_id
-                const bookData = await findBookByOpenLibraryId(book_olid);
-                setReview(prev => ({ ...prev, book_id: bookData._id }));
-
                 if (reviewId) {
                     const fetchedReview = await client.findReviewById(reviewId);
-                    setReview({ ...fetchedReview, book_id: bookData._id });
+                    setReview({ ...fetchedReview, book_id: currentBook?._id });
                 }
             } catch (err) {
-                setError('Error fetching book or review');
+                setError('Error fetching review');
             } finally {
                 setLoading(false);
             }
         };
-        fetchBookAndReview();
-    }, [reviewId, book_olid]);
+        if (reviewId) {
+            fetchReview();
+        }
+    }, [reviewId, currentBook]);
 
 
     const handleChange = (e) => {
@@ -52,17 +58,36 @@ const ReviewEditor = () => {
 
     const handleSave = async () => {
         setLoading(true);
+
         try {
+            let newReview = {};
+
             if (reviewId) {
-                await client.updateReview(reviewId, review);
+                newReview = await client.updateReview(reviewId, review);
             } else {
                 if (currentUser && currentUser.userId) {
-                    console.log("Review:", review)
-                    await client.createReview(currentUser.userId, review);
+                    newReview = await client.createReview(review);
+                    await createReviewByOpenLibraryId(book_olid, newReview._id);
                 } else {
                     throw new Error("User not found");
                 }
             }
+
+            // Update currentBook with new review
+            const updatedCurrentBook = { ...currentBook, reviews: [...currentBook.reviews, newReview] };
+            dispatch(setCurrentBook(updatedCurrentBook));
+
+            // Update the book in the currentBooks array
+            const updatedCurrentBooks = currentBooks.map(book => {
+                if (book.olid === book_olid) {
+                    return { ...book, reviews: [...book.reviews, newReview] };
+                }
+                return book;
+            });
+
+            // Dispatch action to update currentBooks in the Redux store
+            dispatch(setCurrentBooks(updatedCurrentBooks));
+
             navigate(`/reviews/${book_olid}`);
         } catch (err) {
             setError('Error submitting review');

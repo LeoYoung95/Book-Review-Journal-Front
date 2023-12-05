@@ -1,5 +1,5 @@
 import React from 'react';
-import './book.css'; // Ensure this path is correct
+import './book.css';
 
 const BookCardLarger = ({ book }) => {
     const getGenres = (genres) => {
