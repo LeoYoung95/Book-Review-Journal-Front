@@ -1,11 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {configureStore} from "@reduxjs/toolkit";
 
 import currentUser from './currentUserReducer.js';
+import searchReducer from "./searchReducer.js";
 
 const store = configureStore({
     reducer: {
-      currentUser,
-
+        currentUser,
+        search: searchReducer
     }
 });
 
