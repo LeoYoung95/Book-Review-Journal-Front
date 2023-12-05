@@ -16,3 +16,14 @@
 .write-review-button:hover {
     background-color: #0056b3;
 }
+
+.header-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.write-review-container {
+    margin-right: 15px;
+}
+
