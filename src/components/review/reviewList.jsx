@@ -5,8 +5,8 @@ import { findCurrentUser } from "../../clients/user_client.js";
 import './review.css';
 
 export default function ReviewList({ olid }) {
-    const dispatch = useDispatch();
-    const users = useSelector((state) => state.users);
+    // const dispatch = useDispatch();
+    // const users = useSelector((state) => state.users);
     const [fetchedReviews, setFetchedReviews] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
 

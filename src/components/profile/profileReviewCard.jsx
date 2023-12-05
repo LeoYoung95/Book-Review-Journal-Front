@@ -1,12 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import profileAvatar from '../../images/profile-avatar.jpg'
-import { FaThumbsUp, FaEdit } from 'react-icons/fa'
+import { FaThumbsUp } from 'react-icons/fa'
 
 export default function ProfileReviewCard({ review }) {
 
   const truncatedContent = review.content.substring(0, 25);
-
   
   return (
     <div className='border-2 border-gray-300 p-4 w-[80%] mb-4 flex justify-between items-center'>
@@ -36,7 +34,7 @@ export default function ProfileReviewCard({ review }) {
       </div>
       
       <div className='flex flex-col items-center ml-2'>
-        {/* <FaThumbsUp /> */}
+        <FaThumbsUp />
         <p>{review.likes}</p>
       </div>
     </div>

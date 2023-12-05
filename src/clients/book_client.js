@@ -8,7 +8,6 @@ const request = axios.create({
 
 // Base URL for API requests
 export const BASE_URL = "http://localhost:4000";
-console.log("BASE URL:", BASE_URL);
 
 // Base endpoint for book-related API requests
 export const BOOK_API = `${BASE_URL}/api/books`;
