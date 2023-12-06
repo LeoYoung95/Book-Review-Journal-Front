@@ -48,7 +48,7 @@ export default function Signin() {
           </div>
           
           <div className='mb-4'>
-            <label className='form-control mb-2'>
+            <label className='mb-2'>
               Password
             </label>
             <input
