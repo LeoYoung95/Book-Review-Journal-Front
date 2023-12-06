@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as client from '../../clients/review_client';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {setCurrentBook, setCurrentBooks} from "../../reducers/currentBooksReducer";
+import {setCurrentBook, setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
 import {useDispatch} from "react-redux";
 import {createReviewByOpenLibraryId} from "../../clients/book_client";
 
@@ -87,6 +87,7 @@ const ReviewEditor = () => {
 
             // Dispatch action to update currentBooks in the Redux store
             dispatch(setCurrentBooks(updatedCurrentBooks));
+            dispatch(setNeedRefresh(true));
 
             navigate(`/reviews/${book_olid}`);
         } catch (err) {

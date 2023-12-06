@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { findReviewById, deleteReview, recoverReview } from "../../clients/review_client";
 import { findUserById } from "../../clients/user_client";
+import { fetchBookName } from "../../clients/openlib_client";
+import { setNeedRefresh } from "../../reducers/currentBooksReducer.js";
 import "./review.css";
 
 export default function ReviewCard({ reviewId }) {
     const currentUser = useSelector((state) => state.currentUser);
+    const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [review, setReview] = useState(null);
+    const [reviewedBook, setReviewedBook] = useState(null);
     const [author, setAuthor] = useState(null);
     const [deletedByUser, setDeletedByUser] = useState(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        async function fetchReviewAndAuthor() {
+        async function fetchReviewDetails() {
             try {
                 const reviewData = await findReviewById(reviewId);
                 setReview(reviewData);
@@ -21,6 +26,11 @@ export default function ReviewCard({ reviewId }) {
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
                     setAuthor(authorData);
+                }
+
+                if (reviewData && reviewData.book_olid) {
+                    const bookName = await fetchBookName(reviewData.book_olid);
+                    setReviewedBook(bookName);
                 }
 
                 // Fetch information of the user who deleted the review
@@ -33,7 +43,7 @@ export default function ReviewCard({ reviewId }) {
             }
         }
 
-        fetchReviewAndAuthor();
+        fetchReviewDetails();
     }, [reviewId]);
 
     const truncateReviewBody = (body) => {
@@ -44,16 +54,17 @@ export default function ReviewCard({ reviewId }) {
     const handleDelete = async () => {
         try {
             const response = await deleteReview(review._id, currentUser.userId);
-            // Update the review state to reflect the deletion
             setReview(response);
-
-            // Fetch and set the details of the user who performed the deletion
-            const deletedByUserData = await findUserById(currentUser.userId);
-            setDeletedByUser(deletedByUserData);
+            dispatch(setNeedRefresh(true));
+            setTimeout(() => {
+                console.log("After dispatching in ReviewCard, needRefresh:", needRefresh);
+            }, 1000); // Delay the log
         } catch (err) {
             console.error("Error deleting review:", err);
         }
     };
+
+
 
     const handleRecover = async () => {
         try {
@@ -88,6 +99,7 @@ export default function ReviewCard({ reviewId }) {
                 )}
             </div>
             <div className="review-card-body">
+                <p>Book Title: {reviewedBook}</p>
                 <p>Review Author: {`${author.firstName} ${author.lastName}`}</p>
                 <p>Review Preview: {truncateReviewBody(review.body)}</p>
                 <br/>

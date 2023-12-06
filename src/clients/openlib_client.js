@@ -45,6 +45,18 @@ const fetchBookDetails = async (olid) => {
     }
 };
 
+// Function to fetch book name by its Open Library ID
+export const fetchBookName = async (olid) => {
+    try {
+        const url = `https://openlibrary.org/works/${olid}.json`;
+        const response = await request.get(url);
+        return response.data.title;
+    } catch (error) {
+        console.error("Error fetching book name:", error);
+        return 'Unknown';
+    }
+};
+
 // Function to fetch book info by book name
 export const fetchBookInfo = async (bookName) => {
     try {
