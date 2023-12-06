@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setReviews } from "../../reducers/reviewsReducer";
 import ReviewCard from "./reviewCard";
-import axios from "axios";
+import { findAllReviews } from "../../clients/review_client";
 
 // ReviewTrending component displays the top 5 trending reviews based on likes
 export default function ReviewTrending() {
-    const dispatch = useDispatch();
-    // Access the reviews from the Redux store
-    const reviews = useSelector((state) => state.reviews.reviews);
-    // State to hold the top 5 reviews
+    const [reviews, setReviews] = useState([]);
     const [topReviews, setTopReviews] = useState([]);
 
     // Fetch all reviews on component mount
@@ -17,27 +12,27 @@ export default function ReviewTrending() {
         async function fetchReviews() {
             try {
                 // Perform the GET request to fetch reviews
-                const response = await axios.get("/api/reviews");
-                // Dispatch the setReviews action to update the Redux store
-                dispatch(setReviews(response.data));
+                const allReviews = await findAllReviews();
+                setReviews(allReviews);
+
             } catch (err) {
                 console.error("Error fetching reviews:", err);
             }
         }
 
         fetchReviews();
-    }, [dispatch]);
+    }, []);
 
     // Sort and slice the reviews whenever the reviews data changes
     useEffect(() => {
         // Sort reviews by the number of likes in descending order
         const sortedReviews = [...reviews].sort((a, b) => b.likedUsers.length - a.likedUsers.length);
-        // Update the topReviews state with the top 5 reviews
-        setTopReviews(sortedReviews.slice(0, 5));
+        // Update the topReviews state with the top 10 reviews
+        setTopReviews(sortedReviews.slice(0, 10));
     }, [reviews]);
 
     // Show loading text if reviews are not yet fetched
-    if (reviews.length === 0) {
+    if (topReviews.length === 0) {
         return <div>Loading trending reviews...</div>;
     }
 
