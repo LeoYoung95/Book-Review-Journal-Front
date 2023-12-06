@@ -42,4 +42,10 @@ export const createReviewByOpenLibraryId = async (olid, reviewID) => {
     return response.data;
 }
 
+// Function to add a new book by its Open Library ID
+export const createBookByOpenLibraryId = async (olid) => {
+    const response = await request.post(`${BOOK_API}/olid/${olid}`);
+    return response.data;
+}
+
 

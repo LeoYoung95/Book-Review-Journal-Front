@@ -1,6 +1,8 @@
 import React from 'react';
 import './book.css';
 import { Link } from "react-router-dom";
+import default_book_cover from '../../images/default_book_cover.png';
+
 
 const BookCard = ({ book }) => {
     const getGenres = (genres) => {
@@ -15,10 +17,11 @@ const BookCard = ({ book }) => {
     return (
         <div className={cardStyle}>
             <div className="book-cover">
-                <img src={book.cover || 'default-cover.jpg'} alt={book.title} />
+                <img src={book.cover || default_book_cover} alt={book.title} />
             </div>
             <div className="book-info">
                 <h2>
+
                     <Link to={`/book/${book.olid}`}>{book.title}</Link>
                 </h2>
                 <p>Author: {book.author}</p>
