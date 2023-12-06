@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import {setCurrentBook, setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
 import {useDispatch} from "react-redux";
 import {createReviewByOpenLibraryId} from "../../clients/book_client";
+import {addWrittenReview} from "../../clients/user_client";
 
 const ReviewEditor = () => {
     const { reviewId } = useParams();
@@ -71,6 +72,7 @@ const ReviewEditor = () => {
                     newReview = await client.createReview(review);
                     setReviewID(newReview._id)
                     await createReviewByOpenLibraryId(book_olid, newReview._id);
+                    await addWrittenReview(currentUser.userId, newReview._id);
                 } else {
                     throw new Error("User not found");
                 }

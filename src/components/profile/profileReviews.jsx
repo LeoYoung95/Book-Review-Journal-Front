@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ReviewCard from '../review/reviewCard';
-import { findLikedReviewsByUserId } from '../../clients/user_client';
+import { findUserById } from '../../clients/user_client';
 // import ProfileReviewCard from './profileReviewCard';
 
 
@@ -13,9 +13,9 @@ export default function ProfileReviews() {
   const [likedReviews, setLikedReviews] = useState([]);
   
   const fetchedLikedReviews = async () => {
-    const likedReviewsResponse = await findLikedReviewsByUserId(currentUserSlice.userId);
-    console.log(likedReviewsResponse);
-    setLikedReviews(likedReviewsResponse);
+    const userResponse = await findUserById(currentUserSlice.userId);
+    console.log(userResponse);
+    setLikedReviews(userResponse.likedReviews);
   }
 
   useEffect(() => {
@@ -57,7 +57,8 @@ export default function ProfileReviews() {
   //     bookTitle: 'Mein Kamph'
   //   }
   // ];
-  
+
+  console.log(likedReviews);
   return (
     <div className='w-full flex flex-col items-center'>
       <h1 className='mt-8 mb-4 font-bold text-2xl'>
@@ -71,9 +72,9 @@ export default function ProfileReviews() {
       </h1>
     
       {
-        likedReviews.map((review, i) => {
+        likedReviews.map((reviewId) => {
           return (
-            <ReviewCard reviewId={review} />
+            <ReviewCard reviewId={reviewId} />
           )
         })
       }

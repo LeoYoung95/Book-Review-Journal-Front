@@ -70,37 +70,10 @@ export const updateProfile = (userId, user) => {
         .catch(handleError);
 };
 
-// Author Only: Get Written Reviews
-export const findWrittenReviewsByUserId = (id) => {
-    return request.get(`${USERS_API}/${id}/written_reviews`)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-// Reader Only: Get Liked Reviews
-export const findLikedReviewsByUserId = (id) => {
-    return request.get(`${USERS_API}/${id}/liked_reviews`)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-// Reader Only: Get Liked Books
-export const findLikedBooksByUserId = (id) => {
-    return request.get(`${USERS_API}/${id}/liked_books`)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-// Admin Only: Get Deleted Reviews
-export const findDeletedReviewsByUserId = (id) => {
-    return request.get(`${USERS_API}/${id}/deleted_reviews`)
-        .then(handleResponse)
-        .catch(handleError);
-};
 
 // Reader Only: Add Liked Review
-export const addLikedReview = (id, review) => {
-    return request.post(`${USERS_API}/${id}/liked_reviews`, review)
+export const addLikedReview = (id, reviewId) => {
+    return request.post(`${USERS_API}/${id}/liked_reviews`, { data: { reviewId } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -112,23 +85,9 @@ export const removeLikedReview = (id, reviewId) => {
         .catch(handleError);
 };
 
-// Reader Only: Add Liked Book
-export const addLikedBook = (id, book) => {
-    return request.post(`${USERS_API}/${id}/liked_books`, book)
-        .then(handleResponse)
-        .catch(handleError);
-};
-
-// Reader Only: Remove Liked Book
-export const removeLikedBook = (id, bookId) => {
-    return request.delete(`${USERS_API}/${id}/liked_books`, { data: { bookId } })
-        .then(handleResponse)
-        .catch(handleError);
-};
-
 // Author Only: Add Written Review
-export const addWrittenReview = (id, review) => {
-    return request.post(`${USERS_API}/${id}/written_reviews`, review)
+export const addWrittenReview = (id, reviewId) => {
+    return request.post(`${USERS_API}/${id}/written_reviews`, { data: { reviewId } })
         .then(handleResponse)
         .catch(handleError);
 };
@@ -140,12 +99,6 @@ export const removeWrittenReview = (id, reviewId) => {
         .catch(handleError);
 };
 
-// Author Only: Edit Written Review
-export const editWrittenReview = (id, reviewId, review) => {
-    return request.put(`${USERS_API}/${id}/written_reviews`, { ...review, reviewId })
-        .then(handleResponse)
-        .catch(handleError);
-};
 
 
 
