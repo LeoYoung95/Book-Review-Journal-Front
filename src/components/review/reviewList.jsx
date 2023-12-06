@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { findBookByOpenLibraryId } from "../../clients/book_client";
 import ReviewCard from './reviewCard';
 import './review.css';
 
 export default function ReviewList({ olid }) {
     const currentUser = useSelector((state) => state.currentUser);
-    const currentBooks = useSelector((state) => state.currentBooks.books);
-    const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [currentBook, setCurrentBook] = useState(null);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
-        const book = currentBooks.find(book => book.olid === olid);
-        setCurrentBook(book);
-    }, [currentBooks, olid, needRefresh]); // This hook will re-run when needRefresh changes
-    
+        const fetchBookDetails = async () => {
+            try {
+                const bookDetails = await findBookByOpenLibraryId(olid);
+                setCurrentBook(bookDetails);
+            } catch (error) {
+                console.error('Error fetching book details:', error);
+            }
+        };
+
+        fetchBookDetails();
+    }, [olid]); // This hook will re-run when olid changes
+
     const handleWriteReviewClick = () => {
         navigate(`/review-editor/new?book_olid=${olid}`);
     };
@@ -35,13 +42,21 @@ export default function ReviewList({ olid }) {
     if (!currentBook) {
         return <div>Loading...</div>;
     } else if (currentBook.reviewCount === 0) {
-        return <div>No reviews found for this book.</div>;
+        return (
+            <div className="container mt-4 w-[80%]">
+                <div className="header-with-button mb-3 w-[81%]">
+                    <div>No reviews found for this book.</div>
+                    <div className="write-review-container">
+                        {renderWriteReviewButton()}
+                    </div>
+                </div>
+            </div>
+        );
     } else {
         return (
             <div className="container mt-4">
-                <div className="header-with-button mb-3">
-                    {/* <h1 className="mb-6 ml-2"><strong>Reviews for the Book ( {currentBook.reviewCount} )</strong></h1> */}
-                    <h1 className="mb-6 ml-2"><strong>Reviews for the Book </strong></h1>
+                <div className="header-with-button mb-3 w-[81%]">
+                    <h1 className="mb-6 ml-2"><strong>Reviews for the Book</strong></h1>
                     <div className="write-review-container">
                         {renderWriteReviewButton()}
                     </div>

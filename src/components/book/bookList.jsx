@@ -61,7 +61,7 @@ const BookList = ({ searchQuery }) => {
                 dispatch(setNeedRefresh(false)); // Reset the needRefresh flag after fetching data
             }
         }
-    }, [searchQuery, needRefresh, dispatch, location.pathname]); // Add needRefresh to the dependency array
+    }, [searchQuery, needRefresh, dispatch]);
 
     if (isLoading) {
         return <p>Loading...</p>;

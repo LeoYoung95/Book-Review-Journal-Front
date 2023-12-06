@@ -32,6 +32,7 @@ function App() {
                             <Route path='/book/:olid' element={<BookDetail/>}/>
                             <Route path='/search' element={<SearchPage/>}/>
                             <Route path='/review-editor/new' element={<ReviewEditor/>}/>
+                            <Route path='/review-editor/edit/:reviewId' element={<ReviewEditor/>}/>
                             <Route path='/reviews/:reviewId' element={<ReviewDetail/>}/>
                         </Routes>
                     </div>

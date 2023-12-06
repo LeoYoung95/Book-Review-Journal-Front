@@ -13,4 +13,10 @@ const store = configureStore({
     }
 });
 
+store.subscribe(() => {
+    localStorage.setItem('currentBooks', JSON.stringify(store.getState().currentBooks));
+    localStorage.setItem('currentUser', JSON.stringify(store.getState().currentUser));
+});
+
+
 export default store;

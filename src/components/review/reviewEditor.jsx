@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import * as client from '../../clients/review_client';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import {useParams, useLocation, useNavigate} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 import {setCurrentBook, setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
 import {useDispatch} from "react-redux";
-import {createReviewByOpenLibraryId} from "../../clients/book_client";
+import {
+    createBookByOpenLibraryId,
+    createReviewByOpenLibraryId,
+    findBookByOpenLibraryId
+} from "../../clients/book_client";
 import {addWrittenReview} from "../../clients/user_client";
 
 const ReviewEditor = () => {
-    const { reviewId } = useParams();
+    const {reviewId} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -17,7 +21,7 @@ const ReviewEditor = () => {
     const currentBooks = useSelector((state) => state.currentBooks.books);
     const currentUser = useSelector((state) => state.currentUser);
     const dispatch = useDispatch();
-    
+
 
     const initialReviewState = {
         title: '',
@@ -40,10 +44,11 @@ const ReviewEditor = () => {
             try {
                 if (reviewId) {
                     const fetchedReview = await client.findReviewById(reviewId);
-                    setReview({ ...fetchedReview, book_id: currentBook?._id });
+                    console.log("fetchedReview:", fetchedReview)
+                    setReview({...fetchedReview});
                 }
             } catch (err) {
-                setError('Error fetching review');
+                setError('Error fetching review: ${err.message}');
             } finally {
                 setLoading(false);
             }
@@ -51,56 +56,99 @@ const ReviewEditor = () => {
         if (reviewId) {
             fetchReview();
         }
-    }, [reviewId, currentBook]);
+    }, [reviewId]);
 
 
     const handleChange = (e) => {
-        setReview({ ...review, [e.target.name]: e.target.value });
+        setReview({...review, [e.target.name]: e.target.value});
     };
 
     const handleSave = async () => {
         setLoading(true);
-        
+
         try {
             let newReview = {};
 
             if (reviewId) {
-                setReviewID(reviewId)
+                // Update an existing review
                 newReview = await client.updateReview(reviewId, review);
             } else {
+                // Create a new review
                 if (currentUser && currentUser.userId) {
-                    newReview = await client.createReview(review);
-                    setReviewID(newReview._id)
-                    await createReviewByOpenLibraryId(book_olid, newReview._id);
-                    await addWrittenReview(currentUser.userId, newReview._id);
+                    let book;
+                    try {
+                        book = await findBookByOpenLibraryId(book_olid);
+                    } catch (error) {
+                        console.error("Error finding book:", error.message);
+                        setError(`Error finding book: ${error.message}`);
+                        return;
+                    }
+
+                    if (!book) {
+                        try {
+                            book = await createBookByOpenLibraryId(book_olid);
+                        } catch (error) {
+                            console.error("Error creating book:", error.message);
+                            setError(`Error creating book: ${error.message}`);
+                            return;
+                        }
+                    }
+
+                    const updatedReview = {...review, book_id: book._id};
+
+                    try {
+                        newReview = await client.createReview(updatedReview);
+                    } catch (error) {
+                        console.error("Error creating review:", error.message);
+                        setError(`Error creating review: ${error.message}`);
+                        return;
+                    }
+
+                    setReviewID(newReview._id);
+
+                    try {
+                        await createReviewByOpenLibraryId(book_olid, newReview._id);
+                        await addWrittenReview(currentUser.userId, newReview._id);
+                    } catch (error) {
+                        console.error("Error in post-review operations:", error.message);
+                        setError(`Error in post-review operations: ${error.message}`);
+                        return;
+                    }
                 } else {
                     throw new Error("User not found");
                 }
             }
-            
+
             // Update currentBook with new review
-            const updatedCurrentBook = { ...currentBook, reviews: [...currentBook.reviews, newReview._id] };
+            const updatedCurrentBook = {
+                ...currentBook,
+                reviews: [...(currentBook.reviews || []), newReview._id]
+            };
             dispatch(setCurrentBook(updatedCurrentBook));
+
 
             // Update the book in the currentBooks array
             const updatedCurrentBooks = currentBooks.map(book => {
                 if (book.olid === book_olid) {
-                    return { ...book, reviews: [...book.reviews, newReview._id] };
+                    // Provide a fallback empty array if book.reviews is null or undefined
+                    return {...book, reviews: [...(book.reviews || []), newReview._id]};
                 }
                 return book;
             });
-            
+
             // Dispatch action to update currentBooks in the Redux store
             dispatch(setCurrentBooks(updatedCurrentBooks));
             dispatch(setNeedRefresh(true));
 
-            navigate(`/reviews/${reviewID ? reviewID : newReview._id}`);
-        } catch (err) {
-            setError('Error submitting review');
-        } finally {
-            setLoading(false);
+                navigate(`/reviews/${reviewID ? reviewID : newReview._id}`);
+            } catch
+                (err) {
+                setError(`Error submitting review: ${err.message}`);
+            } finally {
+                setLoading(false);
+            }
         }
-    };
+    ;
 
 
     const handleCancel = () => {
@@ -151,10 +199,10 @@ const ReviewEditor = () => {
             </div>
             <div className="review-card-footer">
                 <button onClick={handleCancel} className="btn btn-danger mr-4 rounded">
-                     Cancel
+                    Cancel
                 </button>
                 <button onClick={handleSave} className="btn btn-success rounded">
-                     Save
+                    Save
                 </button>
             </div>
         </div>

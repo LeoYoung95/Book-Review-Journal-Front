@@ -30,7 +30,7 @@ const BookDetail = () => {
 
             {/* Reviews section */}
             <div className="ml-3">
-                <ReviewList olid={olid} />
+                <ReviewList key={Date.now()} olid={olid} />
             </div>
         </div>
     );

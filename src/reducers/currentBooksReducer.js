@@ -1,7 +1,7 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state of the book slice
-const initialState = {
+let initialState = {
     books: [],
     book: {
         _id: "",
@@ -11,6 +11,11 @@ const initialState = {
     },
     needRefresh: false,
 };
+
+const storedCurrentBooks = localStorage.getItem('currentBooks');
+if (storedCurrentBooks) {
+    initialState = JSON.parse(storedCurrentBooks);
+}
 
 // Creating the books slice
 const currentBooksReducer = createSlice({
