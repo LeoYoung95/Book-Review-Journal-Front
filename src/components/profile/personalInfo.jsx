@@ -69,10 +69,7 @@ export default function PersonalInfo() {
     setPfpInput(pfpId);
     setShowProfilePicModal(false);
   }
-
-  console.log(profileDetails);
-  console.log('show modal', showProfilePicModal);
-
+  
   return (
     <div className='flex flex-col items-center w-full'>
       <h1 className='mt-8 font-bold text-2xl'>

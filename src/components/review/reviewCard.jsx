@@ -22,7 +22,7 @@ export default function ReviewCard({ reviewId }) {
             try {
                 const reviewData = await findReviewById(reviewId);
                 setReview(reviewData);
-
+                
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
                     setAuthor(authorData);
@@ -32,7 +32,7 @@ export default function ReviewCard({ reviewId }) {
                     const bookName = await fetchBookName(reviewData.book_olid);
                     setReviewedBook(bookName);
                 }
-
+                
                 // Fetch information of the user who deleted the review
                 if (reviewData && reviewData.is_deleted && reviewData.deleted_by) {
                     const deletedByUserData = await findUserById(reviewData.deleted_by);
