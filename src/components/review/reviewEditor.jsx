@@ -16,7 +16,7 @@ const ReviewEditor = () => {
     const currentBooks = useSelector((state) => state.currentBooks.books);
     const currentUser = useSelector((state) => state.currentUser);
     const dispatch = useDispatch();
-
+    
 
     const initialReviewState = {
         title: '',
@@ -59,7 +59,7 @@ const ReviewEditor = () => {
 
     const handleSave = async () => {
         setLoading(true);
-
+        
         try {
             let newReview = {};
 
@@ -75,24 +75,24 @@ const ReviewEditor = () => {
                     throw new Error("User not found");
                 }
             }
-
+            
             // Update currentBook with new review
-            const updatedCurrentBook = { ...currentBook, reviews: [...currentBook.reviews, newReview] };
+            const updatedCurrentBook = { ...currentBook, reviews: [...currentBook.reviews, newReview._id] };
             dispatch(setCurrentBook(updatedCurrentBook));
 
             // Update the book in the currentBooks array
             const updatedCurrentBooks = currentBooks.map(book => {
                 if (book.olid === book_olid) {
-                    return { ...book, reviews: [...book.reviews, newReview] };
+                    return { ...book, reviews: [...book.reviews, newReview._id] };
                 }
                 return book;
             });
-
+            
             // Dispatch action to update currentBooks in the Redux store
             dispatch(setCurrentBooks(updatedCurrentBooks));
             dispatch(setNeedRefresh(true));
 
-            navigate(`/reviews/${reviewID}`);
+            navigate(`/reviews/${reviewID ? reviewID : newReview._id}`);
         } catch (err) {
             setError('Error submitting review');
         } finally {

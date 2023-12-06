@@ -3,7 +3,7 @@ import profileAvatar from '../../images/profile-avatar.jpg'
 import { FaThumbsUp } from 'react-icons/fa'
 
 export default function ProfileReviewCard({ review }) {
-
+  
   const truncatedContent = review.content.substring(0, 25);
   
   return (

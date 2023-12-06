@@ -10,12 +10,12 @@ export default function ReviewList({ olid }) {
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [currentBook, setCurrentBook] = useState(null);
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const book = currentBooks.find(book => book.olid === olid);
         setCurrentBook(book);
     }, [currentBooks, olid, needRefresh]); // This hook will re-run when needRefresh changes
-
+    
     const handleWriteReviewClick = () => {
         navigate(`/review-editor/new?book_olid=${olid}`);
     };
@@ -40,7 +40,8 @@ export default function ReviewList({ olid }) {
         return (
             <div className="container mt-4">
                 <div className="header-with-button mb-3">
-                    <h1 className="mb-6 ml-2"><strong>Reviews for the Book ( {currentBook.reviewCount} )</strong></h1>
+                    {/* <h1 className="mb-6 ml-2"><strong>Reviews for the Book ( {currentBook.reviewCount} )</strong></h1> */}
+                    <h1 className="mb-6 ml-2"><strong>Reviews for the Book </strong></h1>
                     <div className="write-review-container">
                         {renderWriteReviewButton()}
                     </div>

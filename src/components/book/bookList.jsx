@@ -42,7 +42,7 @@ const BookList = ({ searchQuery }) => {
                     reviewCount: reviewCount
                 };
             }));
-
+            
             const sortedBooks = booksWithAdditionalDetails.sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 15);
             dispatch(setCurrentBooks(sortedBooks));
 

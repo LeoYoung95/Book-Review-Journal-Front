@@ -17,18 +17,18 @@ const currentBooksReducer = createSlice({
     name: "currentBooks",
     initialState,
     reducers: {
-
+        
         // Action to set the current book
         setCurrentBook: (state, action) => {
             state.book = action.payload;
         },
-
-
+        
+        
         // Action to remove the current book
         removeCurrentBook: (state) => {
             state.book = {};
         },
-
+        
         // Action to set the current books
         setCurrentBooks: (state, action) => {
             state.books = action.payload;
