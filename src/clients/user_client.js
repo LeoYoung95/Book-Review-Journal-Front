@@ -57,15 +57,15 @@ export const findCurrentUser = () => {
         .catch(handleError);
 };
 
-export const findUserById = (id) => {
+export const findUserById = async (id) => {
     return request.get(`${USERS_API}/${id}`)
         .then(handleResponse)
         .catch(handleError);
 };
 
 // Update User Profile
-export const updateProfile = (user) => {
-    return request.put(`${USERS_API}/${user._id}`, user)
+export const updateProfile = (userId, user) => {
+    return request.put(`${USERS_API}/${userId}`, user)
         .then(handleResponse)
         .catch(handleError);
 };

@@ -25,14 +25,14 @@ export default function Signup() {
   const closeProfilePicModal = () => {
     setShowProfilePicModal(false);
   }
-
+  
   const handleProfilePicSubmission = (id) => {
     setCredentials({
       ...credentials,
       profilePicId: id,
     })
   } 
-
+  
   const [showWarning, setShowWarning] = useState(false);
   const navigate = useNavigate();
   const signup = async (e) => {

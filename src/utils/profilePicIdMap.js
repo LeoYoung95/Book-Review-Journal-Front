@@ -7,6 +7,7 @@ import p6 from '../images/profile_pics/p6.jpg';
 import p7 from '../images/profile_pics/p7.jpg';
 import p8 from '../images/profile_pics/p8.jpg';
 import p9 from '../images/profile_pics/p9.jpg';
+import ProfileAvatar from '../images/profile-avatar.jpg';
 
 export const profilePicIdMap = [
   {
@@ -46,3 +47,12 @@ export const profilePicIdMap = [
     pic: p9,
   },
 ]
+
+export const findPicById = id => {
+  const pfpObject = profilePicIdMap.find(p => p.id === id);
+  if (pfpObject) {
+    return pfpObject.pic;
+  } else {
+    return ProfileAvatar;
+  }
+}
