@@ -94,7 +94,7 @@ export default function ReviewCard({ reviewId }) {
     const isReviewVisible = currentUser.role === 'Admin' || !review.is_deleted;
 
     return isReviewVisible ? (
-        <div className={cardClass}>
+        <div className={`${cardClass} w-[80%]`}>
             <div className="review-card-header" onClick={handleReviewClick}>
                 <span className="clickable-title">{review.title}</span>
                 {currentUser.role === 'Admin' && (
