@@ -20,10 +20,6 @@ const BookCardLarger = ({ book }) => {
                 <p><strong>Author:</strong> {book.author}</p>
                 <p><strong>Published:</strong> {book.publishDate}</p>
                 <p><strong>Genres:</strong> {getGenres()}</p>
-                <p><strong>ISBN:</strong> {book.isbn}</p>
-                <p><strong>Publisher:</strong> {book.publisher}</p>
-                <p><strong>Pages:</strong> {book.pages}</p>
-                <p><strong>Language:</strong> {book.language}</p>
             </div>
             <div className="book-description-large">
                 <p><strong>Description:</strong> </p>

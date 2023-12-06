@@ -9,6 +9,7 @@ const initialState = {
         reviews: [],
         likedUsers: [],
     },
+    needRefresh: false,
 };
 
 // Creating the books slice
@@ -37,10 +38,15 @@ const currentBooksReducer = createSlice({
         clearCurrentBooks: (state) => {
             state.books = [];
         },
+
+        //Action to mark need refresh
+        setNeedRefresh: (state, action) => {
+            state.needRefresh = action.payload;
+        },
     },
 });
 
 // Exporting the actions and the reducer
-export const {setCurrentBook, removeCurrentBook, clearCurrentBooks, setCurrentBooks} = currentBooksReducer.actions;
+export const {setCurrentBook, removeCurrentBook, clearCurrentBooks, setCurrentBooks,setNeedRefresh}  = currentBooksReducer.actions;
 
 export default currentBooksReducer.reducer;
