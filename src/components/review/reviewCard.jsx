@@ -51,6 +51,11 @@ export default function ReviewCard({ reviewId }) {
         return body.length > maxLength ? body.substring(0, maxLength) + "..." : body;
     };
 
+    const handleReviewClick = () => {
+        navigate(`/reviews/${reviewId}`);
+    };
+
+
     const handleDelete = async () => {
         try {
             const response = await deleteReview(review._id, currentUser.userId);
@@ -90,8 +95,8 @@ export default function ReviewCard({ reviewId }) {
 
     return isReviewVisible ? (
         <div className={cardClass}>
-            <div className="review-card-header">
-                {review.title}
+            <div className="review-card-header" onClick={handleReviewClick}>
+                <span className="clickable-title">{review.title}</span>
                 {currentUser.role === 'Admin' && (
                     <span className={statusIndicatorClass}>
                         {review.is_deleted ? 'Deleted' : 'Alive'}

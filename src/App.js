@@ -13,6 +13,7 @@ import Signin from './components/auth/signin.jsx';
 import BookDetail from './pages/bookDetailPage.jsx';
 import SearchPage from './pages/searchPage.jsx';
 import ReviewEditor from "./components/review/reviewEditor";
+import ReviewDetail from "./components/review/reviewDetail";
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
                             <Route path='/book/:olid' element={<BookDetail/>}/>
                             <Route path='/search' element={<SearchPage/>}/>
                             <Route path='/review-editor/new' element={<ReviewEditor/>}/>
-                            <Route path='/review-editor/edit/:reviewId' element={<ReviewEditor />} />
+                            <Route path='/reviews/:reviewId' element={<ReviewDetail/>}/>
                         </Routes>
                     </div>
                 </BrowserRouter>
