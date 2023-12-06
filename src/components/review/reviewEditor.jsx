@@ -29,6 +29,7 @@ const ReviewEditor = () => {
         deleted_by: null,
     };
     const [review, setReview] = useState(initialReviewState);
+    const [reviewID, setReviewID] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -63,10 +64,12 @@ const ReviewEditor = () => {
             let newReview = {};
 
             if (reviewId) {
+                setReviewID(reviewId)
                 newReview = await client.updateReview(reviewId, review);
             } else {
                 if (currentUser && currentUser.userId) {
                     newReview = await client.createReview(review);
+                    setReviewID(newReview._id)
                     await createReviewByOpenLibraryId(book_olid, newReview._id);
                 } else {
                     throw new Error("User not found");
@@ -89,7 +92,7 @@ const ReviewEditor = () => {
             dispatch(setCurrentBooks(updatedCurrentBooks));
             dispatch(setNeedRefresh(true));
 
-            navigate(`/reviews/${book_olid}`);
+            navigate(`/reviews/${reviewID}`);
         } catch (err) {
             setError('Error submitting review');
         } finally {
