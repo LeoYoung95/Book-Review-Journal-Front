@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ReviewCard from './reviewCard'; // Ensure ReviewCard is correctly imported
-import axios from 'axios';
+import ReviewCard from '../review/reviewCard'; // Ensure ReviewCard is correctly imported
+import {findUserById} from "../../clients/user_client";
+import {findReviewById} from "../../clients/review_client";
 
 export default function ReaderLikedReviews() {
     const dispatch = useDispatch();
-    const currentUser = useSelector((state) => state.users.user); // Access the current user's information
+    const currentUser = useSelector((state) => state.currentUser);
     const [likedReviews, setLikedReviews] = useState([]);
 
     useEffect(() => {
         async function fetchLikedReviews() {
             try {
-                // Obtain the array of IDs of reviews liked by the current user
-                const likedReviewIds = currentUser.likedReviews;
+                // Fetch the current user's data
+                const currentUserInfo = await findUserById(currentUser.userId);
 
-                // Fetch details for each liked review
-                const reviewsData = await Promise.all(
-                    likedReviewIds.map((id) =>
-                        axios.get(`/api/reviews/${id}`).then(response => response.data)
-                    )
-                );
+                // Obtain the array of IDs of reviews liked by the current user
+                const likedReviewIds = currentUserInfo.likedReviews;
 
                 // Update the state to display these reviews
-                setLikedReviews(reviewsData);
+                setLikedReviews(likedReviewIds);
+
             } catch (err) {
                 console.error("Error fetching liked reviews:", err);
             }
         }
 
-        if (currentUser && currentUser.likedReviews) {
+        if (currentUser && currentUser.role === "reader") {
             fetchLikedReviews();
         }
+
     }, [dispatch, currentUser]);
 
     if (!currentUser) {
@@ -43,9 +42,9 @@ export default function ReaderLikedReviews() {
 
     return (
         <div>
-            <h2>Liked Reviews</h2>
-            {likedReviews.map((review) => (
-                <ReviewCard key={review._id} reviewId={review._id} />
+            <h2>My Liked Reviews</h2>
+            {likedReviews.map((reviewId) => (
+                <ReviewCard key={Date.now()} reviewId={reviewId} />
             ))}
         </div>
     );
