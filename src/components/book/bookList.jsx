@@ -53,11 +53,9 @@ const BookList = ({ searchQuery }) => {
     };
 
     useEffect(() => {
-        console.log("BookList useEffect triggered, needRefresh:", needRefresh);
         if (searchQuery || needRefresh) {
             fetchData();
             if (needRefresh) {
-                console.log("Refresh current books due to needRefresh flag");
                 dispatch(setNeedRefresh(false)); // Reset the needRefresh flag after fetching data
             }
         }
