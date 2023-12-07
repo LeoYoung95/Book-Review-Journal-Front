@@ -34,9 +34,9 @@ export default function Searchbar() {
   // Determine the placeholder based on the user's role
   let placeholder;
   if (currentUser.role === 'Author') {
-    placeholder = 'Search for Books and Write their Reviews';
+    placeholder = 'Search for Books & Write Reviews';
   } else if (currentUser.role === 'Reader' || !currentUser.userId) {
-    placeholder = 'Search for Books and their Reviews';
+    placeholder = 'Search for Books & Read Reviews';
   } else if (currentUser.role === 'Admin') {
     return null; // Hide the entire component for Admins
   }

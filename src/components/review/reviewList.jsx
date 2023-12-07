@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { findBookByOpenLibraryId } from "../../clients/book_client";
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
+import {findBookByOpenLibraryId} from "../../clients/book_client";
 import ReviewCard from './reviewCard';
 import './review.css';
 
-export default function ReviewList({ olid }) {
+export default function ReviewList({olid}) {
     const currentUser = useSelector((state) => state.currentUser);
     const [currentBook, setCurrentBook] = useState(null);
     const navigate = useNavigate();
@@ -14,7 +14,12 @@ export default function ReviewList({ olid }) {
         const fetchBookDetails = async () => {
             try {
                 const bookDetails = await findBookByOpenLibraryId(olid);
-                setCurrentBook(bookDetails);
+                console.log('Book details:', bookDetails)
+                if (bookDetails) {
+                    setCurrentBook(bookDetails);
+                } else {
+                    setCurrentBook({reviewCount: 0, reviews: []});
+                }
             } catch (error) {
                 console.error('Error fetching book details:', error);
             }
@@ -45,7 +50,7 @@ export default function ReviewList({ olid }) {
         return (
             <div className="container mt-4 w-[80%]">
                 <div className="header-with-button mb-3 w-[81%]">
-                    <div>No reviews found for this book.</div>
+                    <div><strong>No reviews found for this book.</strong></div>
                     <div className="write-review-container">
                         {renderWriteReviewButton()}
                     </div>
@@ -63,7 +68,7 @@ export default function ReviewList({ olid }) {
                 </div>
                 <div>
                     {currentBook.reviews.map((reviewId) => (
-                        <ReviewCard key={reviewId} reviewId={reviewId} />
+                        <ReviewCard key={reviewId} reviewId={reviewId}/>
                     ))}
                 </div>
             </div>
