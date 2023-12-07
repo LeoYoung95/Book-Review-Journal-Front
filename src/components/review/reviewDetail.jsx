@@ -63,21 +63,17 @@ export default function ReviewDetail() {
         <div className="card">
             <div className="card-header">
                 <input type="text" className="form-control " value={review.title} readOnly />
-                <h6 className="card-subtitle text-muted text-center">Reviewed by: {`${author.firstName} ${author.lastName}`}</h6>
+                <h6 className="card-subtitle text-muted text-center">
+                    Reviewed by: {`${author.firstName} ${author.lastName}`}
+                </h6>
             </div>
             <div className="card-body">
-                <div className="row">
-                    <div className="col-lg-4">
-                        <img src={author.profilePic} alt={`${author.firstName} ${author.lastName}`}
-                             className="img-thumbnail"/>
-                    </div>
-                    <div className="">
-                        <p className="card-text">{review.body}</p>
-                    </div>
+                <div className="">
+                    <p className="card-text">{review.body}</p>
                 </div>
             </div>
             <div className="card-footer">
-                <button  className={`like-button ${isLiked ? 'liked' : ''}`} onClick={handleLikeReview}>
+                <button className={`like-button ${isLiked ? "liked" : ""}`} onClick={handleLikeReview}>
                     {isLiked ? <IoHeartSharp /> : <IoHeartOutline />}
                 </button>
             </div>
