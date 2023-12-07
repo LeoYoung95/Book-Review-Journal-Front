@@ -73,28 +73,30 @@ export const updateProfile = (userId, user) => {
 
 // Reader Only: Add Liked Review
 export const addLikedReview = (id, reviewId) => {
-    return request.post(`${USERS_API}/${id}/liked_reviews`, { data: { reviewId } })
+    return request.post(`${USERS_API}/${id}/liked_reviews`, { reviewId })
         .then(handleResponse)
         .catch(handleError);
 };
 
 // Reader Only: Remove Liked Review
 export const removeLikedReview = (id, reviewId) => {
-    return request.delete(`${USERS_API}/${id}/liked_reviews`, { data: { reviewId } })
+    return request.delete(`${USERS_API}/${id}/liked_reviews`, { reviewId })
         .then(handleResponse)
         .catch(handleError);
 };
 
 // Author Only: Add Written Review
 export const addWrittenReview = (id, reviewId) => {
-    return request.post(`${USERS_API}/${id}/written_reviews`, { data: { reviewId } })
+    console.log("user id:", id)
+    console.log("reviewId:", reviewId)
+    return request.post(`${USERS_API}/${id}/written_reviews`, { reviewId })
         .then(handleResponse)
         .catch(handleError);
 };
 
 // Author & Admin Only: Remove Written Review
 export const removeWrittenReview = (id, reviewId) => {
-    return request.delete(`${USERS_API}/${id}/written_reviews`, { data: { reviewId } })
+    return request.delete(`${USERS_API}/${id}/written_reviews`, { reviewId })
         .then(handleResponse)
         .catch(handleError);
 };
