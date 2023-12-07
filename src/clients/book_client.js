@@ -7,38 +7,15 @@ const request = axios.create({
 });
 
 // Base URL for API requests
-export const BASE_URL = "http://localhost:4000";
+export const BASE_URL = process.env.REACT_APP_BRJ_REACT_BASE;
 
 // Base endpoint for book-related API requests
 export const BOOK_API = `${BASE_URL}/api/books`;
 
-// Function to get a book by its MongoDB ID
-export const findBookByMongoId = async (mongo_id) => {
-    const response = await request.get(`${BOOK_API}/${mongo_id}`);
-    return response.data;
-}
 
 // Function to get a book by its Open Library ID
 export const findBookByOpenLibraryId = async (olid) => {
     const response = await request.get(`${BOOK_API}/olid/${olid}`);
-    return response.data;
-}
-
-// Function to get the reviews of a book by its Open Library ID
-export const findBookReviewsByOpenLibraryId = async (olid) => {
-    const response = await request.get(`${BOOK_API}/olid/${olid}/reviews`);
-    return response.data;
-}
-
-// Function to get the users who liked a book by its Open Library ID
-export const findBookLikedUsersByOpenLibraryId = async (olid) => {
-    const response = await request.get(`${BOOK_API}/olid/${olid}/liked_users`);
-    return response.data;
-}
-
-// Function to post a new review for a book by its Open Library ID
-export const createReviewByOpenLibraryId = async (olid, reviewID) => {
-    const response = await request.post(`${BOOK_API}/olid/${olid}/reviews`, {reviewID});
     return response.data;
 }
 
@@ -49,3 +26,21 @@ export const createBookByOpenLibraryId = async (olid) => {
 }
 
 
+// Function to post a new review for a book by its Open Library ID
+export const createReviewByOpenLibraryId = async (olid, reviewID) => {
+    const response = await request.post(`${BOOK_API}/olid/${olid}/reviews`, {reviewID});
+    return response.data;
+}
+
+// Function to delete a new review for a book by its Open Library ID [Hard Delete]
+export const deleteReviewByOpenLibraryId = async (olid, reviewID) => {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewID })
+    };
+
+    const response = await fetch(`${BOOK_API}/olid/${olid}/reviews`, requestOptions);
+    const responseData = await response.json();
+    return responseData;
+};

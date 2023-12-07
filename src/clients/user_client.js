@@ -6,8 +6,8 @@ const request = axios.create({
     withCredentials: true,
     baseURL: process.env.REACT_APP_BRJ_REACT_BASE,
 });
-
-export const USERS_API = `/api/users`;
+export const BASE_URL = process.env.REACT_APP_BRJ_REACT_BASE;
+export const USERS_API = `${BASE_URL}/api/users`;
 
 // Helper function for handling errors
 const handleResponse = (response) => {
@@ -80,26 +80,41 @@ export const addLikedReview = (id, reviewId) => {
 
 // Reader Only: Remove Liked Review
 export const removeLikedReview = (id, reviewId) => {
-    return request.delete(`${USERS_API}/${id}/liked_reviews`, { reviewId })
+    console.log("user id:", id);
+    console.log("reviewId:", reviewId);
+
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewId })
+    };
+
+    return fetch(`${USERS_API}/${id}/liked_reviews`, requestOptions)
         .then(handleResponse)
         .catch(handleError);
 };
 
+
 // Author Only: Add Written Review
 export const addWrittenReview = (id, reviewId) => {
-    console.log("user id:", id)
-    console.log("reviewId:", reviewId)
     return request.post(`${USERS_API}/${id}/written_reviews`, { reviewId })
         .then(handleResponse)
         .catch(handleError);
 };
 
-// Author & Admin Only: Remove Written Review
+// Admin Only: Remove Written Review [Hard Delete]
 export const removeWrittenReview = (id, reviewId) => {
-    return request.delete(`${USERS_API}/${id}/written_reviews`, { reviewId })
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewId })
+    };
+
+    return fetch(`${USERS_API}/${id}/written_reviews`, requestOptions)
         .then(handleResponse)
         .catch(handleError);
 };
+
 
 
 
