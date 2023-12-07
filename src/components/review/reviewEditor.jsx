@@ -1,31 +1,28 @@
-import React, {useState, useEffect} from 'react';
-import * as client from '../../clients/review_client';
-import {useParams, useLocation, useNavigate} from 'react-router-dom';
-import {useSelector} from 'react-redux';
-import {setCurrentBook, setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
-import {useDispatch} from "react-redux";
-import {
-    createBookByOpenLibraryId,
-    createReviewByOpenLibraryId,
-    findBookByOpenLibraryId
-} from "../../clients/book_client";
-import {addWrittenReview} from "../../clients/user_client";
+import React, { useState, useEffect } from "react";
+import * as client from "../../clients/review_client";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { setCurrentBook, setCurrentBooks, setNeedRefresh } from "../../reducers/currentBooksReducer";
+import { useDispatch } from "react-redux";
+import ReviewCard from "./reviewCard";
+import { createBookByOpenLibraryId, createReviewByOpenLibraryId, findBookByOpenLibraryId } from "../../clients/book_client";
+import { addWrittenReview } from "../../clients/user_client";
+
 
 const ReviewEditor = () => {
-    const {reviewId} = useParams();
+    const { reviewId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const book_olid = queryParams.get('book_olid');
+    const book_olid = queryParams.get("book_olid");
     const currentBook = useSelector((state) => state.currentBooks.book);
     const currentBooks = useSelector((state) => state.currentBooks.books);
     const currentUser = useSelector((state) => state.currentUser);
     const dispatch = useDispatch();
 
-
     const initialReviewState = {
-        title: '',
-        body: '',
+        title: "",
+        body: "",
         book_olid: book_olid,
         book_id: currentBook?._id, // Using _id from the Redux state
         author_id: currentUser ? currentUser.userId : null,
@@ -44,11 +41,11 @@ const ReviewEditor = () => {
             try {
                 if (reviewId) {
                     const fetchedReview = await client.findReviewById(reviewId);
-                    console.log("fetchedReview:", fetchedReview)
-                    setReview({...fetchedReview});
+                    console.log("fetchedReview:", fetchedReview);
+                    setReview({ ...fetchedReview });
                 }
             } catch (err) {
-                setError('Error fetching review: ${err.message}');
+                setError("Error fetching review: ${err.message}");
             } finally {
                 setLoading(false);
             }
@@ -58,9 +55,8 @@ const ReviewEditor = () => {
         }
     }, [reviewId]);
 
-
     const handleChange = (e) => {
-        setReview({...review, [e.target.name]: e.target.value});
+        setReview({ ...review, [e.target.name]: e.target.value });
     };
 
     const handleSave = async () => {
@@ -94,7 +90,7 @@ const ReviewEditor = () => {
                         }
                     }
 
-                    const updatedReview = {...review, book_id: book._id};
+                    const updatedReview = { ...review, book_id: book._id };
 
                     try {
                         newReview = await client.createReview(updatedReview);
@@ -122,16 +118,15 @@ const ReviewEditor = () => {
             // Update currentBook with new review
             const updatedCurrentBook = {
                 ...currentBook,
-                reviews: [...(currentBook.reviews || []), newReview._id]
+                reviews: [...(currentBook.reviews || []), newReview._id],
             };
             dispatch(setCurrentBook(updatedCurrentBook));
 
-
             // Update the book in the currentBooks array
-            const updatedCurrentBooks = currentBooks.map(book => {
+            const updatedCurrentBooks = currentBooks.map((book) => {
                 if (book.olid === book_olid) {
                     // Provide a fallback empty array if book.reviews is null or undefined
-                    return {...book, reviews: [...(book.reviews || []), newReview._id]};
+                    return { ...book, reviews: [...(book.reviews || []), newReview._id] };
                 }
                 return book;
             });
@@ -140,17 +135,13 @@ const ReviewEditor = () => {
             dispatch(setCurrentBooks(updatedCurrentBooks));
             dispatch(setNeedRefresh(true));
 
-                navigate(`/reviews/${reviewID ? reviewID : newReview._id}`);
-            } catch
-                (err) {
-                setError(`Error submitting review: ${err.message}`);
-            } finally {
-                setLoading(false);
-            }
+            navigate(`/reviews/${reviewID ? reviewID : newReview._id}`);
+        } catch (err) {
+            setError(`Error submitting review: ${err.message}`);
+        } finally {
+            setLoading(false);
         }
-    ;
-
-
+    };
     const handleCancel = () => {
         navigate(-1); // Go back to the previous page
     };
@@ -165,12 +156,12 @@ const ReviewEditor = () => {
 
     return (
         <div className="review-card">
-            <div className="review-card-header">
-                {reviewId ? 'Edit Review' : 'New Review'}
-            </div>
+            <div className="review-card-header">{reviewId ? "Edit Review" : "New Review"}</div>
             <div className="review-card-body">
                 <div className="form-group row">
-                    <label htmlFor="title" className="col-sm-2 col-form-label">Title</label>
+                    <label htmlFor="title" className="col-sm-2 col-form-label">
+                        Title
+                    </label>
                     <div className="col-sm-10">
                         <input
                             type="text"
@@ -184,7 +175,9 @@ const ReviewEditor = () => {
                 </div>
 
                 <div className="form-group row">
-                    <label htmlFor="body" className="col-sm-2 col-form-label">Content</label>
+                    <label htmlFor="body" className="col-sm-2 col-form-label">
+                        Content
+                    </label>
                     <div className="col-sm-10">
                         <textarea
                             className="form-control"
