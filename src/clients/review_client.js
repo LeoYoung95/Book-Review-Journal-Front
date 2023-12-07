@@ -15,13 +15,6 @@ export const findAllReviews = async () => {
     return response.data;
 }
 
-
-// Get Trending Top 10 Reviews
-export const findTrendingReviews = async () => {
-    const response = await request.get(`${REVIEW_API}/trending`);
-    return response.data;
-}
-
 // Get Review by Review ID
 export const findReviewById = async (id) => {
     const response = await request.get(`${REVIEW_API}/${id}`);
@@ -35,16 +28,23 @@ export const findReviewLikedUsersById = async (id) => {
 }
 
 // Add to Review's liked users by Review ID
-export const addReviewLikedUsersById = async (id, user) => {
-    const response = await request.post(`${REVIEW_API}/${id}/liked_users`, user);
+export const addReviewLikedUsersById = async (id, userId) => {
+    const response = await request.post(`${REVIEW_API}/${id}/liked_users`, userId);
     return response.data;
 }
 
 // Delete Review's liked users by Review ID
-export const deleteReviewLikedUsersById = async (id, user) => {
-    const response = await request.delete(`${REVIEW_API}/${id}/liked_users`, { data: user });
+export const deleteReviewLikedUsersById = async (id, userId) => {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+    };
+
+    const response = await fetch(`${REVIEW_API}/${id}/liked_users`, requestOptions);
     return response.data;
-}
+};
+
 
 // Author Only: Post Review
 export const createReview = async (review) => {
@@ -60,7 +60,7 @@ export const updateReview = async (id, review) => {
 }
 
 // Author & Admin Only: Soft Delete Review
-export const deleteReview = async (id, userId) => {
+export const softDeleteReview = async (id, userId) => {
     const response = await request.put(`${REVIEW_API}/delete/${id}`, { deletedBy: userId });
     return response.data;
 }
@@ -68,5 +68,11 @@ export const deleteReview = async (id, userId) => {
 // Admin Only: Recover Review
 export const recoverReview = async (id) => {
     const response = await request.put(`${REVIEW_API}/recover/${id}`);
+    return response.data;
+}
+
+// Admin Only: Hard Delete Review
+export const hardDeleteReview = async (id) => {
+    const response = await request.delete(`${REVIEW_API}/${id}`);
     return response.data;
 }

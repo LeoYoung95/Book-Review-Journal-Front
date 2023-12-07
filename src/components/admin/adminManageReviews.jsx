@@ -6,13 +6,14 @@ import './adminReviewManagement.css';
 
 const AdminReviewManagement = () => {
     const [reviews, setReviews] = useState([]);
+    const [refreshNeeded, setRefreshNeeded] = useState(false);
 
     // Get the current user from the Redux store
     // const currentUser = useSelector(state => state.currentUser);
 
     useEffect(() => {
         fetchReviews();
-    }, []);
+    }, [refreshNeeded]);
 
     const fetchReviews = async () => {
         try {
@@ -28,7 +29,11 @@ const AdminReviewManagement = () => {
             <h1 className="admin-review-title">Review Management</h1>
             <div className="review-cards-container">
                 {reviews.map(review => (
-                    <ReviewCard key={review._id} reviewId={review._id} />
+                    <ReviewCard
+                        key={review._id}
+                        reviewId={review._id}
+                        triggerRefresh={() => setRefreshNeeded(prev => !prev)}
+                    />
                 ))}
             </div>
         </div>

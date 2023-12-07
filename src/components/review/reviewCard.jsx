@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { findReviewById, deleteReview, recoverReview } from "../../clients/review_client";
-import { findUserById } from "../../clients/user_client";
-import { fetchBookName } from "../../clients/openlib_client";
-import { setNeedRefresh } from "../../reducers/currentBooksReducer.js";
+import React, {useEffect, useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
+import {useNavigate} from 'react-router-dom';
+import {findReviewById, softDeleteReview, hardDeleteReview, recoverReview} from "../../clients/review_client";
+import {findUserById, removeWrittenReview} from "../../clients/user_client";
+import {deleteReviewByOpenLibraryId} from "../../clients/book_client";
+import {fetchBookName} from "../../clients/openlib_client";
+import {setNeedRefresh} from "../../reducers/currentBooksReducer.js";
 import "./review.css";
 
-export default function ReviewCard({ reviewId }) {
+export default function ReviewCard({
+                                       reviewId, triggerRefresh = () => {
+    }
+                                   }) {
     const currentUser = useSelector((state) => state.currentUser);
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [review, setReview] = useState(null);
@@ -21,8 +25,9 @@ export default function ReviewCard({ reviewId }) {
         async function fetchReviewDetails() {
             try {
                 const reviewData = await findReviewById(reviewId);
+                console.log("ReviewCard: reviewData:", reviewData);
                 setReview(reviewData);
-                
+
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
                     setAuthor(authorData);
@@ -32,7 +37,7 @@ export default function ReviewCard({ reviewId }) {
                     const bookName = await fetchBookName(reviewData.book_olid);
                     setReviewedBook(bookName);
                 }
-                
+
                 // Fetch information of the user who deleted the review
                 if (reviewData && reviewData.is_deleted && reviewData.deleted_by) {
                     const deletedByUserData = await findUserById(reviewData.deleted_by);
@@ -56,9 +61,9 @@ export default function ReviewCard({ reviewId }) {
     };
 
 
-    const handleDelete = async () => {
+    const handleSoftDelete = async () => {
         try {
-            const response = await deleteReview(review._id, currentUser.userId);
+            const response = await softDeleteReview(review._id, currentUser.userId);
             setReview(response);
             dispatch(setNeedRefresh(true));
             setTimeout(() => {
@@ -69,13 +74,28 @@ export default function ReviewCard({ reviewId }) {
         }
     };
 
+    const handleHardDelete = async () => {
+        try {
+            // Delete the review from the review database
+            await hardDeleteReview(review._id);
+            // Delete the review from the user database
+            await removeWrittenReview(review.author_id, review._id);
+            // Delete the review from the book database
+            await deleteReviewByOpenLibraryId(review.book_olid, review._id);
+
+            // Trigger refresh in parent component
+            triggerRefresh();
+        } catch (err) {
+            console.error("Error deleting review:", err);
+        }
+    }
 
 
     const handleRecover = async () => {
         try {
             await recoverReview(review._id);
             // Update the review state to reflect the recovery
-            setReview({ ...review, is_deleted: false, deleted_by: null });
+            setReview({...review, is_deleted: false, deleted_by: null});
         } catch (err) {
             console.error("Error recovering review:", err);
         }
@@ -113,16 +133,22 @@ export default function ReviewCard({ reviewId }) {
                 )}
             </div>
             <div className="review-card-footer">
-                {currentUser.role === 'Author' &&  currentUser.userId === review.author_id &&(
+                {currentUser.role === 'Author' && currentUser.userId === review.author_id && (
                     <>
                         <button className="button button-edit" onClick={handleEdit}>Edit</button>
-                        <button className="button button-delete" onClick={handleDelete}>Delete</button>
+                        <button className="button button-delete" onClick={handleSoftDelete}>Delete</button>
                     </>
                 )}
                 {currentUser.role === 'Admin' && (
-                    review.is_deleted ?
-                        <button className="button button-recover" onClick={handleRecover}>Restore</button> :
-                        <button className="button button-delete" onClick={handleDelete}>Delete</button>
+                    <>
+                        {review.is_deleted ?
+                            <button className="button button-recover" onClick={handleRecover}>Restore</button> :
+                            <>
+                                <button className="button button-delete" onClick={handleSoftDelete}>Soft Delete</button>
+                                <button className="button button-delete" onClick={handleHardDelete}>Hard Delete</button>
+                            </>
+                        }
+                    </>
                 )}
             </div>
         </div>
