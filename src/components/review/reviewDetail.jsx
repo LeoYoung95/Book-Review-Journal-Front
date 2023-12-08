@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { findReviewById, addReviewLikedUsersById, deleteReviewLikedUsersById } from "../../clients/review_client";
+import {
+    findReviewById,
+    addReviewLikedUsersById,
+    deleteReviewLikedUsersById,
+} from "../../clients/review_client";
 import { findUserById, addLikedReview, removeLikedReview } from "../../clients/user_client";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import Modal from 'react-modal';
+import './review.css';
 
 export default function ReviewDetail() {
     const { reviewId } = useParams();
@@ -12,6 +18,7 @@ export default function ReviewDetail() {
     const [user, setUser] = useState(null);
     const [author, setAuthor] = useState(null);
     const [likedUsers, setLikedUsers] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const navigate = useNavigate();
 
@@ -25,9 +32,11 @@ export default function ReviewDetail() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const userRes = await findUserById(currentUserId);
-                setUser(userRes);
-                
+                if (currentUserId) {
+                    const userRes = await findUserById(currentUserId);
+                    setUser(userRes);
+                }
+
                 const reviewRes = await findReviewById(reviewId);
                 setReview(reviewRes);
 
@@ -42,26 +51,35 @@ export default function ReviewDetail() {
     }, [currentUserId, reviewId]);
 
     const handleLikeReview = async () => {
-        const alreadyLikedReview = user.likedReviews.includes(reviewId);
-        console.log("Current User ID:", currentUserId);
+        if (currentUserId) {
+            const alreadyLikedReview = user.likedReviews.includes(reviewId);
+            console.log("Current User ID:", currentUserId);
 
-        try {
-            if (alreadyLikedReview) {
-                await deleteReviewLikedUsersById(reviewId, currentUserId);
-                await removeLikedReview(currentUserId, reviewId);
-            } else {
-                await addReviewLikedUsersById(reviewId, currentUserId);
-                await addLikedReview(currentUserId, reviewId);
+            try {
+                if (alreadyLikedReview) {
+                    await deleteReviewLikedUsersById(reviewId, currentUserId);
+                    await removeLikedReview(currentUserId, reviewId);
+                } else {
+                    await addReviewLikedUsersById(reviewId, currentUserId);
+                    await addLikedReview(currentUserId, reviewId);
+                }
+
+                const updatedUser = await findUserById(currentUserId);
+                setUser(updatedUser);
+
+                const updatedReview = await findReviewById(reviewId);
+                setReview(updatedReview);
+            } catch (error) {
+                console.error("Error toggling like on the review:", error);
             }
-
-            const updatedUser = await findUserById(currentUserId);
-            setUser(updatedUser);
-
-            const updatedReview = await findReviewById(reviewId);
-            setReview(updatedReview);
-        } catch (error) {
-            console.error("Error toggling like on the review:", error);
+        } else {
+            // If there is no currentUserId, set showModal to true to display the modal
+            setShowModal(true);
         }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
     };
 
     // Function to fetch all users who liked the review
@@ -82,7 +100,7 @@ export default function ReviewDetail() {
         fetchLikedUsers();
     }, [review]);
 
-    if (!review || !author || !user) {
+    if (!review || !author) {
         return <div>Loading...</div>;
     }
 
@@ -96,7 +114,7 @@ export default function ReviewDetail() {
             </div>
             <div className="card-body">
                 <div className="">
-                    <p className="card-text">{review.body}</p>
+                    <p className="card-text whitespace-pre-line">{review.body}</p>
                 </div>
             </div>
             <div className="card-footer">
@@ -111,12 +129,21 @@ export default function ReviewDetail() {
                                 navigateToUserProfile(likedUser._id); // Should navigate to the clicked user's profile
                             }}
                         >
-                            {index > 0 && ", "}
+              {index > 0 && ", "}
                             {likedUser.firstName} {likedUser.lastName}
-                        </span>
+            </span>
                     ))}
                 </button>
             </div>
+            <Modal
+                isOpen={showModal}
+                onRequestClose={closeModal}
+                overlayClassName="dimmed-background"
+                className="modal-container"
+            >
+                <p>Please Sign In to like reviews</p>
+                <button onClick={() => navigate('/signin')}>Sign In</button>
+            </Modal>
         </div>
     );
 }

@@ -47,7 +47,7 @@ export default function ReaderLikedReviews() {
             <h1 className="admin-review-title">My Liked Reviews</h1>
             <div className="review-cards-container">
                 {likedReviews.map((reviewId) => (
-                    <ReviewCard key={Date.now()} reviewId={reviewId}/>
+                    <ReviewCard key={reviewId} reviewId={reviewId}/>
                 ))}
             </div>
         </div>
