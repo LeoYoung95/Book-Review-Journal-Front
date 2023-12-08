@@ -62,6 +62,13 @@
     align-items: center;
 }
 
+.review-card-body-editor {
+    padding: 15px;
+    color: #666;
+    font-size: 14px;
+    height: 18em;
+}
+
 .review-card-footer {
     padding: 10px 15px;
     background-color: #f5f5f5;

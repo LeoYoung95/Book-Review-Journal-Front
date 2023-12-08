@@ -157,7 +157,7 @@ const ReviewEditor = () => {
     return (
         <div className="review-card">
             <div className="review-card-header">{reviewId ? "Edit Review" : "New Review"}</div>
-            <div className="review-card-body">
+            <div className="review-card-body-editor">
                 <div className="form-group row">
                     <label htmlFor="title" className="col-sm-2 col-form-label">
                         Title
