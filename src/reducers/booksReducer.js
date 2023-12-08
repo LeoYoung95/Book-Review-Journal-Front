@@ -42,19 +42,22 @@ const booksReducer = createSlice({
             state.book = action.payload;
         },
 
-        // Action to handle liking a book
-        likeBook: (state, action) => {
-            const { bookId, userId } = action.payload;
-            // Update the book's likedUsers array
-            const book = state.books.find((book) => book.id === bookId);
-            if (book && !book.likedUsers.includes(userId)) {
-                book.likedUsers.push(userId);
-            }
-        },
+        // // Action to handle liking a book
+        // likeBook: (state, action) => {
+        //     const { bookId, userId } = action.payload;
+        //     const book = state.books.find((book) => book.id === bookId);
+        //     if (book) {
+        //         if (!book.likedUsers.includes(userId)) {
+        //             book.likedUsers.push(userId);
+        //         } else {
+        //             book.likedUsers = book.likedUsers.filter((id) => id !== userId);
+        //         }
+        //     }
+        // },
     },
 });
 
 // Exporting the actions and the reducer
-export const { addBook, deleteBook, updateBook, setBook, setBooks, likeBook } = booksReducer.actions;
+export const { addBook, deleteBook, updateBook, setBook, setBooks } = booksReducer.actions;
 
 export default booksReducer.reducer;

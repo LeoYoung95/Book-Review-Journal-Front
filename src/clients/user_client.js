@@ -8,6 +8,7 @@ const request = axios.create({
 });
 export const BASE_URL = process.env.REACT_APP_BRJ_REACT_BASE;
 export const USERS_API = `${BASE_URL}/api/users`;
+export const BOOK_API = `${BASE_URL}/api/books`;
 
 // Helper function for handling errors
 const handleResponse = (response) => {
@@ -33,49 +34,34 @@ const handleError = (error) => {
 
 // User Authentication
 export const signin = (credentials) => {
-    return request.post(`${USERS_API}/signin`, credentials)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.post(`${USERS_API}/signin`, credentials).then(handleResponse).catch(handleError);
 };
 
 export const signup = (credentials) => {
-    return request.post(`${USERS_API}/signup`, credentials)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.post(`${USERS_API}/signup`, credentials).then(handleResponse).catch(handleError);
 };
 
 export const signout = () => {
-    return request.post(`${USERS_API}/signout`)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.post(`${USERS_API}/signout`).then(handleResponse).catch(handleError);
 };
 
 // Get User Info
 export const findCurrentUser = () => {
-    return request.get(`${USERS_API}/current`)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.get(`${USERS_API}/current`).then(handleResponse).catch(handleError);
 };
 
 export const findUserById = async (id) => {
-    return request.get(`${USERS_API}/${id}`)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.get(`${USERS_API}/${id}`).then(handleResponse).catch(handleError);
 };
 
 // Update User Profile
 export const updateProfile = (userId, user) => {
-    return request.put(`${USERS_API}/${userId}`, user)
-        .then(handleResponse)
-        .catch(handleError);
+    return request.put(`${USERS_API}/${userId}`, user).then(handleResponse).catch(handleError);
 };
-
 
 // Reader Only: Add Liked Review
 export const addLikedReview = (id, reviewId) => {
-    return request.post(`${USERS_API}/${id}/liked_reviews`, { reviewId })
-        .then(handleResponse)
-        .catch(handleError);
+    return request.post(`${USERS_API}/${id}/liked_reviews`, { reviewId }).then(handleResponse).catch(handleError);
 };
 
 // Reader Only: Remove Liked Review
@@ -84,39 +70,67 @@ export const removeLikedReview = (id, reviewId) => {
     console.log("reviewId:", reviewId);
 
     const requestOptions = {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewId })
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewId }),
     };
 
-    return fetch(`${USERS_API}/${id}/liked_reviews`, requestOptions)
-        .then(handleResponse)
-        .catch(handleError);
+    return fetch(`${USERS_API}/${id}/liked_reviews`, requestOptions).then(handleResponse).catch(handleError);
 };
 
+// User Only: Add Liked Book
+export const addLikedBook = (userId, bookId) => {
+    return request.post(`${USERS_API}/${userId}/liked_books`, { bookId }).then(handleResponse).catch(handleError);
+};
+
+// User Only: Remove Liked Book
+export const removeLikedBook = (userId, bookId) => {
+    const requestOptions = {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookId }),
+    };
+
+    return fetch(`${USERS_API}/${userId}/liked_books`, requestOptions).then(handleResponse).catch(handleError);
+};
 
 // Author Only: Add Written Review
 export const addWrittenReview = (id, reviewId) => {
-    return request.post(`${USERS_API}/${id}/written_reviews`, { reviewId })
-        .then(handleResponse)
-        .catch(handleError);
+    return request.post(`${USERS_API}/${id}/written_reviews`, { reviewId }).then(handleResponse).catch(handleError);
 };
 
 // Admin Only: Remove Written Review [Hard Delete]
 export const removeWrittenReview = (id, reviewId) => {
     const requestOptions = {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewId })
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewId }),
     };
 
-    return fetch(`${USERS_API}/${id}/written_reviews`, requestOptions)
-        .then(handleResponse)
-        .catch(handleError);
+    return fetch(`${USERS_API}/${id}/written_reviews`, requestOptions).then(handleResponse).catch(handleError);
 };
 
+// Get Book's liked users by Open Library ID
+export const findBookLikedUsersById = async (olid) => {
+    const response = await request.get(`${BOOK_API}/${olid}/liked_users`);
+    return response.data;
+};
 
+// Add to Book's liked users by Open Library ID ID
+export const addBookLikedUsersById = async (olid, userId) => {
+    const response = await request.post(`${BOOK_API}/${olid}/liked_users`, { userId });
+    return response.data;
+};
 
+// Delete Book's liked users by Open Library ID ID
+export const deleteBookLikedUsersById = async (olid, userId) => {
+    const requestOptions = {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+    };
 
-
-
+    const response = await fetch(`${BOOK_API}/${olid}/liked_users`, requestOptions);
+    const responseData = await response.json();
+    return responseData;
+};
