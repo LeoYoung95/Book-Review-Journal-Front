@@ -214,11 +214,6 @@
     padding: 16px;
 }
 
-.card-title {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
-}
-
 .like-button {
   background: none;
   border: none;
@@ -236,4 +231,14 @@
 
 .like-button:not(.liked) {
   color: grey; 
+}
+
+.like-button .username {
+  margin-left: 8px; 
+  color: black; 
+  cursor: pointer;
+}
+
+.like-button .username:hover {
+  text-decoration: underline;
 }

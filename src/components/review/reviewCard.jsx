@@ -52,7 +52,7 @@ export default function ReviewCard({
     }, [reviewId]);
 
     const truncateReviewBody = (body) => {
-        const maxLength = 25;
+        const maxLength = 220;
         return body.length > maxLength ? body.substring(0, maxLength) + "..." : body;
     };
 
