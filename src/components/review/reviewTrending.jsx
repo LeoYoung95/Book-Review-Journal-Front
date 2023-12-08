@@ -37,11 +37,11 @@ export default function ReviewTrending() {
     }
 
     return (
-        <div className="container mt-4">
-            <h2 className="mb-3">Trending Reviews</h2>
-            <div className="row">
-                {topReviews.map((review) => ( // Map through the topReviews array and render a ReviewCard for each review 
-                    <div key={review._id} className="col-md-6 col-lg-4 mb-4">
+        <div className="trending-container">
+            <h2 className="trending-title">Trending Reviews</h2>
+            <div className="trending-row">
+                {topReviews.map((review) => (
+                    <div key={review._id} className="trending-col">
                         <ReviewCard reviewId={review._id} />
                     </div>
                 ))}

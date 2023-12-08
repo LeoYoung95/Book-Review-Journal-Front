@@ -7,8 +7,10 @@ const ReaderHome = () => {
 
     // Check if the user is an Admin
     if (currentUser && currentUser.role === 'Reader') {
-        return <ReaderLikedReviews />;
+        return <ReaderLikedReviews />
+        ;
     }
+    
 
 };
 
