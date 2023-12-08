@@ -27,7 +27,7 @@ export default function ReviewDetail() {
             try {
                 const userRes = await findUserById(currentUserId);
                 setUser(userRes);
-
+                
                 const reviewRes = await findReviewById(reviewId);
                 setReview(reviewRes);
 

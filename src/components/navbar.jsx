@@ -15,7 +15,7 @@ export default function Navar() {
           className='h-[45px]'
         />
       </button>
-
+      
       <Searchbar />
 
       <div>

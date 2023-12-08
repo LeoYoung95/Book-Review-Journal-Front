@@ -15,7 +15,7 @@ const BookList = ({ searchQuery }) => {
     const books = useSelector(state => state.currentBooks.books);
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const location = useLocation();
-
+    
     const fetchData = async () => {
         setIsLoading(true);
         try {
@@ -23,7 +23,6 @@ const BookList = ({ searchQuery }) => {
 
             const booksWithAdditionalDetails = await Promise.all(fetchedBooks.map(async book => {
                 const additionalDetails = await findBookByOpenLibraryId(book.olid);
-                console.log("additionalDetails:", additionalDetails);
 
                 // Calculate reviewCount excluding deleted reviews
                 let reviewCount = 0;
