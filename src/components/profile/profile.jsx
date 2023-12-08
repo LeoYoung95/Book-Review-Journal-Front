@@ -26,13 +26,13 @@ export default function Profile() {
   
   return (
     <Provider store={store}>
-      <div className='md:flex h-full'>
-        <div className={`${isAdmin ? 'w-full' : 'md:w-1/2'} bg-pink-300 flex justify-center`}>
+      <div className='md:flex h-full px-16 bg-gray-200'>
+        <div className={`${isAdmin ? 'w-full' : 'md:w-1/2'} flex justify-center`}>
           <PersonalInfo  />
         </div>
         {
           showProfileReviews ?
-            <div className='md:w-1/2 h-full bg-purple-300 flex justify-center'>
+            <div className='md:w-1/2 h-full flex justify-center'>
               <ProfileReviews  />
             </div> : 
             null

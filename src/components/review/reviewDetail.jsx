@@ -21,7 +21,7 @@ export default function ReviewDetail() {
     const [showModal, setShowModal] = useState(false);
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const navigate = useNavigate();
-
+    
     const navigateToUserProfile = (userId) => {
         console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
@@ -94,7 +94,7 @@ export default function ReviewDetail() {
             setLikedUsers(userDetails.filter((user) => user)); // filter out any possible null/undefined values
         }
     };
-
+    
     useEffect(() => {
         // Call fetchLikedUsers when the review is fetched or updated
         fetchLikedUsers();

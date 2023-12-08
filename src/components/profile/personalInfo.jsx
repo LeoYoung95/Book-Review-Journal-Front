@@ -95,9 +95,9 @@ export default function PersonalInfo() {
         }
       </div>
       
-      <form className='mt-4'>
+      <form className='mt-4 w-[60%]'>
      
-        <div className="md:flex md:items-center mb-6">
+        <div className="md:flex md:items-center mb-3">
           <div className="md:w-1/3 mr-2">
             <label>
               Email:
@@ -110,57 +110,100 @@ export default function PersonalInfo() {
           </div>
         </div>
      
-
-        <div className="md:flex md:items-center mb-6">
-          <div className="md:w-1/3 mr-2">
-            <label>
-              First Name:
-            </label>
-          </div>
-          <div className='md:w-2/3'>
-            <input 
-              type='text'
-              value={isEditing ? firstNameInput : profileDetails.firstName}
-              onChange={e => setFirstNameInput(e.target.value)}
-              className='rounded pl-2'
-              disabled={!isEditing} 
-            />
-          </div>
-        </div>
-
-        <div className="md:flex md:items-center mb-6">
-          <div className="md:w-1/3 mr-2">
-            <label>
-              Last Name:
-            </label>
-          </div>
-          <div className='md:w-2/3'>
-            <input 
-              type='text'
-              value={isEditing ? lastNameInput : profileDetails.lastName}
-              onChange={e => setLastNameInput(e.target.value)}
-              className='rounded pl-2'
-              disabled={!isEditing} 
-            />
-          </div>
-        </div>
-
-        <div className="md:flex md:items-center mb-6">
-          <div className="md:w-1/3 mr-2">
-            <label>
-              Biography:
-            </label>
-          </div>
-          <div className='md:w-2/3'>
-            <textarea 
-              type='text'
-              value={isEditing ? bioInput : profileDetails.bio}
-              onChange={e => setBioInput(e.target.value)}
-              className='rounded pl-2 h-50 p-2'
-              disabled={!isEditing} 
-            />
-          </div>
-        </div>
+        {
+          !isEditing ?
+            <div>
+              <div className="md:flex md:items-center mb-3">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    First Name:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <p className='rounded pl-1'> 
+                    {profileDetails.firstName}
+                  </p> 
+                </div>
+              </div>  
+              <div className="md:flex md:items-center mb-3">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    Last Name:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <p className='rounded pl-1'> 
+                    {profileDetails.lastName}
+                  </p> 
+                </div>
+              </div>  
+              <div className="md:flex md:items-center mb-3">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    Biography:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <p className='rounded pl-1'> 
+                    {profileDetails.bio ? profileDetails.bio : 'Nothing yet!'}
+                  </p> 
+                </div>
+              </div>  
+            </div>
+              :
+            <div>
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    First Name:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <input 
+                    type='text'
+                    value={isEditing ? firstNameInput : profileDetails.firstName}
+                    onChange={e => setFirstNameInput(e.target.value)}
+                    className='rounded pl-2'
+                    disabled={!isEditing} 
+                  />
+                </div>
+              </div>
+              
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    Last Name:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <input 
+                    type='text'
+                    value={isEditing ? lastNameInput : profileDetails.lastName}
+                    onChange={e => setLastNameInput(e.target.value)}
+                    className='rounded pl-2'
+                    disabled={!isEditing} 
+                  />
+                </div>
+              </div>
+              
+              <div className="md:flex md:items-center mb-6">
+                <div className="md:w-1/3 mr-2">
+                  <label>
+                    Biography:
+                  </label>
+                </div>
+                <div className='md:w-2/3'>
+                  <textarea 
+                    type='text'
+                    value={isEditing ? bioInput : profileDetails.bio}
+                    onChange={e => setBioInput(e.target.value)}
+                    className='rounded pl-2 h-50 p-2'
+                    disabled={!isEditing} 
+                  />
+                </div>
+              </div>
+            </div>
+        }
         
         {
           isEditing ?

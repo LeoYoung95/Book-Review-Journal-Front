@@ -179,7 +179,6 @@ export default function Signup() {
               >
                 <option>Reader</option>
                 <option>Author</option>
-                <option>Admin</option>
               </select>
             </div>
           </div>

@@ -41,16 +41,19 @@ export default function ProfileReviews() {
     
       {
         userRole === 'Reader' ?
-          likedReviews.map((reviewId,i) => {
-            return (
-              <ReviewCard key={i} reviewId={reviewId} />
-            )
-          }) : 'Writer' ?
-          writtenReviews.map((reviewId, i) => {
-            return (
-              <ReviewCard key={i} reviewId={reviewId} />
-            )
-          }) : 
+          likedReviews.length ? 
+            likedReviews.map((reviewId,i) => {
+              return (
+                <ReviewCard key={i} reviewId={reviewId} />
+              )
+            }) : 'No liked reviews yet'
+            : 'Writer' ?
+            writtenReviews.length ?
+            writtenReviews.map((reviewId, i) => {
+              return (
+                <ReviewCard key={i} reviewId={reviewId} />
+              )
+            }) : 'No reviews yet' :
           null
       }
     
