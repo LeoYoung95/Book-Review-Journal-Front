@@ -65,7 +65,6 @@ export default function ReviewDetail() {
 
     // Function to fetch all users who liked the review
     const fetchLikedUsers = async () => {
-        
         // Make sure review.likedUsers is available and is an array
         if (review && Array.isArray(review.likedUsers)) {
             const userDetailsPromises = review.likedUsers.map((userId) => findUserById(userId));
@@ -99,8 +98,8 @@ export default function ReviewDetail() {
                 </div>
             </div>
             <div className="card-footer">
-                <button className={`like-button ${isLiked ? "liked" : ""}`} onClick={handleLikeReview}>
-                    {isLiked ? <IoHeartSharp /> : <IoHeartOutline />}
+                <button className="like-button" onClick={handleLikeReview}>
+                    {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
                     {likedUsers.map((likedUser, index) => (
                         <React.Fragment key={likedUser._id}>
                             {index > 0 && ", "}
@@ -109,7 +108,7 @@ export default function ReviewDetail() {
                                     e.stopPropagation(); // Prevent the like button's onClick from firing
                                     navigate(`/profile/${likedUser._id}`); // Navigate to the liked user's profile page
                                 }}
-                                style={{ cursor: "pointer" }}
+                                style={{ cursor: "pointer", color: "grey" }} // Apply grey color to usernames
                             >
                                 {likedUser.firstName} {likedUser.lastName}
                             </span>
