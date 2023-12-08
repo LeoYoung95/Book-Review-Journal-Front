@@ -16,6 +16,7 @@ export default function ReviewDetail() {
     const navigate = useNavigate();
 
     const navigateToUserProfile = (userId) => {
+        console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
     };
 
@@ -65,6 +66,7 @@ export default function ReviewDetail() {
 
     // Function to fetch all users who liked the review
     const fetchLikedUsers = async () => {
+        console.log(likedUsers);
         // Make sure review.likedUsers is available and is an array
         if (review && Array.isArray(review.likedUsers)) {
             const userDetailsPromises = review.likedUsers.map((userId) => findUserById(userId));
@@ -101,18 +103,17 @@ export default function ReviewDetail() {
                 <button className="like-button" onClick={handleLikeReview}>
                     {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
                     {likedUsers.map((likedUser, index) => (
-                        <React.Fragment key={likedUser._id}>
+                        <span
+                            key={likedUser._id} // Ensuring a unique key for each span
+                            style={{ cursor: "pointer", color: "grey" }}
+                            onClick={(e) => {
+                                e.stopPropagation(); // Correctly stopping the event propagation
+                                navigateToUserProfile(likedUser._id); // Should navigate to the clicked user's profile
+                            }}
+                        >
                             {index > 0 && ", "}
-                            <span
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Prevent the like button's onClick from firing
-                                    navigate(`/profile/${likedUser._id}`); // Navigate to the liked user's profile page
-                                }}
-                                style={{ cursor: "pointer", color: "grey" }} // Apply grey color to usernames
-                            >
-                                {likedUser.firstName} {likedUser.lastName}
-                            </span>
-                        </React.Fragment>
+                            {likedUser.firstName} {likedUser.lastName}
+                        </span>
                     ))}
                 </button>
             </div>
