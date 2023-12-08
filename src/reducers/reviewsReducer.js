@@ -65,18 +65,18 @@ const reviewsReducer = createSlice({
             state.review = action.payload;
         },
 
-        // Action to handle liking a review
-        likeReview: (state, action) => {
-            const { reviewId, userId } = action.payload;
-            const review = state.reviews.find((review) => review.id === reviewId);
-            if (review) {
-                // If the user hasn't already liked the review
-                if (!review.likedUsers.includes(userId)) {
-                    // Add the user to the likedUsers array
-                    review.likedUsers.push(userId);
-                }
-            }
-        },
+        // // Action to handle liking a review
+        // likeReview: (state, action) => {
+        //     const { reviewId, userId } = action.payload;
+        //     const review = state.reviews.find((review) => review.id === reviewId);
+        //     if (review) {
+        //         // If the user hasn't already liked the review
+        //         if (!review.likedUsers.includes(userId)) {
+        //             // Add the user to the likedUsers array
+        //             review.likedUsers.push(userId);
+        //         }
+        //     }
+        // },
 
         
     },
@@ -85,7 +85,7 @@ const reviewsReducer = createSlice({
 // Exporting the actions and the reducer
 export const {
     addReview, deleteReview, recoverReview,
-    updateReview, setReview, setReviews, likeReview
+    updateReview, setReview, setReviews
 } = reviewsReducer.actions;
 
 export default reviewsReducer.reducer;
