@@ -52,8 +52,12 @@ export default function ReviewCard({
     }, [reviewId]);
 
     const truncateReviewBody = (body) => {
-        const maxLength = 220;
+        const maxLength = 180;
         return body.length > maxLength ? body.substring(0, maxLength) + "..." : body;
+    };
+    const truncateReviewTitle = (title) => {
+        const maxLength = 80;
+        return title.length > maxLength ? title.substring(0, maxLength) + "..." : title;
     };
 
     const handleReviewClick = () => {
@@ -116,7 +120,7 @@ export default function ReviewCard({
     return isReviewVisible ? (
         <div className={`${cardClass} w-[80%]`}>
             <div className="review-card-header" onClick={handleReviewClick}>
-                <span className="clickable-title">{review.title}</span>
+                <span className="clickable-title md:text-sm text-xs">{truncateReviewTitle(review.title)}</span>
                 {currentUser.role === 'Admin' && (
                     <span className={statusIndicatorClass}>
                         {review.is_deleted ? 'Deleted' : 'Alive'}
@@ -124,13 +128,15 @@ export default function ReviewCard({
                 )}
             </div>
             <div className="review-card-body">
-                <p>Book Title: {reviewedBook}</p>
-                <p>Review Author: {`${author.firstName} ${author.lastName}`}</p>
-                <p>Review Preview: {truncateReviewBody(review.body)}</p>
-                <br/>
-                {review.is_deleted && deletedByUser && (
-                    <p>Deleted By: {`${deletedByUser.firstName} ${deletedByUser.lastName}`}</p>
-                )}
+                <div className="">
+                    <p><strong>Book:</strong> {reviewedBook}</p>
+                    <p><strong>Review Author:</strong> {`${author.firstName} ${author.lastName}`}</p>
+                    <p><strong>Review Preview:</strong> {truncateReviewBody(review.body)}</p>
+                    <br/>
+                    {review.is_deleted && deletedByUser && (
+                        <p>Deleted By: {`${deletedByUser.firstName} ${deletedByUser.lastName}`}</p>
+                    )}
+                </div>
             </div>
             <div className="review-card-footer">
                 {currentUser.role === 'Author' && currentUser.userId === review.author_id && (

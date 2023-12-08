@@ -67,8 +67,8 @@ export default function ReviewList({olid}) {
                     </div>
                 </div>
                 <div>
-                    {currentBook.reviews.map((reviewId) => (
-                        <ReviewCard key={reviewId} reviewId={reviewId}/>
+                    {currentBook.reviews.map((reviewId,i) => (
+                        <ReviewCard key={i} reviewId={reviewId}/>
                     ))}
                 </div>
             </div>
