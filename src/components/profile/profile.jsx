@@ -11,13 +11,15 @@ export default function Profile() {
   const currentUserSlice = useSelector(state => state.currentUser);
   
   const [showProfileReviews, setShowProfileReviews] = useState(false);
+  
+  const isAdmin = currentUserSlice.role === 'Admin';
 
   useEffect(() => {
     redirectIfNotLoggedIn();
   }, [])
   
   useEffect(() => {
-    if (['Reader', 'Author'].includes(currentUserSlice.role)) {
+    if (!isAdmin) {
       setShowProfileReviews(true);
     }
   }, [currentUserSlice.role])
@@ -25,7 +27,7 @@ export default function Profile() {
   return (
     <Provider store={store}>
       <div className='md:flex h-full'>
-        <div className='md:w-1/2 bg-pink-300 flex justify-center'>
+        <div className={`${isAdmin ? 'w-full' : 'md:w-1/2'} bg-pink-300 flex justify-center`}>
           <PersonalInfo  />
         </div>
         {
