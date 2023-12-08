@@ -14,15 +14,13 @@ export default function Navbar() {
 
     const handleSignoutClicked = async () => {
         try {
-            // Call the backend API to destroy the session
-            await signout();
-
-            // Update Redux state and remove user data from localStorage
-            dispatch(removeCurrentUser());
-            localStorage.removeItem('currentUser');
-
-            // Navigate to the home page
-            navigate('/');
+          
+          // Update Redux state and remove user data from localStorage
+          dispatch(removeCurrentUser());
+          localStorage.removeItem('currentUser');
+          
+          // Navigate to the home page
+          navigate('/');
         } catch (error) {
             console.error('Error signing out:', error);
         }
