@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import { findUserById, updateProfile } from '../../clients/user_client';
+import { updateProfile } from '../../clients/user_client';
 import { useSelector } from 'react-redux';
 import { findPicById } from '../../utils/profilePicIdMap';
 import ProfilePicModal from '../universal/profilePicModal';
 
-export default function PersonalInfo() {
+export default function PersonalInfo({ profileId, profileUser, isCurrentUser, fetchUser }) {
   const currentUserSlice = useSelector(state => state.currentUser);
 
   const [profileDetails, setProfileDetails] = useState({
@@ -21,17 +21,13 @@ export default function PersonalInfo() {
   const [lastNameInput, setLastNameInput] = useState('');
   const [bioInput, setBioInput] = useState('');
   const [pfpInput, setPfpInput]= useState('');
-  
-  const fetchUser = async () => {
-      const currentUserResponse = await findUserById(currentUserSlice.userId)
-      const { email, firstName, lastName, bio, profilePicId } = currentUserResponse;
-      setProfileDetails({...profileDetails, email, firstName, lastName, profilePicId: profilePicId[0], bio: bio ? bio : ''});
-  }
+
   useEffect(() => {
-    if (currentUserSlice) {
-      fetchUser();
+    if (profileUser) {
+      const { email, firstName, lastName, bio, profilePicId } = profileUser;
+      setProfileDetails({...profileDetails, email, firstName, lastName, profilePicId: profilePicId[0], bio: bio ? bio : ''});
     }
-  }, [currentUserSlice.userId])
+  }, [profileUser])
   
   const handleEditClicked = (e) => {
     e.preventDefault();
@@ -50,9 +46,9 @@ export default function PersonalInfo() {
       bio: bioInput,
       profilePicId: pfpInput,
     }
-    await updateProfile(currentUserSlice.userId, updatedUserFields);
+    await updateProfile(profileId ? profileId : currentUserSlice.userId, updatedUserFields);
     setIsEditing(false);
-    fetchUser();
+    fetchUser(profileId ? profileId: currentUserSlice.userId);
   };
   
   const profilePicDisplay = () => {
@@ -64,7 +60,7 @@ export default function PersonalInfo() {
     }
  
   }
-
+  
   const handleProfilePicSubmission = pfpId => {
     setPfpInput(pfpId);
     setShowProfilePicModal(false);
@@ -96,19 +92,22 @@ export default function PersonalInfo() {
       </div>
       
       <form className='mt-4 w-[60%]'>
-     
-        <div className="md:flex md:items-center mb-3">
-          <div className="md:w-1/3 mr-2">
-            <label>
-              Email:
-            </label>
-          </div>
-          <div className='md:w-2/3'>
-            <p className='rounded pl-1'> 
-              {profileDetails.email}
-            </p> 
-          </div>
-        </div>
+        {
+          isCurrentUser ?
+            <div className="md:flex md:items-center mb-3">
+              <div className="md:w-1/3 mr-2">
+                <label>
+                  Email:
+                </label>
+              </div>
+              <div className='md:w-2/3'>
+                <p className='rounded pl-1'> 
+                  {profileDetails.email}
+                </p> 
+              </div>
+            </div> :
+            null
+        }
      
         {
           !isEditing ?
@@ -206,27 +205,30 @@ export default function PersonalInfo() {
         }
         
         {
-          isEditing ?
-            <div className='flex mb-4'>
+          isCurrentUser ?
+            !isEditing ?
               <button
-                className="bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-4 rounded"
-                onClick={e => handleSave(e)}
+                className="bg-[#007bff] hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white py-1 px-4 rounded"
+                onClick={(e) => handleEditClicked(e)}
               >
-                Save
-              </button>
-              <button
-                className="ml-2 bg-gray-500 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-4 rounded"
-                onClick={() => setIsEditing(false)}
-              >
-                Cancel
-              </button>
-            </div> :
-            <button
-              className="bg-sky-500 hover:bg-sky-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-4 rounded"
-              onClick={(e) => handleEditClicked(e)}
-            >
-              Edit
-            </button>
+                Edit
+              </button> :
+              <div className='flex mb-4'>
+                <button
+                  className="bg-red-500 hover:bg-red-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-4 rounded"
+                  onClick={e => handleSave(e)}
+                >
+                  Save
+                </button>
+                <button
+                  className="ml-2 bg-gray-500 hover:bg-gray-400 focus:shadow-outline focus:outline-none text-white font-bold py-1 px-4 rounded"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            :
+            null
         }
       </form>
       { showProfilePicModal && <ProfilePicModal onClose={() => setShowProfilePicModal(false)} handleProfilePicSubmission={handleProfilePicSubmission}/>}

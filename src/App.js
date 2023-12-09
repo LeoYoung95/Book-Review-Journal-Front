@@ -23,10 +23,11 @@ function App() {
                 <BrowserRouter>
                     <Navbar/> {/* Navbar is outside the Routes */}
                     <Breadcrumb/>
-                    <div className='mt-[60px] h-full'>
+                    <div className='mt-[20px] h-full'>
                         <Routes>
                             <Route path='/' element={<Homepage/>}/>
-                            <Route path='/profile/*' element={<Profile/>}/>
+                            <Route path='/profile' element={<Profile/>}/>
+                            <Route path='/profile/:id' element={<Profile/>}/>
                             <Route path='/signup' element={<Signup/>}/>
                             <Route path='/signin' element={<Signin/>}/>
                             <Route path='/book/:olid' element={<BookDetail/>}/>

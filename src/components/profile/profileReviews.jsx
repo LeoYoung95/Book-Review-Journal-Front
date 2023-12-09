@@ -4,38 +4,33 @@ import { useSelector } from 'react-redux';
 import ReviewCard from '../review/reviewCard';
 import { findUserById } from '../../clients/user_client';
 
-
-export default function ProfileReviews() {
+export default function ProfileReviews({ profileId, profileUser }) {
   
-  const currentUserSlice = useSelector(state => state.currentUser);
   const [userRole, setUserRole] = useState('');
   const [likedReviews, setLikedReviews] = useState([]);
   const [writtenReviews, setWrittenReviews] = useState([]);
+  const [deletedReviews, setDeletedReviews] = useState([]);
   
-  const fetchedLikedAndWrittenReviews = async () => {
-    const userResponse = await findUserById(currentUserSlice.userId);
-    console.log(userResponse);
-    setLikedReviews(userResponse.likedReviews);
-    setWrittenReviews(userResponse.writtenReviews);
-  }
-
   useEffect(() => {
-    if (currentUserSlice) {
-      console.log(currentUserSlice);
-      setUserRole(currentUserSlice.role);
-      fetchedLikedAndWrittenReviews();
+    if (profileUser) {
+      setLikedReviews(profileUser.likedReviews);
+      setWrittenReviews(profileUser.writtenReviews);
+      setDeletedReviews(profileUser.deletedReviews);
+      setUserRole(profileUser.role);
     }
-  }, [currentUserSlice])
+  }, [profileUser])
   
   return (
     <div className='w-full flex flex-col items-center'>
       <h1 className='mt-8 mb-4 font-bold text-2xl'>
         {
           userRole === 'Reader' ?
-            'My Liked Reviews' :
+            `Liked Reviews` :
           userRole === 'Author' ?
-            'My Reviews' :
-          null
+            'Reviews' :
+          userRole === 'Admin' ?
+            'Reviews Deleted' :
+            null
         }
       </h1>
     
@@ -47,18 +42,25 @@ export default function ProfileReviews() {
                 <ReviewCard key={i} reviewId={reviewId} />
               )
             }) : 'No liked reviews yet'
-            : 'Writer' ?
-            writtenReviews.length ?
+        : 'Writer' ?
+          writtenReviews.length ?
             writtenReviews.map((reviewId, i) => {
               return (
                 <ReviewCard key={i} reviewId={reviewId} />
               )
-            }) : 'No reviews yet' :
-          null
+            }) : 'No reviews yet' 
+        : 'Admin' ?
+          deletedReviews.length ?
+            deletedReviews.map((reviewId, i) => {
+              return (
+                <ReviewCard key={i} reviewId={reviewId} />
+              )
+            }) : 'No deleted reviews'
+        :
+        null
       }
     
       
-    
     </div>
   );
 };
