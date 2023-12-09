@@ -5,6 +5,48 @@ const request = axios.create({
     withCredentials: false,
 });
 
+// Function to fetch book details, including description and additional info by OLID
+export const fetchBookInfoByOLID = async (olid) => {
+    try {
+        const worksUrl = `https://openlibrary.org/works/${olid}.json`;
+        const worksResponse = await fetch(worksUrl);
+        const worksData = await worksResponse.json();
+        console.log('worksData', worksData);
+
+        let details = {
+            title: worksData.title,
+            // Assume first author if multiple
+            author_key: worksData.authors ? worksData.authors[0].author.key : null,
+            first_publish_year: worksData.first_publish_date,
+            cover_i: worksData.covers ? worksData.covers[0] : null,
+            genres: worksData.subjects || [],
+            description: worksData.description ? (typeof worksData.description === 'string' ? worksData.description : worksData.description.value) : 'No description available',
+        };
+
+        // Fetch the author's name using the author key if available
+        if (details.author_key) {
+            const authorUrl = `https://openlibrary.org${details.author_key}.json`;
+            const authorResponse = await fetch(authorUrl);
+            const authorData = await authorResponse.json();
+            details.author_name = authorData.name || 'Unknown';
+        } else {
+            details.author_name = 'Unknown';
+        }
+
+        // If the work has a cover ID, construct the image URL
+        if (details.cover_i) {
+            details.cover = `https://covers.openlibrary.org/b/id/${details.cover_i}-L.jpg`;
+        }
+
+        // Return the compiled details
+        return details;
+    } catch (error) {
+        console.error("Error fetching book details by OLID:", error);
+        throw error;
+    }
+}
+
+
 // Helper function to process description text
 const processDescription = (description) => {
     if (!description) {
@@ -33,7 +75,7 @@ const processDescription = (description) => {
 
 
 // Helper function to fetch detailed book information
-const fetchBookDetails = async (olid) => {
+export const fetchBookDetails = async (olid) => {
     try {
         const url = `https://openlibrary.org/works/${olid}.json`;
         const response = await request.get(url);
