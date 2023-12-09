@@ -35,19 +35,29 @@ export default function ReaderLikedReviews() {
     }, [dispatch, currentUser]);
 
     if (!currentUser) {
-        return <div>Loading user data...</div>;
+        return (
+            <div className="trending-container">
+                <h1 className="trending-title">My Liked Reviews</h1>
+                <p>Loading user data...</p>
+            </div>
+        );
     }
 
     if (likedReviews.length === 0) {
-        return <div>No liked reviews found.</div>;
+        return (
+            <div className="trending-container">
+                <h1 className="trending-title">My Liked Reviews</h1>
+                <p>No liked reviews found.</p>
+            </div>
+        );
     }
 
     return (
-        <div className="admin-review-management">
-            <h1 className="admin-review-title">My Liked Reviews</h1>
-            <div className="review-cards-container">
-                {likedReviews.map((reviewId) => (
-                    <ReviewCard key={reviewId} reviewId={reviewId}/>
+        <div className="trending-container">
+            <h1 className="trending-title">My Liked Reviews</h1>
+            <div className="trending-row">
+                {likedReviews.map((reviewId,i) => (
+                    <ReviewCard key={i} reviewId={reviewId}/>
                 ))}
             </div>
         </div>

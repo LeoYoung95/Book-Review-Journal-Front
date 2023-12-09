@@ -12,6 +12,12 @@ export const BASE_URL = process.env.REACT_APP_BRJ_REACT_BASE;
 // Base endpoint for book-related API requests
 export const BOOK_API = `${BASE_URL}/api/books`;
 
+// Function to get all books in our database
+export const fetchAllBooks = async () => {
+    const response = await request.get(BOOK_API);
+    return response.data;
+};
+
 
 // Function to get a book by its Open Library ID
 export const findBookByOpenLibraryId = async (olid) => {

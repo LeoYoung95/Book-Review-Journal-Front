@@ -11,3 +11,19 @@
     z-index: 1000; /* High enough to stay above all other content */
     /* ... other styling properties ... */
 }
+
+.reader-home-row {
+    display: flex;
+    align-items: start;
+    flex-wrap: nowrap;
+}
+
+.reader-home-row > .col-md-8 {
+    flex: 0 0 74%; /* 8/12 = 66.67% */
+    max-width: 74%;
+}
+
+.reader-home-row > .col-md-4 {
+    flex: 0 0 25%; /* 4/12 = 33.33% */
+    max-width: 25%;
+}
