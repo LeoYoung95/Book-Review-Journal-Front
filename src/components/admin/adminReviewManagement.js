@@ -46,7 +46,7 @@ const AdminReviewManagement = () => {
     const triggerRefresh = () => {
         setRefreshNeeded(true);
     };
-
+    
     return (
         <div className="row admin-home-row">
 

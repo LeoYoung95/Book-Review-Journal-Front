@@ -13,13 +13,37 @@ export default function ProfileReviews({ profileId, profileUser }) {
   
   useEffect(() => {
     if (profileUser) {
+      setUserRole(profileUser.role);
       setLikedReviews(profileUser.likedReviews);
       setWrittenReviews(profileUser.writtenReviews);
       setDeletedReviews(profileUser.deletedReviews);
-      setUserRole(profileUser.role);
     }
   }, [profileUser])
   
+  const displayReviews = () => {
+    if (userRole === 'Reader' && likedReviews.length) {
+      return (
+        likedReviews.map((reviewId, i) => (
+          <ReviewCard key={i} reviewId={reviewId} />
+        ))
+      )
+    } else if (userRole === 'Author' && writtenReviews.length) {
+      return (
+        writtenReviews.map((reviewId, i) => (
+          <ReviewCard key={i} reviewId={reviewId} />
+        ))
+      )
+    } else if (userRole === 'Admin' && deletedReviews.length) {
+      return (
+        deletedReviews.map((reviewId, i) => (
+          <ReviewCard key={i} reviewId={reviewId} />
+        ))
+      )
+    } else {
+      return 'Nothing yet'
+    }
+  }
+
   return (
     <div className='w-full flex flex-col items-center'>
       <h1 className='mt-8 mb-4 font-bold text-2xl'>
@@ -35,29 +59,7 @@ export default function ProfileReviews({ profileId, profileUser }) {
       </h1>
     
       {
-        userRole === 'Reader' ?
-          likedReviews.length ? 
-            likedReviews.map((reviewId,i) => {
-              return (
-                <ReviewCard key={i} reviewId={reviewId} />
-              )
-            }) : 'No liked reviews yet'
-        : 'Author' ?
-          writtenReviews.length ?
-            writtenReviews.map((reviewId, i) => {
-              return (
-                <ReviewCard key={i} reviewId={reviewId} />
-              )
-            }) : 'No reviews yet' 
-        : 'Admin' ?
-          deletedReviews.length ?
-            deletedReviews.map((reviewId, i) => {
-              return (
-                <ReviewCard key={i} reviewId={reviewId} />
-              )
-            }) : 'No deleted reviews'
-        :
-        null
+        displayReviews()
       }
     
       
