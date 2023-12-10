@@ -42,7 +42,7 @@ export default function ProfileReviews({ profileId, profileUser }) {
                 <ReviewCard key={i} reviewId={reviewId} />
               )
             }) : 'No liked reviews yet'
-        : 'Writer' ?
+        : 'Author' ?
           writtenReviews.length ?
             writtenReviews.map((reviewId, i) => {
               return (

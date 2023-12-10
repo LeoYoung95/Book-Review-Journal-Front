@@ -97,6 +97,7 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
             await recoverReview(review._id);
             // Update the review state to reflect the recovery
             setReview({ ...review, is_deleted: false, deleted_by: null });
+
             triggerRefresh();
         } catch (err) {
             console.error("Error recovering review:", err);

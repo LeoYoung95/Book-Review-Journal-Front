@@ -34,3 +34,10 @@
     flex: 0 0 25%; /* 4/12 = 33.33% */
     max-width: 25%;
 }
+
+.admin-home-row > .col-md-6 {
+    flex: 0 0 50%; /* 8/12 = 66.67% */
+    max-width: 30%;
+    align-content: start;
+}
+
