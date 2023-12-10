@@ -17,6 +17,7 @@ export const findAllReviews = async () => {
 
 // Get Review by Review ID
 export const findReviewById = async (id) => {
+    console.log("review id: ", id, typeof id)
     const response = await request.get(`${REVIEW_API}/${id}`);
     return response.data;
 }
