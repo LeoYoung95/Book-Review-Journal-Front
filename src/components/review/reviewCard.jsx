@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { findReviewById, softDeleteReview, hardDeleteReview, recoverReview } from "../../clients/review_client";
-import { findUserById, removeWrittenReview } from "../../clients/user_client";
+import { findUserById, removeWrittenReview, addDeletedReview, removeDeletedReview } from "../../clients/user_client";
 import { deleteReviewByOpenLibraryId } from "../../clients/book_client";
 import { fetchBookName } from "../../clients/openlib_client";
 import { setNeedRefresh } from "../../reducers/currentBooksReducer.js";
@@ -62,9 +62,11 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
 
     const handleSoftDelete = async () => {
         try {
+            await addDeletedReview(currentUser.userId, review._id);
             const response = await softDeleteReview(review._id, currentUser.userId);
             setReview(response);
             dispatch(setNeedRefresh(true));
+            triggerRefresh();
             setTimeout(() => {
                 console.log("After dispatching in ReviewCard, needRefresh:", needRefresh);
             }, 1000); // Delay the log
@@ -91,9 +93,11 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
 
     const handleRecover = async () => {
         try {
+            await removeDeletedReview(currentUser.userId, review._id);
             await recoverReview(review._id);
             // Update the review state to reflect the recovery
             setReview({ ...review, is_deleted: false, deleted_by: null });
+            triggerRefresh();
         } catch (err) {
             console.error("Error recovering review:", err);
         }

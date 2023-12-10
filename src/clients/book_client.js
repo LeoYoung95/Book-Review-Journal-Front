@@ -51,6 +51,24 @@ export const deleteReviewByOpenLibraryId = async (olid, reviewID) => {
     return responseData;
 };
 
+// Add to Book's liked users by Open Library ID
+export const addBookLikedUsersById = async (olid, userId) => {
+    const response = await request.post(`${BOOK_API}/olid/${olid}/liked_users`, { userId });
+    return response.data;
+};
+
+// Delete Book's liked users by Open Library ID ID
+export const deleteBookLikedUsersById = async (olid, userId) => {
+    const requestOptions = {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+    };
+
+    const response = await fetch(`${BOOK_API}/olid/${olid}/liked_users`, requestOptions);
+    const responseData = await response.json();
+    return responseData;
+};
 
 
 

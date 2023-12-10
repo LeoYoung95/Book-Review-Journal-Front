@@ -99,7 +99,7 @@ export const addWrittenReview = (id, reviewId) => {
     return request.post(`${USERS_API}/${id}/written_reviews`, { reviewId }).then(handleResponse).catch(handleError);
 };
 
-// Admin Only: Remove Written Review [Hard Delete]
+// Admin Only: Remove Written Review from its author [Hard Delete]
 export const removeWrittenReview = (id, reviewId) => {
     const requestOptions = {
         method: "DELETE",
@@ -110,27 +110,19 @@ export const removeWrittenReview = (id, reviewId) => {
     return fetch(`${USERS_API}/${id}/written_reviews`, requestOptions).then(handleResponse).catch(handleError);
 };
 
-// Get Book's liked users by Open Library ID
-export const findBookLikedUsersById = async (olid) => {
-    const response = await request.get(`${BOOK_API}/${olid}/liked_users`);
-    return response.data;
+// Admin Only: Add to their deleted reviews [Soft Delete Tracker]
+export const addDeletedReview = (id, reviewId) => {
+    return request.post(`${USERS_API}/${id}/deleted_reviews`, { reviewId }).then(handleResponse).catch(handleError);
 };
 
-// Add to Book's liked users by Open Library ID ID
-export const addBookLikedUsersById = async (olid, userId) => {
-    const response = await request.post(`${BOOK_API}/${olid}/liked_users`, { userId });
-    return response.data;
-};
-
-// Delete Book's liked users by Open Library ID ID
-export const deleteBookLikedUsersById = async (olid, userId) => {
+// Admin Only: Remove from their deleted reviews [Soft Delete Tracker]
+export const removeDeletedReview = (id, reviewId) => {
     const requestOptions = {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ reviewId }),
     };
 
-    const response = await fetch(`${BOOK_API}/${olid}/liked_users`, requestOptions);
-    const responseData = await response.json();
-    return responseData;
+    return fetch(`${USERS_API}/${id}/deleted_reviews`, requestOptions).then(handleResponse).catch(handleError);
 };
+

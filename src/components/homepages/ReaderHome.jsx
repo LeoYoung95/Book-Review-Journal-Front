@@ -9,7 +9,7 @@ const ReaderHome = () => {
     // Check if the user is an Admin
     if (currentUser && currentUser.role === 'Reader') {
         return (
-            <div className="reader-home-row">
+            <div className="reader-home-row justify-center">
                 <div className="col col-md-8">
                     <ReviewTrending/>
                 </div>
