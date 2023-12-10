@@ -1,15 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
-import {
-    findReviewById,
-    addReviewLikedUsersById,
-    deleteReviewLikedUsersById,
-} from "../../clients/review_client";
-import {findUserById, addLikedReview, removeLikedReview} from "../../clients/user_client";
+import {useNavigate, useParams} from "react-router-dom";
+import {addReviewLikedUsersById, deleteReviewLikedUsersById, findReviewById,} from "../../clients/review_client";
+import {addLikedReview, findUserById, removeLikedReview} from "../../clients/user_client";
 import {findTagById} from "../../clients/tag_client";
 import {IoHeartOutline, IoHeartSharp} from "react-icons/io5";
-import {useNavigate} from "react-router-dom";
 import Modal from 'react-modal';
 import './review.css';
 
@@ -48,8 +43,7 @@ export default function ReviewDetail() {
                 setAuthor(authorRes);
 
                 const tagLabels = await Promise.all(reviewRes.tags.map(async (tagId) => {
-                        const tag = await findTagById(tagId);
-                        return tag.label;
+                    return await findTagById(tagId);
                     }
                 ));
                 setTags(tagLabels);
@@ -152,7 +146,7 @@ export default function ReviewDetail() {
                                 <span className="mr-2">Tags:</span>
                                 <div className="tags-container">
                                     {tags.map((tag, index) => (
-                                        <span key={index} className="tag">{tag}</span>
+                                        <span key={index} className="tag">{tag.label}</span>
                                     ))}
                                 </div>
                             </div>

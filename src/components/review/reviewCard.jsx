@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { findReviewById, softDeleteReview, hardDeleteReview, recoverReview } from "../../clients/review_client";
-import { findUserById, removeWrittenReview, addDeletedReview, removeDeletedReview } from "../../clients/user_client";
-import { deleteReviewByOpenLibraryId } from "../../clients/book_client";
-import { fetchBookName } from "../../clients/openlib_client";
-import { removeReviewFromTag} from "../../clients/tag_client";
-import { setNeedRefresh } from "../../reducers/currentBooksReducer.js";
+import React, {useEffect, useState} from "react";
+import {useSelector, useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {findReviewById, softDeleteReview, hardDeleteReview, recoverReview} from "../../clients/review_client";
+import {findUserById, removeWrittenReview, addDeletedReview, removeDeletedReview} from "../../clients/user_client";
+import {deleteReviewByOpenLibraryId} from "../../clients/book_client";
+import {fetchBookName} from "../../clients/openlib_client";
+import {removeReviewFromTag} from "../../clients/tag_client";
+import {setNeedRefresh} from "../../reducers/currentBooksReducer.js";
 import "./review.css";
 
-export default function ReviewCard({ reviewId}) {
+export default function ReviewCard({reviewId}) {
     const currentUser = useSelector((state) => state.currentUser);
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [review, setReview] = useState(null);
@@ -25,7 +25,7 @@ export default function ReviewCard({ reviewId}) {
                 const reviewData = await findReviewById(reviewId);
                 setReview(reviewData);
                 console.log("Review data:", reviewData);
-                
+
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
                     setAuthor(authorData);
@@ -64,7 +64,9 @@ export default function ReviewCard({ reviewId}) {
 
     const handleSoftDelete = async () => {
         try {
-            await addDeletedReview(currentUser.userId, review._id);
+            if (currentUser.role === "Admin") {
+                await addDeletedReview(currentUser.userId, review._id);
+            }
             const response = await softDeleteReview(review._id, currentUser.userId);
             setReview(response);
             dispatch(setNeedRefresh(true));
@@ -99,7 +101,7 @@ export default function ReviewCard({ reviewId}) {
             await removeDeletedReview(currentUser.userId, review._id);
             await recoverReview(review._id);
             // Update the review state to reflect the recovery
-            setReview({ ...review, is_deleted: false, deleted_by: null });
+            setReview({...review, is_deleted: false, deleted_by: null});
         } catch (err) {
             console.error("Error recovering review:", err);
         }
@@ -137,7 +139,7 @@ export default function ReviewCard({ reviewId}) {
                     <p>
                         <strong>Review Preview:</strong> {truncateReviewBody(review.body)}
                     </p>
-                    <br />
+                    <br/>
                     {review.is_deleted && deletedByUser && (
                         <p>Deleted By: {`${deletedByUser.firstName} ${deletedByUser.lastName}`}</p>
                     )}
