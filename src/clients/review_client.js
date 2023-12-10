@@ -61,6 +61,12 @@ export const updateReview = async (id, review) => {
     return response.data;
 }
 
+// Author Only: Add Tags to Review
+export const addTagsToReview = async (id, tagIds) => {
+const response = await request.post(`${REVIEW_API}/${id}/tags`, {tagIds});
+    return response.data;
+}
+
 // Author & Admin Only: Soft Delete Review
 export const softDeleteReview = async (id, userId) => {
     const response = await request.put(`${REVIEW_API}/delete/${id}`, { deletedBy: userId });

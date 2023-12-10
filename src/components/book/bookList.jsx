@@ -29,11 +29,12 @@ const BookList = ({ searchQuery }) => {
                 if (additionalDetails && additionalDetails.reviews) {
                     for (const reviewId of additionalDetails.reviews) {
                         const review = await findReviewById(reviewId);
-                        if (!review.is_deleted) {
+                        if (review && !review.is_deleted) {
                             reviewCount++;
                         }
                     }
                 }
+
 
                 return {
                     ...book,

@@ -5,10 +5,11 @@ import { findReviewById, softDeleteReview, hardDeleteReview, recoverReview } fro
 import { findUserById, removeWrittenReview, addDeletedReview, removeDeletedReview } from "../../clients/user_client";
 import { deleteReviewByOpenLibraryId } from "../../clients/book_client";
 import { fetchBookName } from "../../clients/openlib_client";
+import { removeReviewFromTag} from "../../clients/tag_client";
 import { setNeedRefresh } from "../../reducers/currentBooksReducer.js";
 import "./review.css";
 
-export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
+export default function ReviewCard({ reviewId}) {
     const currentUser = useSelector((state) => state.currentUser);
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
     const [review, setReview] = useState(null);
@@ -23,6 +24,7 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
             try {
                 const reviewData = await findReviewById(reviewId);
                 setReview(reviewData);
+                console.log("Review data:", reviewData);
                 
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);
@@ -66,7 +68,6 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
             const response = await softDeleteReview(review._id, currentUser.userId);
             setReview(response);
             dispatch(setNeedRefresh(true));
-            triggerRefresh();
             setTimeout(() => {
                 console.log("After dispatching in ReviewCard, needRefresh:", needRefresh);
             }, 1000); // Delay the log
@@ -84,8 +85,10 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
             // Delete the review from the book database
             await deleteReviewByOpenLibraryId(review.book_olid, review._id);
 
-            // Trigger refresh in parent component
-            triggerRefresh();
+            // Delete the review from tag database
+            for (let i = 0; i < review.tag.length; i++) {
+                await removeReviewFromTag(review.tag[i], review._id);
+            }
         } catch (err) {
             console.error("Error deleting review:", err);
         }
@@ -97,8 +100,6 @@ export default function ReviewCard({ reviewId, triggerRefresh = () => {} }) {
             await recoverReview(review._id);
             // Update the review state to reflect the recovery
             setReview({ ...review, is_deleted: false, deleted_by: null });
-
-            triggerRefresh();
         } catch (err) {
             console.error("Error recovering review:", err);
         }

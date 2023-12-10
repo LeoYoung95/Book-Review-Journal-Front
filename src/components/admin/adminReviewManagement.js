@@ -25,7 +25,6 @@ const AdminReviewManagement = () => {
     const fetchAllReviews = async () => {
         try {
             const fetchedReviews = await findAllReviews();
-            console.log('Fetched all reviews:', fetchedReviews);
             setAllReviews(fetchedReviews);
         } catch (error) {
             console.error('Error fetching all reviews:', error);
@@ -43,10 +42,6 @@ const AdminReviewManagement = () => {
         }
     };
 
-    const triggerRefresh = () => {
-        setRefreshNeeded(true);
-    };
-    
     return (
         <div className="row admin-home-row">
 
@@ -56,7 +51,6 @@ const AdminReviewManagement = () => {
                         <ReviewCard
                             key={review._id}
                             reviewId={review._id}
-                            triggerRefresh={triggerRefresh}
                         />
                     ))}
                 </div>

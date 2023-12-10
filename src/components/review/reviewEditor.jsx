@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import * as client from "../../clients/review_client";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { setCurrentBook, setCurrentBooks, setNeedRefresh } from "../../reducers/currentBooksReducer";
-import { useDispatch } from "react-redux";
-import ReviewCard from "./reviewCard";
-import { createBookByOpenLibraryId, createReviewByOpenLibraryId, findBookByOpenLibraryId } from "../../clients/book_client";
-import { addWrittenReview } from "../../clients/user_client";
+import {useParams, useLocation, useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {setCurrentBook, setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
+import {useDispatch} from "react-redux";
+import {
+    createBookByOpenLibraryId,
+    createReviewByOpenLibraryId,
+    findBookByOpenLibraryId
+} from "../../clients/book_client";
+import {addWrittenReview} from "../../clients/user_client";
+import {addReviewToTag, addTag, findAllTags} from "../../clients/tag_client";
 
 
 const ReviewEditor = () => {
-    const { reviewId } = useParams();
+    const {reviewId} = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -34,6 +38,7 @@ const ReviewEditor = () => {
     const [reviewID, setReviewID] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [tags, setTags] = useState(["", "", "", "", ""]);
 
     useEffect(() => {
         const fetchReview = async () => {
@@ -42,7 +47,7 @@ const ReviewEditor = () => {
                 if (reviewId) {
                     const fetchedReview = await client.findReviewById(reviewId);
                     console.log("fetchedReview:", fetchedReview);
-                    setReview({ ...fetchedReview });
+                    setReview({...fetchedReview});
                 }
             } catch (err) {
                 setError("Error fetching review: ${err.message}");
@@ -56,7 +61,13 @@ const ReviewEditor = () => {
     }, [reviewId]);
 
     const handleChange = (e) => {
-        setReview({ ...review, [e.target.name]: e.target.value });
+        setReview({...review, [e.target.name]: e.target.value});
+    };
+
+    const handleTagChange = (index, value) => {
+        const newTags = [...tags];
+        newTags[index] = value;
+        setTags(newTags);
     };
 
     const handleSave = async () => {
@@ -94,20 +105,16 @@ const ReviewEditor = () => {
 
                     try {
                         newReview = await client.createReview(updatedReview);
-                    } catch (error) {
-                        console.error("Error creating review:", error.message);
-                        setError(`Error creating review: ${error.message}`);
-                        return;
-                    }
+                        setReviewID(newReview._id);
 
-                    setReviewID(newReview._id);
-
-                    try {
+                        // Create a review with a specific Open Library ID
                         await createReviewByOpenLibraryId(book_olid, newReview._id);
+
+                        // Add the review to the user's written reviews
                         await addWrittenReview(currentUser.userId, newReview._id);
                     } catch (error) {
-                        console.error("Error in post-review operations:", error.message);
-                        setError(`Error in post-review operations: ${error.message}`);
+                        console.error("Error in review creation process:", error.message);
+                        setError(`Error in review creation process: ${error.message}`);
                         return;
                     }
                 } else {
@@ -115,23 +122,45 @@ const ReviewEditor = () => {
                 }
             }
 
-            // Update currentBook with new review
+            // Handling tags for a new review
+            if (!reviewId) {
+                const validTags = tags.filter(tag => tag.trim() !== '');
+
+                const tagIds = await Promise.all(validTags.map(async (tagLabel) => {
+                    try {
+                        let existingTags = await findAllTags();
+                        let existingTag = existingTags.find(t => t.label === tagLabel);
+
+                        if (!existingTag) {
+                            // Create a new tag if it doesn't exist
+                            existingTag = await addTag({ label: tagLabel });
+                        }
+
+                        await addReviewToTag(existingTag._id, newReview._id);
+                        return existingTag._id;
+                    } catch (error) {
+                        console.error("Error handling tag:", error.message);
+                    }
+                }));
+
+                // Add tags to the review, filtering out any undefined values
+                await client.addTagsToReview(newReview._id, tagIds.filter(id => id !== undefined));
+            }
+
+            // Update Redux store and navigate to the new review
             const updatedCurrentBook = {
                 ...currentBook,
                 reviews: [...(currentBook.reviews || []), newReview._id],
             };
             dispatch(setCurrentBook(updatedCurrentBook));
 
-            // Update the book in the currentBooks array
             const updatedCurrentBooks = currentBooks.map((book) => {
                 if (book.olid === book_olid) {
-                    // Provide a fallback empty array if book.reviews is null or undefined
                     return { ...book, reviews: [...(book.reviews || []), newReview._id] };
                 }
                 return book;
             });
 
-            // Dispatch action to update currentBooks in the Redux store
             dispatch(setCurrentBooks(updatedCurrentBooks));
             dispatch(setNeedRefresh(true));
 
@@ -142,6 +171,8 @@ const ReviewEditor = () => {
             setLoading(false);
         }
     };
+
+
     const handleCancel = () => {
         navigate(-1); // Go back to the previous page
     };
@@ -189,14 +220,35 @@ const ReviewEditor = () => {
                         />
                     </div>
                 </div>
-            </div>
-            <div className="review-card-footer">
-                <button onClick={handleCancel} className="btn btn-danger mr-4 rounded">
-                    Cancel
-                </button>
-                <button onClick={handleSave} className="btn btn-success rounded">
-                    Save
-                </button>
+
+                {!reviewId && (
+                    tags.map((tag, index) => (
+                        <div className="form-group row" key={index}>
+                            <label htmlFor={`tag-${index}`} className="col-sm-2 col-form-label">
+                                Tag {index + 1}
+                            </label>
+                            <div className="col-sm-9">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id={`tag-${index}`}
+                                    value={tag}
+                                    onChange={(e) => handleTagChange(index, e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    ))
+                )}
+
+
+                <div className="review-card-footer">
+                    <button onClick={handleCancel} className="btn btn-danger mr-4 rounded">
+                        Cancel
+                    </button>
+                    <button onClick={handleSave} className="btn btn-success rounded">
+                        Save
+                    </button>
+                </div>
             </div>
         </div>
     );
