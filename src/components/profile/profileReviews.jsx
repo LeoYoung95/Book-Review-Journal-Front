@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ReviewCard from '../review/reviewCard';
 import { findUserById } from '../../clients/user_client';
+import "../review/review.css";
 
 export default function ProfileReviews({ profileId, profileUser }) {
   
@@ -45,7 +46,7 @@ export default function ProfileReviews({ profileId, profileUser }) {
   }
 
   return (
-    <div className='w-full flex flex-col items-center'>
+    <div className='pl-10'>
       <h1 className='mt-8 mb-4 font-bold text-2xl'>
         {
           userRole === 'Reader' ?

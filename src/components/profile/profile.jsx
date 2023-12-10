@@ -40,7 +40,7 @@ export default function Profile() {
 
   return (
     <Provider store={store}>
-      <div className='md:flex h-full px-16 bg-[#f0f8ff]'>
+      <div className='md:flex px-16 bg-[#f0f8ff]'>
         <div className='md:w-1/2 md:border-r-4 md:border-white flex justify-center'>
           <PersonalInfo 
             profileId={id} 
@@ -49,7 +49,7 @@ export default function Profile() {
             fetchUser={fetchUser}  
           />
         </div>
-        <div className='md:w-1/2 h-full flex justify-center'>
+        <div className='md:w-1/2  flex justify-center'>
           <ProfileReviews 
             profileId={id}
             profileUser={profileUser}
