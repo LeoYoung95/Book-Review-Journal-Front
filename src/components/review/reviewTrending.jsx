@@ -27,7 +27,7 @@ export default function ReviewTrending() {
             .filter(review => !review.is_deleted) // Exclude reviews marked as deleted
             .sort((a, b) => b.likedUsers.length - a.likedUsers.length);
 
-        setTopReviews(filteredAndSortedReviews.slice(0, 6));
+        setTopReviews(filteredAndSortedReviews.slice(0, 9));
     }, [reviews]);
 
     if (topReviews.length === 0) {
