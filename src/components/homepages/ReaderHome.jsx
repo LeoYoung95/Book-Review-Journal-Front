@@ -11,15 +11,15 @@ const ReaderHome = () => {
         return (
             <div className="reader-home-row justify-center">
                 {/* ReviewTrending will always be visible */}
-                <div className="col-12 col-md-7">
+                <div className="w-full lg:w-9/12 ">
                     <ReviewTrending/>
                 </div>
-                {/* ReaderLikedReviews will be hidden on screens smaller than md */}
-                <div className="col-md-4 d-none d-md-block">
+                {/* ReaderLikedReviews will be hidden on screens smaller than lg */}
+                <div className="hidden lg:block lg:w-2/12 border-l-4 border-r-4">
                     <ReaderLikedReviews/>
                 </div>
-                {/* ReaderLikedBooks will be hidden on screens smaller than md */}
-                <div className="col-md-1 d-none d-md-block align-items-start">
+                {/* ReaderLikedBooks will be hidden on screens smaller than lg */}
+                <div className="hidden lg:block lg:w-1/12 items-start">
                     <ReaderLikedBooks/>
                 </div>
             </div>
