@@ -75,7 +75,7 @@ const BookCardLarger = ({ book }) => {
             try {
                 await Promise.all([
                     deleteBookLikedUsersById(book.olid, currentUserId),
-                    removeLikedBook(currentUserId, book._id)
+                    removeLikedBook(currentUserId, bookInDb._id)
                 ]);
             } catch (error) {
                 console.error("Error unliking the book:", error);
@@ -91,7 +91,7 @@ const BookCardLarger = ({ book }) => {
             try {
                 await Promise.all([
                     addBookLikedUsersById(book.olid, currentUserId),
-                    addLikedBook(currentUserId, book._id)
+                    addLikedBook(currentUserId, bookInDb._id)
                 ]);
             } catch (error) {
                 console.error("Error liking the book:", error);
