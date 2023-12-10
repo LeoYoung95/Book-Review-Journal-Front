@@ -39,6 +39,7 @@ export const findAllTags = async () => {
 
 // Find Tag by ID
 export const findTagById = async (id) => {
+    console.log('tagId', id, typeof id);
     return request.get(`${TAGS_API}/${id}`).then(handleResponse).catch(handleError);
 };
 

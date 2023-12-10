@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { findUserById } from '../../clients/user_client';
+import { findTagById} from "../../clients/tag_client";
 import ReviewCard from '../review/reviewCard';
 import '../admin/adminReviewManagement.css';
-import { useSelector } from "react-redux";
+import {useParams} from "react-router-dom";
 
-const TagReview = () => {
+const TagReview = (tag) => {
+    const {tagId} = useParams();
+
     const [reviewIds, setReviewIds] = useState([]);
-    const currentUserId = useSelector(state => state.currentUser.userId);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const fetchedUser = await findUserById(currentUserId);
-                setReviewIds(fetchedUser.writtenReviews);
-
+                const fetchedTag = await findTagById(tagId);
+                if (fetchedTag && fetchedTag.reviews) {
+                    setReviewIds(fetchedTag.reviews);
+                }
             } catch (error) {
                 console.error('Error fetching reviews:', error);
             }
         };
 
-        fetchData(); // This line is added to call the fetchData function.
-    }, [currentUserId]); // The effect will run every time currentUserId changes.
+        fetchData();
+    }, [tagId]);
+
 
     console.log(reviewIds)
     return (
         <div className="admin-review-management">
-            <h1 className="admin-review-title">My Written Reviews</h1>
+            <h1 className="admin-review-title">Reviews on this tag</h1>
             <div className="review-cards-container">
                 {reviewIds.map(reviewId => (
                     <ReviewCard

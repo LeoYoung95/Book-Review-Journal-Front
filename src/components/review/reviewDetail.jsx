@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {addReviewLikedUsersById, deleteReviewLikedUsersById, findReviewById,} from "../../clients/review_client";
 import {addLikedReview, findUserById, removeLikedReview} from "../../clients/user_client";
 import {findTagById} from "../../clients/tag_client";
@@ -42,11 +42,13 @@ export default function ReviewDetail() {
                 const authorRes = await findUserById(reviewRes.author_id);
                 setAuthor(authorRes);
 
-                const tagLabels = await Promise.all(reviewRes.tags.map(async (tagId) => {
+                console.log('reviewRes.tags:', reviewRes.tags);
+                const tagRes = await Promise.all(reviewRes.tags.map(async (tagId) => {
+                    console.log('tagId:', tagId);
                     return await findTagById(tagId);
-                    }
-                ));
-                setTags(tagLabels);
+                }));
+
+                setTags(tagRes);
 
             } catch (err) {
                 console.error("Error fetching data:", err);
@@ -111,7 +113,7 @@ export default function ReviewDetail() {
         return <div>Loading...</div>;
     }
 
-    console.log("review:", review);
+    console.log("Tags:", tags)
 
 
     return (
@@ -146,7 +148,9 @@ export default function ReviewDetail() {
                                 <span className="mr-2">Tags:</span>
                                 <div className="tags-container">
                                     {tags.map((tag, index) => (
-                                        <span key={index} className="tag">{tag.label}</span>
+                                        <Link to={`/tags/${tag._id}`} key={index} className="tag">
+                                            {tag.label}
+                                        </Link>
                                     ))}
                                 </div>
                             </div>

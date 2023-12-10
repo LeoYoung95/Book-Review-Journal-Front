@@ -14,6 +14,7 @@ import BookDetail from './pages/bookDetailPage.jsx';
 import SearchPage from './pages/searchPage.jsx';
 import ReviewEditor from "./components/review/reviewEditor";
 import ReviewDetail from "./components/review/reviewDetail";
+import TagReview from "./components/tags/reviewsByTag";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                             <Route path='/review-editor/new' element={<ReviewEditor/>}/>
                             <Route path='/review-editor/edit/:reviewId' element={<ReviewEditor/>}/>
                             <Route path='/reviews/:reviewId' element={<ReviewDetail/>}/>
+                            <Route path='/tags/:tagId' element={<TagReview/>}/>
                         </Routes>
                     </div>
                 </BrowserRouter>
