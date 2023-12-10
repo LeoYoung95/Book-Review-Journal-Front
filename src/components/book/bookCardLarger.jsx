@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
 import { findUserById, addLikedBook, removeLikedBook } from "../../clients/user_client";
-import { addBookLikedUsersById, deleteBookLikedUsersById } from "../../clients/book_client";
+import {
+    addBookLikedUsersById,
+    createBookByOpenLibraryId,
+    deleteBookLikedUsersById,
+    findBookByOpenLibraryId
+} from "../../clients/book_client";
 import { useNavigate } from "react-router-dom";
 import "./book.css";
 
@@ -13,7 +18,6 @@ const BookCardLarger = ({ book }) => {
 
     const isLiked = likedUsers.some(user => user._id === currentUserId);
     const navigate = useNavigate();
-    console.log("Book:", book)
 
     const navigateToUserProfile = (userId) => {
         console.log(`Navigating to user profile with ID: ${userId}`);
@@ -40,6 +44,28 @@ const BookCardLarger = ({ book }) => {
     }, [book.likedUsers]);
 
     const handleLikeBook = async () => {
+        // Check if the book exists in the database
+        let bookInDb;
+        try {
+            bookInDb = await findBookByOpenLibraryId(book.olid);
+        } catch (error) {
+            console.error("Error finding book:", error.message);
+            // Handle error
+            return;
+        }
+
+        // If the book doesn't exist, create it
+        if (!bookInDb) {
+            try {
+                bookInDb = await createBookByOpenLibraryId(book.olid);
+            } catch (error) {
+                console.error("Error creating book:", error.message);
+                // Handle error
+                return;
+            }
+        }
+
+        // Continue with the rest of the like/unlike logic
         let updatedLikedUsers;
 
         if (isLiked) {
@@ -56,7 +82,7 @@ const BookCardLarger = ({ book }) => {
                 setLikedUsers(likedUsers);
             }
         } else {
-            // Assuming you have a function to get the full user details
+
             const currentUserDetails = await findUserById(currentUserId);
 
             updatedLikedUsers = [...likedUsers, currentUserDetails];
