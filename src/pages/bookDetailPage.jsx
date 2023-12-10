@@ -25,9 +25,12 @@ const BookDetail = () => {
 
     console.log("Current books:", currentBooks)
 
+    console.log("Book:", book)
+
     return (
         <div>
             {/* Book details section */}
+
             {book && <BookCardLarger book={book} />}
 
             {/* Reviews section */}

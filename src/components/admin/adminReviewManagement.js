@@ -43,9 +43,13 @@ const AdminReviewManagement = () => {
     };
 
     return (
-        <div className="row admin-home-row">
 
+        <div>
+            <div className="row">
                 <h1 className="admin-review-title">All Reviews</h1>
+            </div>
+
+            <div className="row">
                 <div className="review-cards-container">
                     {allReviews.map((review) => (
                         <ReviewCard
@@ -54,8 +58,11 @@ const AdminReviewManagement = () => {
                         />
                     ))}
                 </div>
+            </div>
+
         </div>
-    );
+    )
+        ;
 }
 
 export default AdminReviewManagement;
