@@ -15,7 +15,7 @@
 .reader-home-row {
     display: flex;
     align-items: start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .admin-home-row {

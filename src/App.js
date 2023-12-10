@@ -15,7 +15,7 @@ import SearchPage from './pages/searchPage.jsx';
 import ReviewEditor from "./components/review/reviewEditor";
 import ReviewDetail from "./components/review/reviewDetail";
 import TagReview from "./components/tags/reviewsByTag";
-
+import TrendingBookPage from "./pages/trendingBookPage";
 
 function App() {
     return (
@@ -33,6 +33,7 @@ function App() {
                             <Route path='/signin' element={<Signin/>}/>
                             <Route path='/book/:olid' element={<BookDetail/>}/>
                             <Route path='/search' element={<SearchPage/>}/>
+                            <Route path='/trending' element={<TrendingBookPage/>}/>
                             <Route path='/review-editor/new' element={<ReviewEditor/>}/>
                             <Route path='/review-editor/edit/:reviewId' element={<ReviewEditor/>}/>
                             <Route path='/reviews/:reviewId' element={<ReviewDetail/>}/>

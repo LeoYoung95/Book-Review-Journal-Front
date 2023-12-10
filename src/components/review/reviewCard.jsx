@@ -24,7 +24,6 @@ export default function ReviewCard({reviewId}) {
             try {
                 const reviewData = await findReviewById(reviewId);
                 setReview(reviewData);
-                console.log("Review data:", reviewData);
 
                 if (reviewData && reviewData.author_id) {
                     const authorData = await findUserById(reviewData.author_id);

@@ -12,7 +12,8 @@ const SearchPage = () => {
         return (
             <div>
                 <div style={{paddingTop: '20px'}}>
-                    <h1 style={{textAlign: 'center'}}><strong>Please Enter A Book Name.</strong></h1>
+                    <h2 className="trending-title">Please enter a book name to search.</h2>
+                    <h1 className="pt-10" style={{textAlign: 'center'}}><strong>Or check out our trending books here:</strong></h1>
                 </div>
                     <BookTrending/>
             </div>

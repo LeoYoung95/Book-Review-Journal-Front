@@ -55,7 +55,7 @@
     padding: 15px;
     color: #666;
     font-size: 14px;
-    height: 18em;
+    min-height: 18em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -218,6 +218,11 @@
 .card-footer {
     background-color: #f8f9fa;
     padding: 16px;
+}
+
+.review-title {
+    font-size: 24px;
+    font-weight: 600;
 }
 
 .card-footer-detail {

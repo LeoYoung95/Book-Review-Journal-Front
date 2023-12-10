@@ -54,7 +54,7 @@ export default function ReaderLikedReviews() {
 
     return (
         <div className="trending-container">
-            <h1 className="trending-title">My Liked Reviews</h1>
+            <h2 className="trending-title">My Liked Reviews</h2>
             <div className="trending-row">
                 {likedReviews.map((reviewId,i) => (
                     <ReviewCard key={i} reviewId={reviewId}/>

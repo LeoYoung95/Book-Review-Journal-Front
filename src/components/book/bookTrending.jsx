@@ -2,12 +2,14 @@ import React, {useEffect, useState} from "react";
 import BookCard from "./bookCard";
 import {fetchAllBooks} from "../../clients/book_client";
 import {fetchBookDetails, fetchBookInfoByOLID} from "../../clients/openlib_client";
-
+import {useDispatch} from "react-redux";
+import {setCurrentBooks} from "../../reducers/currentBooksReducer";
 
 // ReviewTrending component displays the top 10 trending books based on likes
 export default function BookTrending() {
     const [books, setBooks] = useState([]);
     const [topBooks, setTopBooks] = useState([]);
+    const dispatch = useDispatch();
 
     // Fetch all reviews on component mount
     useEffect(() => {
@@ -15,11 +17,9 @@ export default function BookTrending() {
             try {
                 // Perform the GET request to fetch reviews
                 const allBooks = await fetchAllBooks();
-                console.log("All books:", allBooks);
 
                 const booksWithAdditionalDetails = await Promise.all(allBooks.map(async book => {
                         const additionalDetails = await fetchBookInfoByOLID(book.olid);
-                        console.log("Additional details:", additionalDetails);
 
                         const description = await fetchBookDetails(book.olid);
 
@@ -37,8 +37,9 @@ export default function BookTrending() {
                         };
                     }
                 ));
-                console.log("Books with additional details:", booksWithAdditionalDetails);
+
                 setBooks(booksWithAdditionalDetails);
+                dispatch(setCurrentBooks(booksWithAdditionalDetails));
             } catch (err) {
                 console.error("Error fetching books:", err);
             }
