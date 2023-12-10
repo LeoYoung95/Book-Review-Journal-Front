@@ -17,7 +17,6 @@ export const findAllReviews = async () => {
 
 // Get Review by Review ID
 export const findReviewById = async (id) => {
-    console.log("review id: ", id, typeof id)
     const response = await request.get(`${REVIEW_API}/${id}`);
     return response.data;
 }
@@ -30,8 +29,6 @@ export const findReviewLikedUsersById = async (id) => {
 
 // Add to Review's liked users by Review ID
 export const addReviewLikedUsersById = async (id, userId) => {
-    console.log("review client: id: ", id);
-    console.log("review client: userId: ", userId);
     const response = await request.post(`${REVIEW_API}/${id}/liked_users`, {userId});
     return response.data;
 }

@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {addReviewLikedUsersById, deleteReviewLikedUsersById, findReviewById,} from "../../clients/review_client";
 import {addLikedReview, findUserById, removeLikedReview} from "../../clients/user_client";
+import {fetchBookName} from "../../clients/openlib_client";
 import {findTagById} from "../../clients/tag_client";
 import {IoHeartOutline, IoHeartSharp} from "react-icons/io5";
 import Modal from 'react-modal';
@@ -13,6 +14,7 @@ export default function ReviewDetail() {
     const [review, setReview] = useState(null);
     const [user, setUser] = useState(null);
     const [author, setAuthor] = useState(null);
+    const [bookName, setBookName] = useState(null);
     const [likedUsers, setLikedUsers] = useState([]);
     const [tags, setTags] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -25,6 +27,11 @@ export default function ReviewDetail() {
         console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
     };
+
+    const navigateToBookDetail = (olid) => {
+        console.log(`Navigating to book detail with OLID: ${olid}`);
+        navigate(`/book/${olid}`);
+    }
 
     const isLiked = user && user.likedReviews.includes(reviewId);
 
@@ -42,9 +49,11 @@ export default function ReviewDetail() {
                 const authorRes = await findUserById(reviewRes.author_id);
                 setAuthor(authorRes);
 
-                console.log('reviewRes.tags:', reviewRes.tags);
+                const bookRes = await fetchBookName(reviewRes.book_olid);
+                setBookName(bookRes);
+
+
                 const tagRes = await Promise.all(reviewRes.tags.map(async (tagId) => {
-                    console.log('tagId:', tagId);
                     return await findTagById(tagId);
                 }));
 
@@ -109,7 +118,7 @@ export default function ReviewDetail() {
     }, [review]);
 
 
-    if (!review || !author || !tags) {
+    if (!review || !author || !tags || !bookName) {
         return <div>Loading...</div>;
     }
 
@@ -117,90 +126,104 @@ export default function ReviewDetail() {
 
 
     return (
-        <div className="card">
-            <div className="card-header">
-                <h4 className="card-title text-center">{review.title}</h4>
-                <h5 className="card-subtitle text-muted text-center">
-                    Reviewed by:
-                    <span className="ml-3"
-                          style={{cursor: "pointer", color: "gray"}}
-                          onClick={() => navigateToUserProfile(author._id)}
-                    >
+        <div>
+            <div className="card">
+                <div className="card-header">
+                    <h1 className="review-title text-center">{review.title}</h1>
+                    <h5 className="card-subtitle text-muted text-center">
+                        Reviewed by:
+                        <span className="ml-3"
+                              style={{cursor: "pointer", color: "gray"}}
+                              onClick={() => navigateToUserProfile(author._id)}
+                        >
                     {`${author.firstName} ${author.lastName}`}
                 </span>
-                </h5>
+                    </h5>
+                    <h5 className="card-subtitle text-muted text-center pt-5">
+                        Reviewed book:
+                        <span className="ml-3"
+                              style={{cursor: "pointer", color: "gray"}}
+                              onClick={() => navigateToBookDetail(review.book_olid)}
+                        >
+                    {`${bookName} `}
+                </span>
+                    </h5>
 
-            </div>
-
-            <div className="card-body">
-                <div className="">
-                    <p className="card-text whitespace-pre-line">{review.body}</p>
                 </div>
-            </div>
 
-            <div className="card-footer-detail">
-                <div className="justify-content-between">
-                    <div className="row pl-8">
+                <div className="card-body">
+                    <div className="">
+                        <p className="card-text whitespace-pre-line">{review.body}</p>
+                    </div>
+                </div>
 
-                        {/* Display tags */}
-                        {review && review.tags && (
-                            <div>
-                                <span className="mr-2">Tags:</span>
-                                <div className="tags-container">
-                                    {tags.map((tag, index) => (
-                                        <Link to={`/tags/${tag._id}`} key={index} className="tag">
-                                            {tag.label}
-                                        </Link>
+                <div className="card-footer-detail">
+                    <div className="justify-content-between">
+                        <div className="row pl-8">
+
+                            {/* Display tags */}
+                            {review && review.tags && (
+                                <div className="row">
+                                    <span className="mr-2">Tags:</span>
+                                    <div className="pb-2">
+                                        <div className="tags-container">
+                                            {tags.map((tag, index) => (
+                                                <Link to={`/tags/${tag._id}`} key={index} className="tag">
+                                                    {tag.label}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="row">
+
+                            {/* Render Like Button Conditionally */}
+                            {currentUserRole !== 'Author' && (
+                                <button className="like-button" onClick={handleLikeReview}>
+                                    {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
+                                </button>
+                            )}
+
+                            {/* Check if review.likedUsers is defined and render the label and list */}
+                            {review && review.likedUsers && (
+                                <div>
+                                    <span className="mr-2">Liked By:</span>
+                                    {likedUsers.map((likedUser, index) => (
+                                        <span
+                                            key={likedUser._id}
+                                            style={{cursor: "pointer", color: "grey"}}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigateToUserProfile(likedUser._id);
+                                            }}
+                                        > {index > 0 && ", "} {likedUser.firstName} {likedUser.lastName} </span>
                                     ))}
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
 
-                    <div className="row">
 
-                        {/* Render Like Button Conditionally */}
-                        {currentUserRole !== 'Author' && (
-                            <button className="like-button" onClick={handleLikeReview}>
-                                {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
-                            </button>
-                        )}
-
-                        {/* Check if review.likedUsers is defined and render the label and list */}
-                        {review && review.likedUsers && (
-                            <div>
-                                <span className="mr-2">Liked By:</span>
-                                {likedUsers.map((likedUser, index) => (
-                                    <span
-                                        key={likedUser._id}
-                                        style={{cursor: "pointer", color: "grey"}}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            navigateToUserProfile(likedUser._id);
-                                        }}
-                                    > {index > 0 && ", "} {likedUser.firstName} {likedUser.lastName} </span>
-                                ))}
-                            </div>
-                        )}
-
+                        </div>
 
                     </div>
-
                 </div>
+
+                <Modal
+                    isOpen={showModal}
+                    onRequestClose={closeModal}
+                    appElement={document.getElementById('root') || undefined}
+                    overlayClassName="dimmed-background"
+                    className="modal-container"
+                >
+                    <div className="justify-items-center">
+                        <p>Please sign in to like reviews</p>
+                        <br/>
+                        <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
+                    </div>
+                </Modal>
             </div>
-
-            <Modal
-                isOpen={showModal}
-                onRequestClose={closeModal}
-                overlayClassName="dimmed-background"
-                className="modal-container"
-            >
-                <div className="justify-items-center">
-                <p>Please Sign In to like reviews</p>
-                <br/>
-                <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
-                </div>
-            </Modal>
         </div>
     );
 }

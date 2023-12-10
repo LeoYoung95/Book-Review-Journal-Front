@@ -18,6 +18,11 @@ export const fetchAllBooks = async () => {
     return response.data;
 };
 
+// Function to get a book by its ID
+export const findBookById = async (id) => {
+    const response = await request.get(`${BOOK_API}/${id}`);
+    return response.data;
+};
 
 // Function to get a book by its Open Library ID
 export const findBookByOpenLibraryId = async (olid) => {

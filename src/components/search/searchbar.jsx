@@ -31,6 +31,11 @@ export default function Searchbar() {
     }
   }
 
+  const handleTrending = e => {
+    e.preventDefault();
+    navigate('/trending');
+  }
+
   // Determine the placeholder based on the user's role
   let placeholder;
   if (currentUser.role === 'Author') {
@@ -58,8 +63,15 @@ export default function Searchbar() {
             >
               Search
             </button>
+            {/* Trending Book Button */}
+            <button
+                onClick={handleTrending}
+                className='bg-green-200 rounded h-[30px] px-2 ml-1'
+            >
+              Trending
+            </button>
           </div>
         </form>
       </div>
-  )
+  );
 }

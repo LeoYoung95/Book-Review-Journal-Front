@@ -10,11 +10,14 @@ import {
 } from "../../clients/book_client";
 import { useNavigate } from "react-router-dom";
 import "./book.css";
+import Modal from "react-modal";
+
 
 const BookCardLarger = ({ book }) => {
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const currentUserRole = useSelector((state) => state.currentUser.role);
     const [likedUsers, setLikedUsers] = useState([]);
+    const [showModal, setShowModal] = useState(false);
 
     const isLiked = likedUsers.some(user => user._id === currentUserId);
     const navigate = useNavigate();
@@ -29,6 +32,10 @@ const BookCardLarger = ({ book }) => {
             return genres.split(", ").slice(0, 5).join(", ");
         }
         return "No genres available";
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
     };
 
 
@@ -83,19 +90,26 @@ const BookCardLarger = ({ book }) => {
             }
         } else {
 
-            const currentUserDetails = await findUserById(currentUserId);
+            // Check if there is a current user (logged in)
+            if (currentUserId) {
 
-            updatedLikedUsers = [...likedUsers, currentUserDetails];
-            setLikedUsers(updatedLikedUsers);
+                const currentUserDetails = await findUserById(currentUserId);
 
-            try {
-                await Promise.all([
-                    addBookLikedUsersById(book.olid, currentUserId),
-                    addLikedBook(currentUserId, bookInDb._id)
-                ]);
-            } catch (error) {
-                console.error("Error liking the book:", error);
-                setLikedUsers(likedUsers);
+                updatedLikedUsers = [...likedUsers, currentUserDetails];
+                setLikedUsers(updatedLikedUsers);
+
+                try {
+                    await Promise.all([
+                        addBookLikedUsersById(book.olid, currentUserId),
+                        addLikedBook(currentUserId, bookInDb._id)
+                    ]);
+                } catch (error) {
+                    console.error("Error liking the book:", error);
+                    setLikedUsers(likedUsers);
+                }
+            } else {
+                // If there is no currentUserId, set showModal to true to display the modal
+                setShowModal(true);
             }
         }
     };
@@ -119,7 +133,7 @@ const BookCardLarger = ({ book }) => {
                     <p>{book.description}</p>
                 </div>
             </div>
-            <div className="liked-by-section" style={{ alignSelf: 'flex-start' }}>
+            <div className="liked-by-section row pl-3" style={{ alignSelf: 'flex-start' }}>
                 {currentUserRole !== 'Author' && (
                     <button className="like-button" onClick={handleLikeBook}>
                         {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
@@ -140,6 +154,21 @@ const BookCardLarger = ({ book }) => {
                 </span>
                 ))}
             </div>
+
+            <Modal
+                isOpen={showModal}
+                onRequestClose={closeModal}
+                appElement={document.getElementById('root') || undefined}
+                overlayClassName="dimmed-background"
+                className="modal-container"
+            >
+                <div className="justify-items-center">
+                    <p>Please sign in to like books</p>
+                    <br/>
+                    <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
+                </div>
+            </Modal>
+
         </div>
     );
 }

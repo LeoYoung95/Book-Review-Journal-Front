@@ -23,9 +23,6 @@ const BookDetail = () => {
         return <p>Book not found.</p>;
     }
 
-    console.log("Current books:", currentBooks)
-
-    console.log("Book:", book)
 
     return (
         <div>

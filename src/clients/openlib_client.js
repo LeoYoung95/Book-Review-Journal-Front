@@ -11,7 +11,6 @@ export const fetchBookInfoByOLID = async (olid) => {
         const worksUrl = `https://openlibrary.org/works/${olid}.json`;
         const worksResponse = await fetch(worksUrl);
         const worksData = await worksResponse.json();
-        console.log('worksData', worksData);
 
         let details = {
             title: worksData.title,

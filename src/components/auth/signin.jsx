@@ -32,7 +32,7 @@ export default function Signin() {
   
   return (
     <div className='w-full bg-gray-200'>
-      <div className='flex flex-row max-w-xs content-center-signin'>
+      <div className='flex flex-row max-w-xs content-center-signin pt-4'>
         <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
           <p style={{color: 'red'}}>{error}</p>
 
