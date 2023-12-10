@@ -7,6 +7,7 @@ import {
     deleteReviewLikedUsersById,
 } from "../../clients/review_client";
 import {findUserById, addLikedReview, removeLikedReview} from "../../clients/user_client";
+import {findTagById} from "../../clients/tag_client";
 import {IoHeartOutline, IoHeartSharp} from "react-icons/io5";
 import {useNavigate} from "react-router-dom";
 import Modal from 'react-modal';
@@ -18,6 +19,7 @@ export default function ReviewDetail() {
     const [user, setUser] = useState(null);
     const [author, setAuthor] = useState(null);
     const [likedUsers, setLikedUsers] = useState([]);
+    const [tags, setTags] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const currentUserRole = useSelector((state) => state.currentUser.role);
@@ -44,6 +46,14 @@ export default function ReviewDetail() {
 
                 const authorRes = await findUserById(reviewRes.author_id);
                 setAuthor(authorRes);
+
+                const tagLabels = await Promise.all(reviewRes.tags.map(async (tagId) => {
+                        const tag = await findTagById(tagId);
+                        return tag.label;
+                    }
+                ));
+                setTags(tagLabels);
+
             } catch (err) {
                 console.error("Error fetching data:", err);
             }
@@ -102,9 +112,13 @@ export default function ReviewDetail() {
         fetchLikedUsers();
     }, [review]);
 
-    if (!review || !author) {
+
+    if (!review || !author || !tags) {
         return <div>Loading...</div>;
     }
+
+    console.log("review:", review);
+
 
     return (
         <div className="card">
@@ -113,46 +127,69 @@ export default function ReviewDetail() {
                 <h5 className="card-subtitle text-muted text-center">
                     Reviewed by:
                     <span className="ml-3"
-                        style={{ cursor: "pointer", color: "gray" }}
-                        onClick={() => navigateToUserProfile(author._id)}
+                          style={{cursor: "pointer", color: "gray"}}
+                          onClick={() => navigateToUserProfile(author._id)}
                     >
                     {`${author.firstName} ${author.lastName}`}
                 </span>
                 </h5>
+
             </div>
+
             <div className="card-body">
                 <div className="">
                     <p className="card-text whitespace-pre-line">{review.body}</p>
                 </div>
             </div>
-            <div className="card-footer">
-                {/* Render Like Button Conditionally */}
-                {currentUserRole !== 'Author' && (
-                    <button className="like-button" onClick={handleLikeReview}>
-                        {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
-                    </button>
-                )}
 
-                {/* Check if there are any liked users and render the label and list */}
-                {likedUsers.length > 0 && (
-                    <div>
-                        <span className="mr-2">Liked By:</span>
-                        {likedUsers.map((likedUser, index) => (
-                            <span
-                                key={likedUser._id}
-                                style={{ cursor: "pointer", color: "grey" }}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigateToUserProfile(likedUser._id);
-                                }}
-                            >
-                            {index > 0 && ", "}
-                                {likedUser.firstName} {likedUser.lastName}
-                        </span>
-                        ))}
+            <div className="card-footer-detail">
+                <div className="row justify-content-between">
+
+                    <div className="col col-6">
+                        {/* Check if review.likedUsers is defined and render the label and list */}
+                        {review && review.likedUsers && (
+                            <div>
+                                <span className="mr-2">Liked By:</span>
+                                {likedUsers.map((likedUser, index) => (
+                                    <span
+                                        key={likedUser._id}
+                                        style={{cursor: "pointer", color: "grey"}}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigateToUserProfile(likedUser._id);
+                                        }}
+                                    > {index > 0 && ", "} {likedUser.firstName} {likedUser.lastName} </span>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Render Like Button Conditionally */}
+                        {currentUserRole !== 'Author' && (
+                            <button className="like-button" onClick={handleLikeReview}>
+                                {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
+                            </button>
+                        )}
+
                     </div>
-                )}
+
+                    <div className="col col-6">
+
+                        {/* Display tags */}
+                        {review && review.tags && (
+                            <div>
+                                <span className="mr-2">Tags:</span>
+                                <div className="tags-container">
+                                    {tags.map((tag, index) => (
+                                        <span key={index} className="tag">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                </div>
             </div>
+
             <Modal
                 isOpen={showModal}
                 onRequestClose={closeModal}
