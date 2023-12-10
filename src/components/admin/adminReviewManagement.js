@@ -42,7 +42,6 @@ const AdminReviewManagement = () => {
         }
     };
 
-
     return (
         <div className="row admin-home-row">
 
