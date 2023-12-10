@@ -332,3 +332,23 @@
     align-items: center;
 }
 
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* Adjust as needed */
+}
+
+.loading-dot {
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    background-color: #333; /* Your preferred color */
+    border-radius: 50%;
+    animation: loadingAnimation 1s infinite ease-in-out;
+}
+
+@keyframes loadingAnimation {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+}
