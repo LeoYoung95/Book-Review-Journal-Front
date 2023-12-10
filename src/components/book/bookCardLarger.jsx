@@ -13,6 +13,7 @@ const BookCardLarger = ({ book }) => {
 
     const isLiked = likedUsers.some(user => user._id === currentUserId);
     const navigate = useNavigate();
+    console.log("Book:", book)
 
     const navigateToUserProfile = (userId) => {
         console.log(`Navigating to user profile with ID: ${userId}`);

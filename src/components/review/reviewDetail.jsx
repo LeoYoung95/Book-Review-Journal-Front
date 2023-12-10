@@ -143,9 +143,31 @@ export default function ReviewDetail() {
             </div>
 
             <div className="card-footer-detail">
-                <div className="row justify-content-between">
+                <div className="justify-content-between">
+                    <div className="row pl-8">
 
-                    <div className="col col-6">
+                        {/* Display tags */}
+                        {review && review.tags && (
+                            <div>
+                                <span className="mr-2">Tags:</span>
+                                <div className="tags-container">
+                                    {tags.map((tag, index) => (
+                                        <span key={index} className="tag">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="row">
+
+                        {/* Render Like Button Conditionally */}
+                        {currentUserRole !== 'Author' && (
+                            <button className="like-button" onClick={handleLikeReview}>
+                                {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
+                            </button>
+                        )}
+
                         {/* Check if review.likedUsers is defined and render the label and list */}
                         {review && review.likedUsers && (
                             <div>
@@ -163,28 +185,7 @@ export default function ReviewDetail() {
                             </div>
                         )}
 
-                        {/* Render Like Button Conditionally */}
-                        {currentUserRole !== 'Author' && (
-                            <button className="like-button" onClick={handleLikeReview}>
-                                {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
-                            </button>
-                        )}
 
-                    </div>
-
-                    <div className="col col-6">
-
-                        {/* Display tags */}
-                        {review && review.tags && (
-                            <div>
-                                <span className="mr-2">Tags:</span>
-                                <div className="tags-container">
-                                    {tags.map((tag, index) => (
-                                        <span key={index} className="tag">{tag}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </div>
 
                 </div>
@@ -196,8 +197,11 @@ export default function ReviewDetail() {
                 overlayClassName="dimmed-background"
                 className="modal-container"
             >
+                <div className="justify-items-center">
                 <p>Please Sign In to like reviews</p>
-                <button className="btn-primary" onClick={() => navigate('/signin')}>Sign In</button>
+                <br/>
+                <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
+                </div>
             </Modal>
         </div>
     );

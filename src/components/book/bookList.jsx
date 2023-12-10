@@ -24,6 +24,8 @@ const BookList = ({ searchQuery }) => {
             const booksWithAdditionalDetails = await Promise.all(fetchedBooks.map(async book => {
                 const additionalDetails = await findBookByOpenLibraryId(book.olid);
 
+                if (additionalDetails) {
+
                 // Calculate reviewCount excluding deleted reviews
                 let reviewCount = 0;
                 if (additionalDetails && additionalDetails.reviews) {
@@ -39,8 +41,14 @@ const BookList = ({ searchQuery }) => {
                 return {
                     ...book,
                     ...additionalDetails,
-                    reviewCount: reviewCount
-                };
+                    reviewCount: reviewCount,
+                };} else {
+                    return {
+                        ...book,
+                        reviewCount: 0,
+                        likedUsers: [],
+                    };
+                }
             }));
             
             const sortedBooks = booksWithAdditionalDetails.sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 15);
