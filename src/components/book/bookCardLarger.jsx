@@ -9,6 +9,7 @@ import {
     findBookByOpenLibraryId
 } from "../../clients/book_client";
 import { useNavigate } from "react-router-dom";
+import { setCurrentBooks, setLikedBooks } from "../../reducers/currentBooksReducer";
 import "./book.css";
 import Modal from "react-modal";
 
@@ -16,8 +17,10 @@ import Modal from "react-modal";
 const BookCardLarger = ({ book }) => {
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const currentUserRole = useSelector((state) => state.currentUser.role);
+    const currentBooks = useSelector((state) => state.currentBooks);
     const [likedUsers, setLikedUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const dispatch = useDispatch();
 
     const isLiked = likedUsers.some(user => user._id === currentUserId);
     const navigate = useNavigate();
@@ -41,8 +44,11 @@ const BookCardLarger = ({ book }) => {
 
     useEffect(() => {
         async function fetchLikedUsers() {
-            const userDetailsPromises = book.likedUsers.map((userId) => findUserById(userId));
-            const userDetails = await Promise.all(userDetailsPromises);
+            const bookInDb = await findBookByOpenLibraryId(book.olid);
+            if (!bookInDb) return;
+            const userDetails = await Promise.all(bookInDb.likedUsers.map(async (userId) => {
+                return await findUserById(userId);
+            }   ));
             setLikedUsers(userDetails);
             console.log("Liked users:", likedUsers)
         }
@@ -57,62 +63,56 @@ const BookCardLarger = ({ book }) => {
             bookInDb = await findBookByOpenLibraryId(book.olid);
         } catch (error) {
             console.error("Error finding book:", error.message);
-            // Handle error
-            return;
-        }
-
-        // If the book doesn't exist, create it
-        if (!bookInDb) {
+            // If the book doesn't exist, create it
             try {
                 bookInDb = await createBookByOpenLibraryId(book.olid);
-            } catch (error) {
-                console.error("Error creating book:", error.message);
-                // Handle error
+            } catch (creationError) {
+                console.error("Error creating book:", creationError.message);
                 return;
             }
         }
 
-        // Continue with the rest of the like/unlike logic
         let updatedLikedUsers;
-
         if (isLiked) {
             updatedLikedUsers = likedUsers.filter((user) => user._id !== currentUserId);
-            setLikedUsers(updatedLikedUsers);
+        } else {
+            const currentUserDetails = await findUserById(currentUserId);
+            updatedLikedUsers = [...likedUsers, currentUserDetails];
+        }
 
-            try {
+        setLikedUsers(updatedLikedUsers);
+
+        try {
+            if (isLiked) {
                 await Promise.all([
                     deleteBookLikedUsersById(book.olid, currentUserId),
                     removeLikedBook(currentUserId, bookInDb._id)
                 ]);
-            } catch (error) {
-                console.error("Error unliking the book:", error);
-                setLikedUsers(likedUsers);
-            }
-        } else {
-
-            // Check if there is a current user (logged in)
-            if (currentUserId) {
-
-                const currentUserDetails = await findUserById(currentUserId);
-
-                updatedLikedUsers = [...likedUsers, currentUserDetails];
-                setLikedUsers(updatedLikedUsers);
-
-                try {
-                    await Promise.all([
-                        addBookLikedUsersById(book.olid, currentUserId),
-                        addLikedBook(currentUserId, bookInDb._id)
-                    ]);
-                } catch (error) {
-                    console.error("Error liking the book:", error);
-                    setLikedUsers(likedUsers);
-                }
             } else {
-                // If there is no currentUserId, set showModal to true to display the modal
-                setShowModal(true);
+                await Promise.all([
+                    addBookLikedUsersById(book.olid, currentUserId),
+                    addLikedBook(currentUserId, bookInDb._id)
+                ]);
             }
+
+            // Find and update the book in the books array
+            const updatedBooks = currentBooks.books.map(b =>
+                b.olid === book.olid ? { ...b, likedUsers: updatedLikedUsers.map(user => user._id) } : b
+            );
+            dispatch(setCurrentBooks(updatedBooks));
+
+// Find and update the book in the likedBooks array
+            const updatedLikedBooks = currentBooks.likedBooks.map(b =>
+                b.olid === book.olid ? { ...b, likedUsers: updatedLikedUsers.map(user => user._id) } : b
+            );
+            dispatch(setLikedBooks(updatedLikedBooks));
+
+        } catch (error) {
+            console.error("Error updating the book:", error);
+            setLikedUsers(likedUsers); // Revert the likedUsers state in case of an error
         }
     };
+
 
 
 
