@@ -18,6 +18,13 @@
     flex-wrap: nowrap;
 }
 
+.admin-home-row {
+    display: flex;
+    align-items: start;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+}
+
 .reader-home-row > .col-md-8 {
     flex: 0 0 74%; /* 8/12 = 66.67% */
     max-width: 74%;

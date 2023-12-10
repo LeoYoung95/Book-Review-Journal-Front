@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
 import {
     findReviewById,
     addReviewLikedUsersById,
     deleteReviewLikedUsersById,
 } from "../../clients/review_client";
-import { findUserById, addLikedReview, removeLikedReview } from "../../clients/user_client";
-import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import {findUserById, addLikedReview, removeLikedReview} from "../../clients/user_client";
+import {IoHeartOutline, IoHeartSharp} from "react-icons/io5";
+import {useNavigate} from "react-router-dom";
 import Modal from 'react-modal';
 import './review.css';
 
 export default function ReviewDetail() {
-    const { reviewId } = useParams();
+    const {reviewId} = useParams();
     const [review, setReview] = useState(null);
     const [user, setUser] = useState(null);
     const [author, setAuthor] = useState(null);
     const [likedUsers, setLikedUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const currentUserId = useSelector((state) => state.currentUser.userId);
+    const currentUserRole = useSelector((state) => state.currentUser.role);
+    console.log("Current user role:", currentUserRole)
     const navigate = useNavigate();
-    
+
     const navigateToUserProfile = (userId) => {
         console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
@@ -94,7 +96,7 @@ export default function ReviewDetail() {
             setLikedUsers(userDetails.filter((user) => user)); // filter out any possible null/undefined values
         }
     };
-    
+
     useEffect(() => {
         // Call fetchLikedUsers when the review is fetched or updated
         fetchLikedUsers();
@@ -107,10 +109,16 @@ export default function ReviewDetail() {
     return (
         <div className="card">
             <div className="card-header">
-                <h6 className="card-title text-center">{review.title}</h6>
-                <h6 className="card-subtitle text-muted text-center">
-                    Reviewed by: {`${author.firstName} ${author.lastName}`}
-                </h6>
+                <h4 className="card-title text-center">{review.title}</h4>
+                <h5 className="card-subtitle text-muted text-center">
+                    Reviewed by:
+                    <span className="ml-3"
+                        style={{ cursor: "pointer", color: "gray" }}
+                        onClick={() => navigateToUserProfile(author._id)}
+                    >
+                    {`${author.firstName} ${author.lastName}`}
+                </span>
+                </h5>
             </div>
             <div className="card-body">
                 <div className="">
@@ -118,22 +126,32 @@ export default function ReviewDetail() {
                 </div>
             </div>
             <div className="card-footer">
-                <button className="like-button" onClick={handleLikeReview}>
-                    {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
-                    {likedUsers.map((likedUser, index) => (
-                        <span
-                            key={likedUser._id} // Ensuring a unique key for each span
-                            style={{ cursor: "pointer", color: "grey" }}
-                            onClick={(e) => {
-                                e.stopPropagation(); // Correctly stopping the event propagation
-                                navigateToUserProfile(likedUser._id); // Should navigate to the clicked user's profile
-                            }}
-                        >
-              {index > 0 && ", "}
-                            {likedUser.firstName} {likedUser.lastName}
-            </span>
-                    ))}
-                </button>
+                {/* Render Like Button Conditionally */}
+                {currentUserRole !== 'Author' && (
+                    <button className="like-button" onClick={handleLikeReview}>
+                        {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
+                    </button>
+                )}
+
+                {/* Check if there are any liked users and render the label and list */}
+                {likedUsers.length > 0 && (
+                    <div>
+                        <span className="mr-2">Liked By:</span>
+                        {likedUsers.map((likedUser, index) => (
+                            <span
+                                key={likedUser._id}
+                                style={{ cursor: "pointer", color: "grey" }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigateToUserProfile(likedUser._id);
+                                }}
+                            >
+                            {index > 0 && ", "}
+                                {likedUser.firstName} {likedUser.lastName}
+                        </span>
+                        ))}
+                    </div>
+                )}
             </div>
             <Modal
                 isOpen={showModal}
@@ -142,7 +160,7 @@ export default function ReviewDetail() {
                 className="modal-container"
             >
                 <p>Please Sign In to like reviews</p>
-                <button onClick={() => navigate('/signin')}>Sign In</button>
+                <button className="btn-primary" onClick={() => navigate('/signin')}>Sign In</button>
             </Modal>
         </div>
     );
