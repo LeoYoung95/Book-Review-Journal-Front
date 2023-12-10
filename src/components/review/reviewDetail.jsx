@@ -140,13 +140,7 @@ export default function ReviewDetail() {
                 </span>
                     </h5>
                     <h5 className="card-subtitle text-muted text-center pt-5">
-                        Reviewed book:
-                        <span className="ml-3"
-                              style={{cursor: "pointer", color: "gray"}}
-                              onClick={() => navigateToBookDetail(review.book_olid)}
-                        >
-                    {`${bookName} `}
-                </span>
+                        Reviewed book: {`${bookName} `}
                     </h5>
 
                 </div>

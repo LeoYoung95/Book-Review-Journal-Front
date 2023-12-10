@@ -9,8 +9,10 @@ const BookDetail = () => {
     const { olid } = useParams();
     const dispatch = useDispatch();
     const currentBooks = useSelector(state => state.currentBooks.books);
+    const likedBooks = useSelector(state => state.currentBooks.likedBooks);
     console.log("Current books:", currentBooks)
-    const book = currentBooks.find(b => b.olid === olid);
+    console.log("Liked books:", likedBooks)
+    const book = currentBooks.find(b => b.olid === olid) || likedBooks.find(b => b.olid === olid);
 
     useEffect(() => {
         if (book) {

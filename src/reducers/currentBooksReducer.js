@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // Initial state of the book slice
 let initialState = {
     books: [],
+    likedBooks: [],
     book: {
         _id: "",
         olid: "",
@@ -48,10 +49,20 @@ const currentBooksReducer = createSlice({
         setNeedRefresh: (state, action) => {
             state.needRefresh = action.payload;
         },
+
+        // Action to set the liked books
+        setLikedBooks: (state, action) => {
+            state.likedBooks = action.payload;
+        },
+
+        // Action to clear the liked books
+        clearLikedBooks: (state) => {
+            state.likedBooks = [];
+        },
     },
 });
 
 // Exporting the actions and the reducer
-export const {setCurrentBook, removeCurrentBook, clearCurrentBooks, setCurrentBooks,setNeedRefresh}  = currentBooksReducer.actions;
+export const {setCurrentBook, removeCurrentBook, clearCurrentBooks, setCurrentBooks,setNeedRefresh, setLikedBooks, clearLikedBooks}  = currentBooksReducer.actions;
 
 export default currentBooksReducer.reducer;
