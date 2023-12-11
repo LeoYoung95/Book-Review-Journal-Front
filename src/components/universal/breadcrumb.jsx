@@ -11,11 +11,11 @@ const Breadcrumb = () => {
 
   // If there are no path segments (i.e., at the homepage), return an empty div
   if (pathSegments.length === 0) {
-    return <div className="flex space-x-2 mt-[70px]"></div>;
+    return <div className="flex space-x-2 mt-[85px]"></div>;
   }
 
   return (
-      <ul className="flex space-x-2 mt-[70px]">
+      <ul className="flex space-x-2 mt-[85px]">
         <li>
           <Link className='hover:text-blue-500' to="/">Home</Link>
         </li>

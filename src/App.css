@@ -41,3 +41,23 @@
     align-content: start;
 }
 
+.nav-bar-right-button {
+    font-size: 16px; /* default font size */
+}
+
+@media (max-width: 700px) { /* adjust 600px as needed */
+    .nav-bar-right-button {
+        font-size: 15px; /* smaller font size for small screens */
+    }
+}
+
+@media (max-width: 700px) { /* Adjust 600px as needed */
+    .trending-button {
+        display: none; /* Hides the button on small screens */
+    }
+}
+
+.reader-col {
+    justify-content: center;
+}
+

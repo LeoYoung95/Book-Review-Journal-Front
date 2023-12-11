@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
-import { findUserById, addLikedBook, removeLikedBook } from "../../clients/user_client";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {IoHeartOutline, IoHeartSharp} from "react-icons/io5";
+import {findUserById, addLikedBook, removeLikedBook} from "../../clients/user_client";
 import {
     addBookLikedUsersById,
     createBookByOpenLibraryId,
     deleteBookLikedUsersById,
     findBookByOpenLibraryId
 } from "../../clients/book_client";
-import { useNavigate } from "react-router-dom";
-import { setCurrentBooks, setLikedBooks } from "../../reducers/currentBooksReducer";
+import {useNavigate} from "react-router-dom";
+import {setCurrentBooks, setLikedBooks} from "../../reducers/currentBooksReducer";
 import "./book.css";
 import Modal from "react-modal";
 
 
-const BookCardLarger = ({ book }) => {
+const BookCardLarger = ({book}) => {
     const currentUserId = useSelector((state) => state.currentUser.userId);
     const currentUserRole = useSelector((state) => state.currentUser.role);
     const currentBooks = useSelector((state) => state.currentBooks);
@@ -48,7 +48,7 @@ const BookCardLarger = ({ book }) => {
             if (!bookInDb) return;
             const userDetails = await Promise.all(bookInDb.likedUsers.map(async (userId) => {
                 return await findUserById(userId);
-            }   ));
+            }));
             setLikedUsers(userDetails);
             console.log("Liked users:", likedUsers)
         }
@@ -97,13 +97,13 @@ const BookCardLarger = ({ book }) => {
 
             // Find and update the book in the books array
             const updatedBooks = currentBooks.books.map(b =>
-                b.olid === book.olid ? { ...b, likedUsers: updatedLikedUsers.map(user => user._id) } : b
+                b.olid === book.olid ? {...b, likedUsers: updatedLikedUsers.map(user => user._id)} : b
             );
             dispatch(setCurrentBooks(updatedBooks));
 
 // Find and update the book in the likedBooks array
             const updatedLikedBooks = currentBooks.likedBooks.map(b =>
-                b.olid === book.olid ? { ...b, likedUsers: updatedLikedUsers.map(user => user._id) } : b
+                b.olid === book.olid ? {...b, likedUsers: updatedLikedUsers.map(user => user._id)} : b
             );
             dispatch(setLikedBooks(updatedLikedBooks));
 
@@ -114,44 +114,44 @@ const BookCardLarger = ({ book }) => {
     };
 
 
-
-
     return (
-        <div className="book-card-large" style={{ display: 'flex', flexDirection: 'row' }}>
-            <div className="book-cover-large">
-                <img src={book.cover || "default-cover.jpg"} alt={book.title}/>
-            </div>
-            <div style={{ flex: 1 }}>
-                <div className="book-details-large">
-                    <h1><strong>{book.title}</strong></h1>
-                    <p><strong>Author:</strong> {book.author}</p>
-                    <p><strong>Published:</strong> {book.publishDate}</p>
-                    <p><strong>Genres:</strong> {getGenres(book.genres)}</p>
+        <div className="book-card-large" style={{display: 'flex', flexDirection: 'column'}}>
+            <div className="row">
+                <div className="book-cover-large">
+                    <img src={book.cover || "default-cover.jpg"} alt={book.title}/>
                 </div>
-                <div className="book-description-large">
-                    <p><strong>Description:</strong></p>
-                    <p>{book.description}</p>
+                <div style={{flex: 1}}>
+                    <div className="book-details-large">
+                        <h1><strong>{book.title}</strong></h1>
+                        <p><strong>Author:</strong> {book.author}</p>
+                        <p><strong>Published:</strong> {book.publishDate}</p>
+                        <p><strong>Genres:</strong> {getGenres(book.genres)}</p>
+                    </div>
+                    <div className="book-description-large">
+                        <p><strong>Description:</strong></p>
+                        <p>{book.description}</p>
+                    </div>
                 </div>
             </div>
-            <div className="liked-by-section row pl-3" style={{ alignSelf: 'flex-start' }}>
+            <div className="row" style={{marginTop: '10px', alignSelf: 'flex-start'}}>
                 {currentUserRole !== 'Author' && (
                     <button className="like-button" onClick={handleLikeBook}>
-                        {isLiked ? <IoHeartSharp style={{ color: "red" }} /> : <IoHeartOutline />}
+                        {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
                     </button>
                 )}
                 <span className="mr-2">Liked By:</span>
                 {likedUsers.map((likedUser, index) => (
                     <span
                         key={index}
-                        style={{ cursor: "pointer", color: "grey" }}
+                        style={{cursor: "pointer", color: "grey"}}
                         onClick={(e) => {
                             e.stopPropagation();
                             navigateToUserProfile(likedUser._id);
                         }}
                     >
-                    {index > 0 && ", "}
+        {index > 0 && ", "}
                         {likedUser.firstName} {likedUser.lastName}
-                </span>
+        </span>
                 ))}
             </div>
 
@@ -168,11 +168,9 @@ const BookCardLarger = ({ book }) => {
                     <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
                 </div>
             </Modal>
-
         </div>
     );
 }
 
 
-
-    export default BookCardLarger;
+export default BookCardLarger;

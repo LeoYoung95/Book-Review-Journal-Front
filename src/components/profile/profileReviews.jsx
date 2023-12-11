@@ -46,24 +46,22 @@ export default function ProfileReviews({ profileId, profileUser }) {
   }
 
   return (
-    <div className='pl-10'>
-      <h1 className='mt-8 mb-4 font-bold text-2xl'>
-        {
-          userRole === 'Reader' ?
-            `Liked Reviews` :
-          userRole === 'Author' ?
-            'Reviews' :
-          userRole === 'Admin' ?
-            'Reviews Deleted' :
-            null
-        }
-      </h1>
-    
-      {
-        displayReviews()
-      }
-    
-      
-    </div>
+      <div className='flex flex-col items-center'>
+        <h1 className='mt-8 mb-4 font-bold text-2xl text-center'>
+          {
+            userRole === 'Reader' ?
+                `Liked Reviews` :
+                userRole === 'Author' ?
+                    'Reviews' :
+                    userRole === 'Admin' ?
+                        'Reviews Deleted' :
+                        null
+          }
+        </h1>
+
+        <div className="w-full flex flex-wrap justify-center">
+          { displayReviews() }
+        </div>
+      </div>
   );
 };

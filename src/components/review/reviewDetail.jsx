@@ -153,7 +153,7 @@ export default function ReviewDetail() {
 
                 <div className="card-footer-detail">
                     <div className="justify-content-between">
-                        <div className="row pl-8">
+                        <div className="row pl-12">
 
                             {/* Display tags */}
                             {review && review.tags && (

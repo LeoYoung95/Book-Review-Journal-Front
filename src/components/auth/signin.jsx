@@ -61,7 +61,7 @@ export default function Signin() {
           
           <div className='flex items-center justify-between'>
             <button className='bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' onClick={e => signin(e)}> Sign in </button>
-            <Link className='inline-block align-baseline font-bold text-sm text-sky-500 hover:text-sky-800' 
+            <Link className='inline-block align-baseline font-bold text-sm text-sky-500 hover:text-sky-800 pl-3'
               to='/signup'> Sign up here!
             </Link>
           </div>

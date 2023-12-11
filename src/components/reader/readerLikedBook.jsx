@@ -65,13 +65,13 @@ export default function ReaderLikedReviews() {
     }, [currentUser, dispatch]);
 
     return (
-        <div className="trending-container">
-            <h2 className="trending-title">My Liked Books</h2>
+        <div >
+            <h2 className="trending-title pt-5">My Liked Books</h2>
             <div>
                 {likedBooks && likedBooks.length > 0 &&
                     likedBooks.map((book, i) => (
-                        <div key={i}>
-                            <BookCardMini book={book} />
+                        <div className="flex justify-center" key={i}>
+                        <BookCardMini book={book} />
                         </div>
                     ))
                 }

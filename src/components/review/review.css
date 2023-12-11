@@ -274,6 +274,14 @@
     padding: 20px;
 }
 
+.trending-container-mini {
+    display: inline-block;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
 .trending-title {
     color: #333;
     text-align: center;
