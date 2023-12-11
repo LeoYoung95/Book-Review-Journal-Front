@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import './index.css';
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, useLocation} from 'react-router-dom';
 import store from "./reducers/store.js";
 import {Provider} from "react-redux";
 import Breadcrumb from './components/universal/breadcrumb.jsx';
@@ -16,14 +16,21 @@ import ReviewEditor from "./components/review/reviewEditor";
 import ReviewDetail from "./components/review/reviewDetail";
 import TagReview from "./components/tags/reviewsByTag";
 import TrendingBookPage from "./pages/trendingBookPage";
+import NavigationTracker from "./utils/navigationTracker";
 
 function App() {
+
     return (
         <Provider store={store}>
             <div className="w-full h-[100vh] items-center font-serif">
                 <BrowserRouter>
-                    <Navbar/> {/* Navbar is outside the Routes */}
-                    <Breadcrumb/>
+                    <Navbar/>
+                    <NavigationTracker>
+                        {(navigationHistory) => (
+                            <Breadcrumb navigationHistory={navigationHistory} />
+                        )}
+                    </NavigationTracker>
+
                     <div className='mt-[20px] h-full'>
                         <Routes>
                             <Route path='/' element={<Homepage/>}/>

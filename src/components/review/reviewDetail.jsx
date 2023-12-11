@@ -24,14 +24,17 @@ export default function ReviewDetail() {
     const navigate = useNavigate();
 
     const navigateToUserProfile = (userId) => {
+        // Check if there is a current user
+        if (!currentUserId) {
+            console.log("No current user, prompting for sign-in");
+            setShowModal(true); // Show sign-in modal if there is no current user
+            return;
+        }
+
         console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
     };
 
-    const navigateToBookDetail = (olid) => {
-        console.log(`Navigating to book detail with OLID: ${olid}`);
-        navigate(`/book/${olid}`);
-    }
 
     const isLiked = user && user.likedReviews.includes(reviewId);
 
@@ -175,11 +178,15 @@ export default function ReviewDetail() {
                         <div className="row">
 
                             {/* Render Like Button Conditionally */}
-                            {currentUserRole !== 'Author' && (
+                            {currentUserRole !== 'Author' ? (
                                 <button className="like-button" onClick={handleLikeReview}>
                                     {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
                                 </button>
+                            ) : (
+                                // Placeholder for authors to keep the layout consistent
+                                <div className="like-button-placeholder-review"></div>
                             )}
+
 
                             {/* Check if review.likedUsers is defined and render the label and list */}
                             {review && review.likedUsers && (
@@ -187,13 +194,14 @@ export default function ReviewDetail() {
                                     <span className="mr-2">Liked By:</span>
                                     {likedUsers.map((likedUser, index) => (
                                         <span
-                                            key={likedUser._id}
+                                            key={index}
                                             style={{cursor: "pointer", color: "grey"}}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 navigateToUserProfile(likedUser._id);
                                             }}
-                                        > {index > 0 && ", "} {likedUser.firstName} {likedUser.lastName} </span>
+                                        >{index > 0 && ", "}
+                                            {likedUser.firstName} {likedUser.lastName}</span>
                                     ))}
                                 </div>
                             )}
@@ -203,7 +211,6 @@ export default function ReviewDetail() {
 
                     </div>
                 </div>
-
                 <Modal
                     isOpen={showModal}
                     onRequestClose={closeModal}
@@ -211,12 +218,13 @@ export default function ReviewDetail() {
                     overlayClassName="dimmed-background"
                     className="modal-container"
                 >
-                    <div className="justify-items-center">
+                    <div className="modal-center">
                         <p>Please sign in to like reviews</p>
                         <br/>
-                        <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
+                        <button className="btn-danger" onClick={() => navigate('/signin')}>Sign In</button>
                     </div>
                 </Modal>
+
             </div>
         </div>
     );

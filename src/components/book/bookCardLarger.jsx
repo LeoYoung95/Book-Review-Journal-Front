@@ -26,9 +26,16 @@ const BookCardLarger = ({book}) => {
     const navigate = useNavigate();
 
     const navigateToUserProfile = (userId) => {
+        if (!currentUserId) {
+            console.log("No current user, prompting for sign-in");
+            setShowModal(true); // Show sign-in modal if there is no current user
+            return;
+        }
+
         console.log(`Navigating to user profile with ID: ${userId}`);
         navigate(`/profile/${userId}`);
     };
+
 
     const getGenres = (genres) => {
         if (genres && typeof genres === "string") {
@@ -57,6 +64,13 @@ const BookCardLarger = ({book}) => {
     }, [book.likedUsers]);
 
     const handleLikeBook = async () => {
+
+        // Check if there is a current user
+        if (!currentUserId) {
+            setShowModal(true); // Show sign-in modal if there is no current user
+            return;
+        }
+
         // Check if the book exists in the database
         let bookInDb;
         try {
@@ -116,8 +130,8 @@ const BookCardLarger = ({book}) => {
 
     return (
         <div className="book-card-large" style={{display: 'flex', flexDirection: 'column'}}>
-            <div className="row">
-                <div className="book-cover-large">
+            <div className="row" style={{alignItems: 'flex-start'}}>
+                <div className="book-cover-large pl-4">
                     <img src={book.cover || "default-cover.jpg"} alt={book.title}/>
                 </div>
                 <div style={{flex: 1}}>
@@ -134,10 +148,13 @@ const BookCardLarger = ({book}) => {
                 </div>
             </div>
             <div className="row" style={{marginTop: '10px', alignSelf: 'flex-start'}}>
-                {currentUserRole !== 'Author' && (
+                {currentUserRole !== 'Author' ? (
                     <button className="like-button" onClick={handleLikeBook}>
                         {isLiked ? <IoHeartSharp style={{color: "red"}}/> : <IoHeartOutline/>}
                     </button>
+                ) : (
+                    // Placeholder for authors to keep the layout consistent
+                    <div className="like-button-placeholder-book"></div>
                 )}
                 <span className="mr-2">Liked By:</span>
                 {likedUsers.map((likedUser, index) => (
@@ -162,7 +179,7 @@ const BookCardLarger = ({book}) => {
                 overlayClassName="dimmed-background"
                 className="modal-container"
             >
-                <div className="justify-items-center">
+                <div className="modal-center">
                     <p>Please sign in to like books</p>
                     <br/>
                     <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>

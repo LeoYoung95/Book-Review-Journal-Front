@@ -8,7 +8,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    background-color: #fff;
+    background-color: #f5f5f5;
     transition: box-shadow 0.3s ease;
 }
 
@@ -19,7 +19,7 @@
 
 /* Highlighted book card style */
 .book-card-highlighted {
-    background-color: #f0f8ff; /* Light blue background */
+    background-color: #dafbfc; /* Light blue background */
 }
 
 .book-card-highlighted:hover {
@@ -194,4 +194,9 @@
     position: absolute;
     bottom: 10px;
     left: 230px;
+}
+
+.like-button-placeholder-book {
+    display: inline-block;
+    width: 32px;
 }

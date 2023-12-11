@@ -91,8 +91,8 @@ export default function Navbar() {
                 overlayClassName="dimmed-background"
                 className="modal-container"
             >
-                <div className="justify-items-center">
-                    <p>Please Sign in to view your profile</p>
+                <div className="modal-center">
+                    <p>Please sign in to view your profile</p>
                     <br/>
                     <button className="btn-danger pl-15" onClick={handleSignInAndCloseModal}>Sign In</button>
                 </div>

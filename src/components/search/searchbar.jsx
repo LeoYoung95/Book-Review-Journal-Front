@@ -65,6 +65,7 @@ export default function Searchbar() {
                         <div className='col'>
                             <button
                                 type='submit'
+                                style={{ width: '80px' }}
                                 className='bg-sky-200 rounded h-[30px] px-2 ml-1'
                             >
                                 Search
@@ -72,6 +73,7 @@ export default function Searchbar() {
                             {/* Trending Book Button */}
                             <button
                                 onClick={handleTrending}
+                                style={{ width: '80px' }}
                                 className='trending-button bg-green-200 rounded h-[30px] px-2 ml-1'
                             >
                                 Trending
