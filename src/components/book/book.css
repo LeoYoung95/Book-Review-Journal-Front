@@ -1,16 +1,29 @@
 /* Basic styles for the book card */
 .book-card, .book-card-highlighted {
-    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0.1, 0.1, 0.1, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
     padding: 15px;
     margin-bottom: 20px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
 }
+
+.book-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
 
 /* Highlighted book card style */
 .book-card-highlighted {
     background-color: #f0f8ff; /* Light blue background */
+}
+
+.book-card-highlighted:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .book-cover {

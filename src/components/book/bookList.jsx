@@ -78,7 +78,7 @@ const BookList = ({ searchQuery }) => {
     }
 
     return (
-        <div>
+        <div className="trending-container">
             {books && books.length > 0 ? (
                 books.map(book => (
                     <BookCard key={book.olid} book={book} />
