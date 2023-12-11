@@ -17,8 +17,18 @@ const Breadcrumb = ({ navigationHistory }) => {
         display: isHomePage ? 'none' : 'inline-block', // Hide button when on the homepage
     };
 
+    const breadcrumbStyle = {
+        position: 'fixed',  // Set the position to fixed
+        top: '0',           // Stick it to the top of the viewport
+        width: '100%',      // Make it 100% wide
+        background: 'white', // Optional background color
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        height: '50px',
+    };
+
+
     return (
-        <div className="flex justify-between items-center mt-[85px] border-b-2 pl-5" style={{ height: '50px' }}>
+        <div className="flex justify-between items-center mt-[80px] pl-5" style={breadcrumbStyle}>
             <ul className="flex space-x-2">
                 {navigationHistory.map((item, index) => (
                     <li key={index} className="flex items-center">

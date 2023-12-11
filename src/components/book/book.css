@@ -19,7 +19,7 @@
 
 /* Highlighted book card style */
 .book-card-highlighted {
-    background-color: #dafbfc; /* Light blue background */
+    background-color: rgba(226, 245, 246, 0.4); /* Light blue background */
 }
 
 .book-card-highlighted:hover {

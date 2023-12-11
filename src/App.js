@@ -31,7 +31,7 @@ function App() {
                         )}
                     </NavigationTracker>
 
-                    <div className='mt-[20px] h-full'>
+                    <div className='mt-[160px] h-full'>
                         <Routes>
                             <Route path='/' element={<Homepage/>}/>
                             <Route path='/profile' element={<Profile/>}/>

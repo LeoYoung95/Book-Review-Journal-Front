@@ -54,7 +54,10 @@ export default function Navbar() {
     };
 
     return (
-        <div className='navbar shadow mb-3 h-[80px] w-full top-0 z-50 fixed flex justify-between items-center px-4'>
+        <div
+            className='navbar h-[80px] w-full top-0 z-1050 fixed flex justify-between items-center px-4'
+            style={{ boxShadow: '0 2px 6px 0 rgba(0, 0, 0, 0.1)' }}
+        >
             <button onClick={() => navigate('/')}>
                 <img src={logo} alt='logo' className='h-[70px]'/>
             </button>
