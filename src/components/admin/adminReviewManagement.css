@@ -17,4 +17,5 @@
 .review-cards-container {
     display: grid;
     grid-gap: 20px;
+    justify-items: center;
 }

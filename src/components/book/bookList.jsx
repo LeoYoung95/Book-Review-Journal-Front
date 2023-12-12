@@ -14,7 +14,6 @@ const BookList = ({ searchQuery }) => {
     const dispatch = useDispatch();
     const books = useSelector(state => state.currentBooks.books);
     const needRefresh = useSelector((state) => state.currentBooks.needRefresh);
-    const location = useLocation();
     
     const fetchData = async () => {
         setIsLoading(true);

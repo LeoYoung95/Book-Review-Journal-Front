@@ -12,6 +12,7 @@ export const REVIEW_API = `${BASE_URL}/api/reviews`;
 // Get All Reviews
 export const findAllReviews = async () => {
     const response = await request.get(`${REVIEW_API}`);
+    console.log("all reviews: ", response.data)
     return response.data;
 }
 

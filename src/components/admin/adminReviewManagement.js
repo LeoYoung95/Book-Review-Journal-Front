@@ -1,26 +1,22 @@
-import React, {useState, useEffect} from 'react';
-import {findUserById} from "../../clients/user_client";
-import {findAllReviews} from '../../clients/review_client';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { findAllReviews } from '../../clients/review_client';
 import ReviewCard from '../review/reviewCard';
 import './adminReviewManagement.css';
-import {useSelector} from "react-redux";
+import { setNeedRefresh } from '../../reducers/currentBooksReducer';
 
 const AdminReviewManagement = () => {
     const [allReviews, setAllReviews] = useState([]);
-    const [deletedReviews, setDeletedReviews] = useState([]);
-    const [refreshNeeded, setRefreshNeeded] = useState(true);
+    const needRefresh = useSelector(state => state.currentBooks.needRefresh);
+    const dispatch = useDispatch();
     const currentUserId = useSelector(state => state.currentUser.userId);
 
     useEffect(() => {
-        if (refreshNeeded) {
-            setRefreshNeeded(false);
-        }
-
         fetchAllReviews();
-        if (currentUserId) {
-            fetchDeletedReviews(currentUserId);
+        if (needRefresh) {
+            dispatch(setNeedRefresh(false)); // Reset the needRefresh state after fetching
         }
-    }, [currentUserId, refreshNeeded]);
+    }, [needRefresh, currentUserId, dispatch]);
 
     const fetchAllReviews = async () => {
         try {
@@ -31,38 +27,21 @@ const AdminReviewManagement = () => {
         }
     };
 
-    const fetchDeletedReviews = async (userId) => {
-        try {
-            const user = await findUserById(userId);
-            const myDeletedReviews = user.deletedReviews;
-            console.log('Fetched deleted reviews:', myDeletedReviews);
-            setDeletedReviews(myDeletedReviews);
-        } catch (error) {
-            console.error('Error fetching deleted reviews:', error);
-        }
-    };
-
     return (
-
         <div>
-            <div className="row">
+            <div className="row review-cards-container">
                 <h1 className="admin-review-title">All Reviews</h1>
             </div>
 
             <div className="row">
                 <div className="review-cards-container">
                     {allReviews.map((review) => (
-                        <ReviewCard
-                            key={review._id}
-                            reviewId={review._id}
-                        />
+                        <ReviewCard key={review._id} reviewId={review._id} />
                     ))}
                 </div>
             </div>
-
         </div>
-    )
-        ;
+    );
 }
 
 export default AdminReviewManagement;

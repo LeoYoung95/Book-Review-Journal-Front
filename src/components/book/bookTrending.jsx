@@ -2,13 +2,14 @@ import React, {useEffect, useState} from "react";
 import BookCard from "./bookCard";
 import {fetchAllBooks} from "../../clients/book_client";
 import {fetchBookDetails, fetchBookInfoByOLID} from "../../clients/openlib_client";
-import {useDispatch} from "react-redux";
-import {setCurrentBooks} from "../../reducers/currentBooksReducer";
+import {useDispatch, useSelector} from "react-redux";
+import {setCurrentBooks, setNeedRefresh} from "../../reducers/currentBooksReducer";
 
 // ReviewTrending component displays the top 10 trending books based on likes
 export default function BookTrending() {
     const [books, setBooks] = useState([]);
     const [topBooks, setTopBooks] = useState([]);
+    const needRefresh = useSelector(state => state.currentBooks.needRefresh);
     const dispatch = useDispatch();
 
     // Fetch all reviews on component mount
@@ -43,10 +44,14 @@ export default function BookTrending() {
             } catch (err) {
                 console.error("Error fetching books:", err);
             }
+
+            if (needRefresh) {
+                dispatch(setNeedRefresh(false));
+            }
         }
 
         fetchBooks();
-    }, []);
+    }, [needRefresh]);
 
     // Sort and slice the books whenever the reviews data changes
     useEffect(() => {

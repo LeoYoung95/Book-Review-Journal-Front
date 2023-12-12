@@ -79,6 +79,7 @@ export default function ReviewCard({reviewId}) {
 
     const handleHardDelete = async () => {
         try {
+            console.log("review to hard delete:", review);
             // Delete the review from the review database
             await hardDeleteReview(review._id);
             // Delete the review from the user database
@@ -87,9 +88,14 @@ export default function ReviewCard({reviewId}) {
             await deleteReviewByOpenLibraryId(review.book_olid, review._id);
 
             // Delete the review from tag database
-            for (let i = 0; i < review.tag.length; i++) {
-                await removeReviewFromTag(review.tag[i], review._id);
+            if (review.tag) {
+                for (let i = 0; i < review.tag.length; i++) {
+                    await removeReviewFromTag(review.tag[i], review._id);
+                }
             }
+
+            dispatch(setNeedRefresh(true));
+
         } catch (err) {
             console.error("Error deleting review:", err);
         }
