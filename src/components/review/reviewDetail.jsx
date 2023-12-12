@@ -219,7 +219,7 @@ export default function ReviewDetail() {
                     className="modal-container"
                 >
                     <div className="modal-center">
-                        <p>Please sign in to like reviews</p>
+                        <p>Please sign in to proceed</p>
                         <br/>
                         <button className="btn-danger" onClick={() => navigate('/signin')}>Sign In</button>
                     </div>

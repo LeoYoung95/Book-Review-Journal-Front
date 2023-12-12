@@ -180,7 +180,7 @@ const BookCardLarger = ({book}) => {
                 className="modal-container"
             >
                 <div className="modal-center">
-                    <p>Please sign in to like books</p>
+                    <p>Please sign in to proceed</p>
                     <br/>
                     <button className="btn-danger pl-15" onClick={() => navigate('/signin')}>Sign In</button>
                 </div>
